@@ -1,0 +1,6 @@
+{
+  "name": "IBONDA Real Estate Agency",
+  "description": "منصة متكاملة لإدارة الوكالات العقارية — العملاء المحتملون، مسار المبيعات، العقارات، المواعيد، الفريق، والتحليلات.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
