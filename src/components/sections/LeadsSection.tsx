@@ -599,8 +599,7 @@ export const LeadsSection: React.FC = () => {
                                 : t.appointments.agenda.directCall
                             }
                           />
-                          {lead.contact_method === 'whatsapp' ? (
-                            <a
+                          {<a
                               href={buildTelHref(lead.phone)}
                               onClick={(e) => e.stopPropagation()}
                               title={t.appointments.agenda.directCall}
@@ -608,7 +607,6 @@ export const LeadsSection: React.FC = () => {
                             >
                               <Phone className="h-3 w-3" />
                             </a>
-                          ) : (
                             <a
                               href={buildWhatsAppHref(lead.phone)}
                               target="_blank"
@@ -619,7 +617,6 @@ export const LeadsSection: React.FC = () => {
                             >
                               <MessageCircle className="h-3 w-3" />
                             </a>
-                          )}
                         </div>
                       </td>
                       <td className="py-3 px-3 whitespace-nowrap">
