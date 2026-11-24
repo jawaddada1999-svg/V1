@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { LayoutDashboard, Users, Building2, CalendarClock, MessageSquare } from 'lucide-react';
 import { Sidebar } from './components/layout/Sidebar';
 import { TopHeader } from './components/layout/TopHeader';
 import {
@@ -26,6 +27,8 @@ const DashboardShell: React.FC = () => {
   const {
     t,
     activeSection,
+    setActiveSection,
+    language,
     toasts,
     dismissToast,
     quickModal,
@@ -84,7 +87,7 @@ const DashboardShell: React.FC = () => {
         <TopHeader onOpenMobileMenu={() => setMobileMenuOpen(true)} />
 
         <div className="flex-1 flex flex-col bg-[#F5F7F5] lg:rounded-ss-[26px] overflow-x-clip shadow-inner">
-          <main className="flex-1 p-4 lg:p-6 max-w-[1600px] w-full mx-auto">
+          <main className="flex-1 p-4 lg:p-6 pb-24 lg:pb-6 max-w-[1600px] w-full mx-auto">
             {renderSection()}
           </main>
 
@@ -93,6 +96,18 @@ const DashboardShell: React.FC = () => {
             <span>{t.app.platformAttribution}</span>
           </footer>
         </div>
+        <nav className="mobile-app-nav lg:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-5 border-t border-white/30 bg-white/90 backdrop-blur-xl shadow-[0_-8px_28px_-14px_rgba(18,53,43,0.25)]" aria-label="Primary navigation">
+          {([
+            {id:'overview',icon:LayoutDashboard,label:language==='ar'?'الرئيسية':language==='fr'?'Accueil':'Home'},
+            {id:'leads',icon:Users,label:language==='ar'?'العملاء':language==='fr'?'Leads':'Leads'},
+            {id:'properties',icon:Building2,label:language==='ar'?'العقارات':language==='fr'?'Biens':'Properties'},
+            {id:'appointments',icon:CalendarClock,label:language==='ar'?'المواعيد':language==='fr'?'Visites':'Visits'},
+            {id:'conversations',icon:MessageSquare,label:language==='ar'?'المحادثات':language==='fr'?'Messages':'Chat'},
+          ] as {id:SectionId;icon:React.ComponentType<{className?:string}>;label:string}[]).map((item)=>{
+            const Icon=item.icon;const active=activeSection===item.id;
+            return <button key={item.id} type="button" onClick={()=>setActiveSection(item.id)} className={`flex flex-col items-center justify-center gap-1 px-1 py-2.5 text-[10px] font-bold transition-colors ${active?'text-[#EA580C]':'text-slate-500'}`}><Icon className={`h-5 w-5 ${active?'stroke-[2.5]':'stroke-[1.8]'}`} /><span>{item.label}</span><span className={`h-1 w-5 rounded-full ${active?'bg-[#EA580C]':'bg-transparent'}`}/></button>
+          })}
+        </nav>
       </div>
 
       {/* Global Quick Creation Modals */}
