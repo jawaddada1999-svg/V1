@@ -30,7 +30,7 @@ import {
 import { formatMAD, formatShortDate } from '../../i18n/translations';
 import { Lead, LeadClassification, LeadSource, LeadStatus } from '../../types/domain';
 import { buildTelHref, buildWhatsAppHref } from '../../utils/contactLinks';
-import { downloadCsvWithBom } from '../../utils/exportUtils';
+
 import {
   computeLeadScore,
   LeadScoreResult,
@@ -189,55 +189,34 @@ export const LeadsSection: React.FC = () => {
   };
 
   const handleExport = (targetLeads: Lead[]) => {
-    downloadCsvWithBom(
-      'ibonda-leads-export.csv',
-      [
-        t.leads.columns.name,
-        t.leads.columns.phone,
-        t.leads.columns.contactMethod,
-        t.leads.columns.classification,
-        t.leads.columns.score,
-        t.leads.form.transactionType,
-        t.leads.columns.propertyType,
-        t.leads.columns.bedrooms,
-        t.leads.columns.deliveryStatus,
-        t.leads.columns.desiredArea,
-        t.leads.columns.paymentMethod,
-        t.leads.columns.budget,
-        t.leads.columns.city,
-        t.leads.columns.source,
-        t.leads.columns.employee,
-        t.leads.columns.status,
-        'Property condition',
-        'Mandate status',
-        'Viewing availability',
-      ],
-      targetLeads.map((l) => [
-        localizePersonName(l.name, language),
-        l.phone,
-        t.contactMethods[l.contact_method],
-        t.leadClassifications[l.classification],
-        leadScoresMap[l.id]?.score ?? 0,
-        t.transactionTypes[l.transaction_type],
-        t.propertyTypes[l.property_type],
-        l.bedrooms,
-        t.deliveryStatuses[l.delivery_status],
-        `${l.desired_area} ${t.app.sqm}`,
-        t.paymentMethods[l.payment_method],
-        formatMAD(l.budget, language),
-        localizeCity(l.city, language),
-        t.leadSources[l.source],
-        (() => {
-          const emp = employees.find((e) => e.id === l.assigned_employee_id);
-          return emp ? localizePersonName(emp.name, language) : '-';
-        })(),
-        t.leadStatuses[l.status],
-        l.property_condition ?? '',
-        l.mandate_status ?? '',
-        l.viewing_availability ?? '',
-      ])
-    );
-    pushToast({ type: 'success', title: t.toasts.exported });
+    const headers = [
+      t.leads.columns.name, t.leads.columns.phone, t.leads.columns.contactMethod,
+      t.leads.columns.classification, t.leads.columns.score, t.leads.form.transactionType,
+      t.leads.columns.propertyType, t.leads.columns.bedrooms, t.leads.columns.deliveryStatus,
+      t.leads.columns.desiredArea, t.leads.columns.paymentMethod, t.leads.columns.budget,
+      t.leads.columns.city, t.leads.columns.source, t.leads.columns.employee,
+      t.leads.columns.status, 'Property condition', 'Mandate status', 'Viewing availability',
+    ];
+    const rows = targetLeads.map((l) => [
+      localizePersonName(l.name, language), l.phone, t.contactMethods[l.contact_method],
+      t.leadClassifications[l.classification], leadScoresMap[l.id]?.score ?? 0,
+      t.transactionTypes[l.transaction_type], t.propertyTypes[l.property_type], l.bedrooms,
+      t.deliveryStatuses[l.delivery_status], `${l.desired_area} ${t.app.sqm}`,
+      t.paymentMethods[l.payment_method], formatMAD(l.budget, language), localizeCity(l.city, language),
+      t.leadSources[l.source],
+      employees.find((e) => e.id === l.assigned_employee_id)?.name ?? '-',
+      t.leadStatuses[l.status], l.property_condition ?? '', l.mandate_status ?? '',
+      l.viewing_availability ?? '',
+    ]);
+    const escapeHtml = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string));
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      pushToast({ type: 'error', title: language === 'ar' ? 'سمح للمتصفح بفتح نافذة الطباعة' : 'Please allow the print window to open' });
+      return;
+    }
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>IBONDA — Leads</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#17211d}h1{margin:0 0 16px;font-size:22px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border:1px solid #d8e0dc;padding:7px;text-align:start}th{background:#edf3ef;font-weight:700}tr{break-inside:avoid}@media print{body{padding:0}}</style></head><body><h1>IBONDA — ${escapeHtml(t.leads.title)}</h1><table><thead><tr>${headers.map(h=>`<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(v=>`<td>${escapeHtml(v)}</td>`).join('')}</tr>`).join('')}</tbody></table><script>window.onload=()=>window.print()<\/script></body></html>`);
+    printWindow.document.close();
+    pushToast({ type: 'success', title: language === 'ar' ? 'ملف الطباعة جاهز — اختار Save as PDF' : 'Print view ready — choose Save as PDF' });
   };
 
   const handleBulkAssign = (empId: string) => {
@@ -266,7 +245,7 @@ export const LeadsSection: React.FC = () => {
             className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary"
           >
             <Download className="h-3.5 w-3.5" />
-            <span>{t.app.exportCsv}</span>
+            <span>{t.app.exportPdf}</span>
           </button>
           <button
             type="button"
