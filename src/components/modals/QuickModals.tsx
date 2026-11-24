@@ -2068,6 +2068,7 @@ export const AppointmentFormModal: React.FC<{
               <div className="relative">
                 <input
                   type="time"
+                  step={300}
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   className="w-full h-11 px-3.5 text-sm font-bold text-[#1F2937] bg-white border-2 border-[#E3EAE5] rounded-xl font-mono-num focus:outline-none focus:border-[#16966A]"
