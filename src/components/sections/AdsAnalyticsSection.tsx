@@ -82,7 +82,7 @@ export const AdsAnalyticsSection: React.FC = () => {
         };
       })
       .filter((c): c is NonNullable<typeof c> => c !== null);
-  }, [adCampaigns, platformFilter, statusFilter, bounds]);
+  }, [adCampaigns, platformFilter, statusFilter, bounds, campaignStatusOverrides]);
 
   const totals = useMemo(() => {
     const spend = filteredCampaigns.reduce((s, c) => s + c.periodSpend, 0);
