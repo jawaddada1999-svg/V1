@@ -82,11 +82,7 @@ export const OwnersSection: React.FC = () => {
   }, [owners, language, search, typeFilter, cityFilter]);
 
   const stats = useMemo(() => {
-    const linkedProps = properties.filter((p) =>
-      owners.some((o) => o.id === p.owner_id || o.name === p.owner_name)
-    );
-
-    const ownersForSale = owners.filter((owner) => {
+const ownersForSale = owners.filter((owner) => {
       const ownedProps = properties.filter(
         (p) => p.owner_id === owner.id || p.owner_name === owner.name
       );
@@ -108,7 +104,6 @@ export const OwnersSection: React.FC = () => {
 
     return {
       totalOwners: owners.length,
-      linkedProperties: linkedProps.length,
       ownersForSale,
       ownersForRent,
       investorsCount,
@@ -162,13 +157,7 @@ export const OwnersSection: React.FC = () => {
           icon={<KeyRound className="h-4 w-4" />}
           tone="teal"
         />
-        <KpiCard
-          title={t.owners.stats.totalPropertiesLinked}
-          value={formatNumber(stats.linkedProperties, language)}
-          icon={<Building2 className="h-4 w-4" />}
-          tone="sky"
-        />
-        <KpiCard
+<KpiCard
           title={t.owners.stats.investorsCount}
           value={formatNumber(stats.investorsCount, language)}
           icon={<UserCheck className="h-4 w-4" />}
