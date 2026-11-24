@@ -107,8 +107,8 @@ export const AdsAnalyticsSection: React.FC = () => {
 
   const platformSlices = useMemo(() => {
     const colors: Record<AdPlatform, string> = {
-      facebook_ads: '#12352B',
-      instagram_ads: '#10B981',
+      facebook_ads: '#2563EB',
+      instagram_ads: '#EA580C',
       google_ads: '#0EA5E9',
       other: '#64748B',
     };
@@ -282,10 +282,10 @@ export const AdsAnalyticsSection: React.FC = () => {
         <>
           {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-              <div className="h-1 w-full bg-[#12352B]" />
-              <div className="px-5 py-3.5 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#12352B]" />
+            <div className="bg-white border border-[#E2E8F0] card-surface rounded-[20px] overflow-hidden">
+              <div className="h-1 w-full bg-[#EA580C]" />
+              <div className="px-5 py-3.5 bg-[#FFF7ED]/70 border-b border-[#E2E8F0] flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#EA580C]" />
                 <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.leadsByCampaign}</h3>
               </div>
               <div className="p-5">
@@ -297,10 +297,10 @@ export const AdsAnalyticsSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-              <div className="h-1 w-full bg-[#10B981]" />
-              <div className="px-5 py-3.5 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#10B981]" />
+            <div className="bg-white border border-[#E2E8F0] card-surface rounded-[20px] overflow-hidden">
+              <div className="h-1 w-full bg-[#0284C7]" />
+              <div className="px-5 py-3.5 bg-[#F0F9FF]/70 border-b border-[#E2E8F0] flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
                 <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.leadsByPlatform}</h3>
               </div>
               <div className="p-5">
@@ -312,10 +312,10 @@ export const AdsAnalyticsSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
-              <div className="h-1 w-full bg-[#0EA5E9]" />
-              <div className="px-5 py-3.5 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#0EA5E9]" />
+            <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
+              <div className="h-1 w-full bg-[#F59E0B]" />
+              <div className="px-5 py-3.5 bg-[#FFFBEB]/70 border-b border-[#E2E8F0] flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#F59E0B]" />
                 <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.dailyTrends}</h3>
               </div>
               <div className="p-5">
@@ -323,10 +323,10 @@ export const AdsAnalyticsSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
-              <div className="h-1 w-full bg-[#16966A]" />
-              <div className="px-5 py-3.5 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#16966A]" />
+            <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
+              <div className="h-1 w-full bg-[#1E293B]" />
+              <div className="px-5 py-3.5 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-[#1E293B]" />
                 <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.spendAndCpl}</h3>
               </div>
               <div className="p-5">
@@ -341,11 +341,11 @@ export const AdsAnalyticsSection: React.FC = () => {
           </div>
 
           {/* Campaigns Table */}
-          <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
+          <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-start border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                  <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                     <th className="py-3.5 px-4 text-start">{t.ads.table.campaignName}</th>
                     <th className="py-3.5 px-4 text-start">{t.ads.table.platform}</th>
                     <th className="py-3.5 px-4 text-start">{t.ads.table.budget}</th>
@@ -356,12 +356,12 @@ export const AdsAnalyticsSection: React.FC = () => {
                     <th className="py-3.5 px-4 text-start">{t.ads.table.status}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E3EAE5]">
+                <tbody className="divide-y divide-[#E2E8F0]">
                   {filteredCampaigns.map((camp) => {
                     const cpl =
                       camp.periodLeads > 0 ? Math.round(camp.periodSpend / camp.periodLeads) : 0;
                     return (
-                      <tr key={camp.id} className="hover:bg-[#F5F7F5]">
+                      <tr key={camp.id} className="hover:bg-[#FFF7ED]">
                         <td className="py-3 px-4 font-bold text-[#1F2937]">
                           {localizeCampaignName(camp.name, language)}
                         </td>
@@ -380,7 +380,7 @@ export const AdsAnalyticsSection: React.FC = () => {
                         <td className="py-3 px-4 font-mono-num font-medium text-[#1F2937]">
                           {camp.periodAppointments}
                         </td>
-                        <td className="py-3 px-4 font-mono-num font-bold text-[#16966A] whitespace-nowrap">
+                        <td className="py-3 px-4 font-mono-num font-bold text-[#C2410C] whitespace-nowrap">
                           {formatMAD(cpl, language)}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">

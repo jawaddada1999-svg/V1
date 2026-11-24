@@ -2120,10 +2120,10 @@ export const AppointmentFormModal: React.FC<{
                       onClick={() => setTime(slot)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-mono-num font-bold border transition-all ${
                         selected
-                          ? 'bg-[#16966A] text-white border-[#117A57] shadow-xs'
+                          ? 'bg-[#EA580C] text-white border-[#C2410C] shadow-xs'
                           : isBusy
                             ? 'bg-amber-50 text-amber-800 border-amber-300'
-                            : 'bg-white text-[#1F2937] border-[#E3EAE5] hover:border-[#16966A]'
+                            : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:border-[#EA580C]'
                       }`}
                     >
                       {slot}

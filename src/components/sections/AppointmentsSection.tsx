@@ -58,21 +58,21 @@ import {
 type ViewTab = 'table' | 'daily' | 'weekly' | 'monthly';
 
 const aptCardTone: Record<AppointmentStatus, string> = {
-  scheduled: 'bg-[#F0F9FF] border-[#BAE6FD] border-s-4 border-s-[#0EA5E9]',
-  confirmed: 'bg-[#ECFDF5] border-[#A7F3D0] border-s-4 border-s-[#16966A]',
-  attended: 'bg-[#ECFDF5] border-[#A7F3D0] border-s-4 border-s-[#10B981]',
-  no_show: 'bg-[#FEF2F2] border-[#FECACA] border-s-4 border-s-[#EF4444]',
-  cancelled: 'bg-[#F5F7F5] border-[#E3EAE5] border-s-4 border-s-[#64748B]',
-  rescheduled: 'bg-[#FFFBEB] border-[#FDE68A] border-s-4 border-s-[#F59E0B]',
+  scheduled: 'bg-[#F0F9FF] border-[#BAE6FD] border-s-4 border-s-[#0284C7]',
+  confirmed: 'bg-[#EEF2FF] border-[#C7D2FE] border-s-4 border-s-[#4F46E5]',
+  attended: 'bg-[#F0FDF4] border-[#BBF7D0] border-s-4 border-s-[#15803D]',
+  no_show: 'bg-[#FFF1F2] border-[#FECDD3] border-s-4 border-s-[#E11D48]',
+  cancelled: 'bg-[#F8FAFC] border-[#E2E8F0] border-s-4 border-s-[#94A3B8] opacity-80',
+  rescheduled: 'bg-[#FFFBEB] border-[#FDE68A] border-s-4 border-s-[#D97706]',
 };
 
 const monthChipTone: Record<AppointmentStatus, string> = {
-  scheduled: 'bg-sky-50 text-sky-900 border-sky-200',
-  confirmed: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-  attended: 'bg-emerald-50 text-emerald-900 border-emerald-200',
-  no_show: 'bg-rose-50 text-rose-900 border-rose-200',
-  cancelled: 'bg-zinc-100 text-zinc-600 border-zinc-200 line-through',
-  rescheduled: 'bg-amber-50 text-amber-900 border-amber-200',
+  scheduled: 'bg-[#F0F9FF] text-[#0369A1] border-[#BAE6FD]',
+  confirmed: 'bg-[#EEF2FF] text-[#3730A3] border-[#C7D2FE]',
+  attended: 'bg-[#F0FDF4] text-[#166534] border-[#BBF7D0]',
+  no_show: 'bg-[#FFF1F2] text-[#BE123C] border-[#FECDD3]',
+  cancelled: 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] line-through',
+  rescheduled: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
 };
 
 export const AppointmentsSection: React.FC = () => {
@@ -215,6 +215,17 @@ export const AppointmentsSection: React.FC = () => {
     };
   }, [hourlyRange, selectedDayAppointments, selectedDayConfig, settings, selectedDay]);
 
+  const nearestBookedDay = useMemo(() => {
+    const activeDates = Array.from(
+      new Set(filteredAppointments.filter((a) => a.status !== 'cancelled').map((a) => a.date))
+    ).sort();
+    if (activeDates.length === 0) return null;
+    const upcoming = activeDates.find((d) => d > selectedDay);
+    if (upcoming) return upcoming;
+    const earlier = [...activeDates].reverse().find((d) => d < selectedDay);
+    return earlier ?? null;
+  }, [filteredAppointments, selectedDay]);
+
   const openBookingModal = (dateStr?: string, timeStr?: string) => {
     setEditingApt(null);
     setModalDefaultDate(dateStr || selectedDay);
@@ -346,7 +357,7 @@ export const AppointmentsSection: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.app.search}
-              className="h-9 w-44 sm:w-52 ps-8 pe-3 text-xs font-medium border border-[#E3EAE5] rounded-xl bg-white focus:outline-none focus:border-[#16966A]"
+              className="h-9 w-44 sm:w-52 ps-8 pe-3 text-xs font-medium border border-[#E2E8F0] rounded-xl bg-white focus:outline-none focus:border-[#EA580C]"
             />
           </div>
           {viewTab === 'table' && (
@@ -403,7 +414,7 @@ export const AppointmentsSection: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-start border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                  <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                     <th className="py-3.5 px-3.5 text-start">{t.appointments.columns.day}</th>
                     <th className="py-3.5 px-3.5 text-start">{t.appointments.columns.date}</th>
                     <th className="py-3.5 px-3.5 text-start">{t.appointments.columns.time}</th>
@@ -417,7 +428,7 @@ export const AppointmentsSection: React.FC = () => {
                     <th className="py-3.5 px-3.5 text-end">{t.app.actions}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E3EAE5]">
+                <tbody className="divide-y divide-[#E2E8F0]">
                   {filteredAppointments.map((apt) => {
                     const lead = leads.find((l) => l.id === apt.lead_id);
                     const prop = properties.find((p) => p.id === apt.property_id);
@@ -431,12 +442,12 @@ export const AppointmentsSection: React.FC = () => {
                     return (
                       <tr
                         key={apt.id}
-                        className={isToday ? 'bg-[#ECFDF5]/75 hover:bg-[#ECFDF5]' : 'hover:bg-[#F5F7F5]'}
+                        className={isToday ? 'bg-[#FFF7ED] hover:bg-[#FFEDD5]/75' : 'hover:bg-[#FFF7ED]'}
                       >
                         <td className="py-3.5 px-3.5 whitespace-nowrap">
                           <span className="font-bold text-[#1F2937]">{t.days[dayKey]}</span>
                           {isToday && (
-                            <span className="ms-1.5 px-1.5 py-0.5 rounded bg-[#16966A] text-white text-[10px] font-bold">
+                            <span className="ms-1.5 px-1.5 py-0.5 rounded bg-[#EA580C] text-white text-[10px] font-bold">
                               {t.appointments.agenda.today}
                             </span>
                           )}
@@ -501,7 +512,7 @@ export const AppointmentsSection: React.FC = () => {
                         <td className="py-3.5 px-3.5 whitespace-nowrap font-semibold text-[#1F2937]">
                           {resolvedCity ? localizeCity(resolvedCity, language) : '—'}
                         </td>
-                        <td className="py-3.5 px-3.5 font-mono-num font-bold text-[#16966A] whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 font-mono-num font-bold text-[#C2410C] whitespace-nowrap">
                           {resolvedBudget > 0 ? formatMAD(resolvedBudget, language) : '—'}
                         </td>
                         <td className="py-3.5 px-3.5 whitespace-nowrap">
@@ -589,25 +600,25 @@ export const AppointmentsSection: React.FC = () => {
 
       {/* Daily Hourly Agenda View */}
       {viewTab === 'daily' && (
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
           {/* Top Agenda Controls */}
-          <div className="px-5 py-3.5 bg-[#F5F7F5] border-b border-[#E3EAE5] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="flex items-center gap-1">
+          <div className="px-5 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3.5">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setSelectedDay((d) => shiftIsoDate(d, -1))}
-                  className="h-8 w-8 rounded-lg border border-[#E3EAE5] bg-white hover:bg-[#F5F7F5] inline-flex items-center justify-center text-[#1F2937]"
+                  className="h-9 w-9 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#FFF7ED] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937] transition-colors"
                 >
                   {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedDay(todayIso)}
-                  className={`h-8 px-3 rounded-lg text-xs font-bold border transition-colors ${
+                  className={`h-9 px-3.5 rounded-xl text-xs font-bold border transition-colors ${
                     selectedDay === todayIso
                       ? 'btn-primary border-transparent'
-                      : 'bg-white border-[#E3EAE5] text-[#1F2937] hover:bg-[#F5F7F5]'
+                      : 'bg-white border-[#E2E8F0] text-[#1F2937] hover:bg-[#FFF7ED] hover:border-[#FDBA74]'
                   }`}
                 >
                   {t.appointments.agenda.today}
@@ -615,27 +626,39 @@ export const AppointmentsSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedDay((d) => shiftIsoDate(d, 1))}
-                  className="h-8 w-8 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 inline-flex items-center justify-center text-zinc-800"
+                  className="h-9 w-9 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#FFF7ED] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937] transition-colors"
                 >
                   {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
               </div>
 
               <div>
-                <h3 className="text-sm font-bold text-zinc-950">
+                <h3 className="text-sm sm:text-base font-extrabold text-[#1F2937]">
                   {t.days[selectedDayKey]} — {formatShortDate(selectedDay, language)}
                 </h3>
-                <div className="text-[11px] text-zinc-600 flex flex-wrap items-center gap-2 mt-0.5">
-                  <span className="font-semibold text-zinc-800">{t.appointments.agenda.workingHoursLabel}:</span>
+                <div className="text-xs text-[#64748B] flex flex-wrap items-center gap-2 mt-1">
                   {selectedDayConfig?.enabled ? (
-                    <span className="font-mono-num text-zinc-900 font-semibold">
-                      {selectedDayConfig.open} – {selectedDayConfig.close}
-                      {selectedDayConfig.break_start && selectedDayConfig.break_end
-                        ? ` (${t.settings.hoursForm.breakTime}: ${selectedDayConfig.break_start}–${selectedDayConfig.break_end})`
-                        : ''}
-                    </span>
+                    <>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[#1E293B] font-semibold">
+                        <Clock className="h-3 w-3 text-[#0284C7]" />
+                        <span>{t.appointments.agenda.workingHoursLabel}:</span>
+                        <span className="font-mono-num font-bold" dir="ltr">
+                          {selectedDayConfig.open} – {selectedDayConfig.close}
+                        </span>
+                      </span>
+                      {selectedDayConfig.break_start && selectedDayConfig.break_end && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#FFFBEB] border border-[#FDE68A] text-[#92400E] font-semibold">
+                          <Coffee className="h-3 w-3 text-[#D97706]" />
+                          <span className="font-mono-num font-bold" dir="ltr">
+                            {selectedDayConfig.break_start} – {selectedDayConfig.break_end}
+                          </span>
+                        </span>
+                      )}
+                    </>
                   ) : (
-                    <span className="text-rose-700 font-semibold">{t.appointments.agenda.closedDayBanner}</span>
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-[#FFF1F2] border border-[#FECDD3] text-[#BE123C] font-bold">
+                      {t.appointments.agenda.closedDayBanner}
+                    </span>
                   )}
                 </div>
               </div>
@@ -643,81 +666,135 @@ export const AppointmentsSection: React.FC = () => {
 
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold tabular-nums">
+                <span className="px-2.5 py-1 rounded-lg bg-[#F0F9FF] border border-[#BAE6FD] text-[#0369A1] font-bold tabular-nums">
                   {dailySummary.openSlots} {t.appointments.agenda.openSlotsCount}
                 </span>
-                <span className="px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-200 text-sky-800 font-semibold tabular-nums">
+                <span className="px-2.5 py-1 rounded-lg bg-[#FFF7ED] border border-[#FED7AA] text-[#C2410C] font-bold tabular-nums">
                   {dailySummary.bookedSlots} {t.appointments.agenda.bookedCount}
                 </span>
                 {dailySummary.blockedSlots > 0 && (
-                  <span className="px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 font-semibold tabular-nums">
+                  <span className="px-2.5 py-1 rounded-lg bg-[#FFF1F2] border border-[#FECDD3] text-[#BE123C] font-bold tabular-nums">
                     {dailySummary.blockedSlots} {t.appointments.agenda.blockedCount}
                   </span>
                 )}
               </div>
 
+              {selectedDayAppointments.length === 0 && nearestBookedDay && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedDay(nearestBookedDay)}
+                  className="h-8 px-3 rounded-lg bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors"
+                >
+                  <CalendarClock className="h-3.5 w-3.5" />
+                  <span>{t.appointments.agenda.jumpToNearestApt}</span>
+                  <span className="font-mono-num" dir="ltr">({nearestBookedDay.slice(5)})</span>
+                </button>
+              )}
+
               <input
                 type="date"
                 value={selectedDay}
                 onChange={(e) => e.target.value && setSelectedDay(e.target.value)}
-                className="h-8 px-2.5 text-xs font-semibold border border-zinc-200 rounded-lg bg-white font-mono-num text-zinc-950"
+                className="h-8 px-2.5 text-xs font-bold border border-[#CBD5E1] rounded-lg bg-white font-mono-num text-[#1F2937]"
               />
             </div>
           </div>
 
           {/* 7-Day Horizontal Quick Date Strip */}
-          <div className="px-4 py-2.5 bg-white border-b border-zinc-200 grid grid-cols-7 gap-1.5 overflow-x-auto">
-            {agendaStripDays.map((dayStr) => {
-              const dKey = getDayKeyFromIsoDate(dayStr);
-              const dCfg = settings.working_days.find((d) => d.day_key === dKey);
-              const count = filteredAppointments.filter((a) => a.date === dayStr).length;
-              const isSelected = dayStr === selectedDay;
-              return (
-                <button
-                  key={dayStr}
-                  type="button"
-                  onClick={() => setSelectedDay(dayStr)}
-                  className={`px-2 py-2 rounded-xl border text-center transition-all min-w-[78px] ${
-                    isSelected
-                      ? 'bg-[#12352B] text-white border-[#12352B] shadow-sm'
-                      : !dCfg?.enabled
-                        ? 'bg-[#F5F7F5] border-[#E3EAE5] text-[#64748B] hover:bg-[#E3EAE5]/50'
-                        : 'bg-white border-[#E3EAE5] text-[#1F2937] hover:bg-[#F5F7F5]'
-                  }`}
-                >
-                  <div className={`text-[11px] font-bold ${isSelected ? 'text-white/90' : 'text-[#64748B]'}`}>
-                    {t.days[dKey]}
-                  </div>
-                  <div className="text-xs font-mono-num font-bold mt-0.5">{dayStr.slice(5)}</div>
-                  <div className="mt-1 flex items-center justify-center">
-                    <span
-                      className={`px-1.5 py-0.5 rounded text-[10px] font-mono-num font-bold ${
-                        isSelected
-                          ? 'bg-white/20 text-white'
-                          : count > 0
-                            ? 'bg-[#ECFDF5] text-[#117A57]'
-                            : 'bg-[#F5F7F5] text-[#64748B]'
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+          <div className="px-4 py-3 bg-white border-b border-[#E2E8F0] overflow-x-auto">
+            <div className="grid grid-cols-7 gap-2 min-w-[630px]">
+              {agendaStripDays.map((dayStr) => {
+                const dKey = getDayKeyFromIsoDate(dayStr);
+                const dCfg = settings.working_days.find((d) => d.day_key === dKey);
+                const count = filteredAppointments.filter((a) => a.date === dayStr).length;
+                const isSelected = dayStr === selectedDay;
+                const isTodayCell = dayStr === todayIso;
+                return (
+                  <button
+                    key={dayStr}
+                    type="button"
+                    onClick={() => setSelectedDay(dayStr)}
+                    className={`px-2.5 py-2 rounded-xl border text-center transition-all ${
+                      isSelected
+                        ? 'bg-[#EA580C] text-white border-[#C2410C] shadow-sm'
+                        : !dCfg?.enabled
+                          ? 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]'
+                          : 'bg-white border-[#E2E8F0] text-[#1F2937] hover:bg-[#FFF7ED] hover:border-[#FDBA74]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <span className={`text-[11px] font-bold ${isSelected ? 'text-white/95' : 'text-[#475569]'}`}>
+                        {t.days[dKey]}
+                      </span>
+                      {isTodayCell && !isSelected && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#EA580C]" />
+                      )}
+                    </div>
+                    <div className="text-xs font-mono-num font-extrabold mt-0.5" dir="ltr">
+                      {dayStr.slice(5)}
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-center gap-1.5">
+                      <span
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-mono-num font-bold ${
+                          isSelected
+                            ? 'bg-white/20 text-white'
+                            : count > 0
+                              ? 'bg-[#F0F9FF] text-[#0369A1] border border-[#BAE6FD]'
+                              : 'bg-[#F8FAFC] text-[#64748B]'
+                        }`}
+                      >
+                        {count}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Eye-Friendly Color Legend Bar */}
+          <div className="px-5 py-2.5 bg-[#F8FAFC]/70 border-b border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2 text-[11px]">
+            <div className="flex flex-wrap items-center gap-3 font-semibold text-[#475569]">
+              <span className="font-bold text-[#1E293B]">{t.appointments.agenda.legendLabel}</span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#0284C7]" />
+                {t.appointments.agenda.availableSlot}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#4F46E5]" />
+                {t.appointmentStatuses.confirmed}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#15803D]" />
+                {t.appointmentStatuses.attended}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]" />
+                {t.settings.hoursForm.slotBreak}
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#E11D48]" />
+                {t.settings.hoursForm.slotRemoved}
+              </span>
+            </div>
+            {selectedDayConfig?.enabled && selectedDayAppointments.length === 0 && (
+              <span className="text-[11px] font-medium text-[#64748B]">
+                {t.appointments.agenda.noAptsTodayHint}
+              </span>
+            )}
           </div>
 
           {/* Closed Day Banner */}
           {!selectedDayConfig?.enabled && (
-            <div className="mx-5 mt-4 p-4 rounded-xl bg-rose-50 border border-rose-200 flex flex-wrap items-center justify-between gap-3">
+            <div className="mx-5 mt-4 p-4 rounded-xl bg-[#FFF1F2] border border-[#FECDD3] flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="text-xs font-bold text-rose-900">{t.appointments.agenda.closedDayBanner}</div>
-                <div className="text-[11px] text-rose-700 mt-0.5">{t.appointments.agenda.closedDayHint}</div>
+                <div className="text-xs font-extrabold text-[#9F1239]">{t.appointments.agenda.closedDayBanner}</div>
+                <div className="text-[11px] text-[#BE123C] mt-0.5">{t.appointments.agenda.closedDayHint}</div>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveSection('settings')}
-                className="h-8 px-3 rounded-lg bg-white border border-rose-200 text-rose-800 text-xs font-bold inline-flex items-center gap-1.5 hover:bg-rose-100"
+                className="h-8 px-3 rounded-lg bg-white border border-[#FECDD3] text-[#9F1239] text-xs font-bold inline-flex items-center gap-1.5 hover:bg-[#FFE4E6]"
               >
                 <Settings className="h-3.5 w-3.5" />
                 <span>{t.appointments.agenda.configureHoursBtn}</span>
@@ -726,252 +803,294 @@ export const AppointmentsSection: React.FC = () => {
           )}
 
           {/* Hourly Day Timeline (08:00 - 20:00) */}
-          <div className="p-4 sm:p-5 divide-y divide-zinc-100">
+          <div className="p-4 sm:p-5 space-y-2">
             {hourlyRange.map((hour) => {
+              const hourNum = Number(hour.slice(0, 2));
+              const nextHourLabel = `${String(hourNum + 1).padStart(2, '0')}:00`;
               const hourPrefix = hour.slice(0, 2);
               const hourApts = selectedDayAppointments.filter(
                 (a) => a.time.slice(0, 2) === hourPrefix
               );
               const avail = getSlotAvailability(selectedDayConfig, hour, settings, selectedDay);
+              const isOutside = avail.status === 'outside_hours' || avail.status === 'closed_day';
+
+              const periodLabel =
+                hour === '08:00'
+                  ? t.appointments.agenda.morningPeriod
+                  : hour === '13:00'
+                    ? t.appointments.agenda.afternoonPeriod
+                    : hour === '18:00'
+                      ? t.appointments.agenda.eveningPeriod
+                      : null;
+
+              const timeRailTone =
+                hourApts.length > 0
+                  ? 'bg-[#EEF2FF] border-[#C7D2FE] text-[#312E81]'
+                  : avail.status === 'available'
+                    ? 'bg-[#F0F9FF] border-[#BAE6FD] text-[#0369A1]'
+                    : avail.status === 'break'
+                      ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E]'
+                      : avail.status === 'blocked_date' || avail.status === 'blocked_recurring'
+                        ? 'bg-[#FFF1F2] border-[#FECDD3] text-[#BE123C]'
+                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#94A3B8]';
 
               return (
-                <div key={hour} className="py-2.5 first:pt-0 last:pb-0 flex items-stretch gap-3 sm:gap-4">
-                  {/* Hour Label */}
-                  <div className="w-16 shrink-0 pt-2 text-start">
-                    <span className="inline-flex items-center justify-center px-2 py-1 rounded-lg bg-zinc-100 border border-zinc-200 text-xs font-mono-num font-bold text-zinc-950">
-                      {hour}
-                    </span>
-                  </div>
+                <React.Fragment key={hour}>
+                  {periodLabel && (
+                    <div className="pt-2 pb-1 first:pt-0 flex items-center gap-2">
+                      <span className="text-[11px] font-extrabold text-[#475569] uppercase tracking-wide">
+                        {periodLabel}
+                      </span>
+                      <div className="h-px flex-1 bg-[#E2E8F0]" />
+                    </div>
+                  )}
 
-                  {/* Hour Slot Content */}
-                  <div className="flex-1 min-w-0">
-                    {hourApts.length > 0 ? (
-                      <div className="space-y-2">
-                        {hourApts.map((apt) => {
-                          const lead = leads.find((l) => l.id === apt.lead_id);
-                          const prop = properties.find((p) => p.id === apt.property_id);
-                          const emp = employees.find((e) => e.id === apt.employee_id);
-                          return (
-                            <div
-                              key={apt.id}
-                              className={`flex flex-col md:flex-row md:items-center justify-between gap-3 p-3.5 border rounded-xl ${aptCardTone[apt.status]}`}
-                            >
-                              <div className="space-y-1.5 min-w-0">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="px-2 py-0.5 rounded-md bg-white border border-zinc-200 text-xs font-mono-num font-bold text-zinc-950">
-                                    {apt.time}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() => lead && openLeadProfile(lead.id)}
-                                    className="text-xs font-bold text-[#1F2937] hover:underline"
-                                  >
-                                    {lead ? localizePersonName(lead.name, language) : '—'}
-                                  </button>
-                                  {lead && (
-                                    <>
-                                      <ClassificationBadge
-                                        classification={lead.classification}
-                                        label={t.leadClassifications[lead.classification]}
-                                      />
-                                      <ContactMethodBadge
-                                        method={lead.contact_method}
-                                        label={t.contactMethods[lead.contact_method]}
-                                        phone={lead.phone}
-                                        title={
-                                          lead.contact_method === 'whatsapp'
-                                            ? t.appointments.agenda.directWhatsapp
-                                            : t.appointments.agenda.directCall
-                                        }
-                                      />
-                                      {lead.contact_method === 'whatsapp' ? (
-                                        <a
-                                          href={buildTelHref(lead.phone)}
-                                          onClick={(e) => e.stopPropagation()}
-                                          title={t.appointments.agenda.directCall}
-                                          className="h-6 w-6 rounded-md bg-white border border-sky-200 text-sky-700 hover:bg-sky-50 inline-flex items-center justify-center"
-                                        >
-                                          <Phone className="h-3 w-3" />
-                                        </a>
-                                      ) : (
-                                        <a
-                                          href={buildWhatsAppHref(lead.phone)}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          onClick={(e) => e.stopPropagation()}
-                                          title={t.appointments.agenda.directWhatsapp}
-                                          className="h-6 w-6 rounded-md bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50 inline-flex items-center justify-center"
-                                        >
-                                          <MessageCircle className="h-3 w-3" />
-                                        </a>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
+                  <div className={`flex items-stretch gap-3 sm:gap-4 ${isOutside && hourApts.length === 0 ? 'opacity-80' : ''}`}>
+                    {/* Clear Time Rail */}
+                    <div className="w-20 sm:w-24 shrink-0 flex flex-col justify-center">
+                      <div
+                        className={`px-2.5 py-2 rounded-xl border text-center transition-colors ${timeRailTone}`}
+                        dir="ltr"
+                      >
+                        <div className="text-xs sm:text-[13px] font-mono-num font-extrabold leading-tight">
+                          {hour}
+                        </div>
+                        <div className="text-[10px] font-mono-num opacity-75 leading-tight mt-0.5">
+                          → {nextHourLabel}
+                        </div>
+                      </div>
+                    </div>
 
-                                <div className="text-xs text-[#1F2937] font-semibold truncate">
-                                  {prop ? localizePropertyTitle(prop.title, language) : '—'}{' '}
-                                  {prop ? `(${localizeCity(prop.city, language)})` : ''}
-                                </div>
-
-                                <div className="text-[11px] text-zinc-700 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                                  {lead?.phone && (
-                                    <a
-                                      href={buildTelHref(lead.phone)}
-                                      onClick={(e) => e.stopPropagation()}
-                                      className="font-mono-num text-sky-700 hover:underline"
-                                      dir="ltr"
-                                    >
-                                      {lead.phone}
-                                    </a>
-                                  )}
-                                  <span>·</span>
-                                  <span>{emp ? localizePersonName(emp.name, language) : '—'}</span>
-                                  <span>·</span>
-                                  <span>{t.appointmentTypes[apt.type]}</span>
-                                  {lead && (
-                                    <>
-                                      <span>·</span>
-                                      <span className="font-mono-num font-bold text-[#1F2937]">
-                                        {formatMAD(lead.budget, language)}
-                                      </span>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className="flex flex-wrap items-center gap-2 shrink-0">
-                                <StatusLabel
-                                  label={t.appointmentStatuses[apt.status]}
-                                  appointmentStatus={apt.status}
-                                />
-                                <div className="inline-flex items-center gap-1 bg-white/80 border border-zinc-200 rounded-lg p-0.5">
-                                  {apt.status === 'scheduled' && (
+                    {/* Hour Slot Content */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                      {hourApts.length > 0 ? (
+                        <div className="space-y-2">
+                          {hourApts.map((apt) => {
+                            const lead = leads.find((l) => l.id === apt.lead_id);
+                            const prop = properties.find((p) => p.id === apt.property_id);
+                            const emp = employees.find((e) => e.id === apt.employee_id);
+                            return (
+                              <div
+                                key={apt.id}
+                                className={`flex flex-col md:flex-row md:items-center justify-between gap-3 p-3.5 border rounded-xl transition-shadow hover:shadow-xs ${aptCardTone[apt.status]}`}
+                              >
+                                <div className="space-y-1.5 min-w-0">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-xs font-mono-num font-extrabold text-[#1F2937]">
+                                      {apt.time}
+                                    </span>
                                     <button
                                       type="button"
-                                      onClick={() => updateAppointment(apt.id, { status: 'confirmed' })}
-                                      title={t.appointments.quickActions.confirm}
-                                      className="p-1.5 rounded-md text-sky-600 hover:bg-sky-50"
+                                      onClick={() => lead && openLeadProfile(lead.id)}
+                                      className="text-xs sm:text-[13px] font-extrabold text-[#1F2937] hover:underline"
                                     >
-                                      <Check className="h-3.5 w-3.5" />
+                                      {lead ? localizePersonName(lead.name, language) : '—'}
                                     </button>
-                                  )}
-                                  {(apt.status === 'scheduled' || apt.status === 'confirmed') && (
-                                    <>
+                                    {lead && (
+                                      <>
+                                        <ClassificationBadge
+                                          classification={lead.classification}
+                                          label={t.leadClassifications[lead.classification]}
+                                        />
+                                        <ContactMethodBadge
+                                          method={lead.contact_method}
+                                          label={t.contactMethods[lead.contact_method]}
+                                          phone={lead.phone}
+                                          title={
+                                            lead.contact_method === 'whatsapp'
+                                              ? t.appointments.agenda.directWhatsapp
+                                              : t.appointments.agenda.directCall
+                                          }
+                                        />
+                                        {lead.contact_method === 'whatsapp' ? (
+                                          <a
+                                            href={buildTelHref(lead.phone)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            title={t.appointments.agenda.directCall}
+                                            className="h-6 w-6 rounded-md bg-white border border-sky-200 text-sky-700 hover:bg-sky-50 inline-flex items-center justify-center"
+                                          >
+                                            <Phone className="h-3 w-3" />
+                                          </a>
+                                        ) : (
+                                          <a
+                                            href={buildWhatsAppHref(lead.phone)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            onClick={(e) => e.stopPropagation()}
+                                            title={t.appointments.agenda.directWhatsapp}
+                                            className="h-6 w-6 rounded-md bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50 inline-flex items-center justify-center"
+                                          >
+                                            <MessageCircle className="h-3 w-3" />
+                                          </a>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+
+                                  <div className="text-xs text-[#1F2937] font-bold truncate">
+                                    {prop ? localizePropertyTitle(prop.title, language) : '—'}{' '}
+                                    {prop ? `(${localizeCity(prop.city, language)})` : ''}
+                                  </div>
+
+                                  <div className="text-[11px] text-[#475569] flex flex-wrap items-center gap-x-2 gap-y-0.5 font-medium">
+                                    {lead?.phone && (
+                                      <a
+                                        href={buildTelHref(lead.phone)}
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="font-mono-num text-[#0369A1] font-bold hover:underline"
+                                        dir="ltr"
+                                      >
+                                        {lead.phone}
+                                      </a>
+                                    )}
+                                    <span>·</span>
+                                    <span>{emp ? localizePersonName(emp.name, language) : '—'}</span>
+                                    <span>·</span>
+                                    <span>{t.appointmentTypes[apt.type]}</span>
+                                    {lead && (
+                                      <>
+                                        <span>·</span>
+                                        <span className="font-mono-num font-extrabold text-[#C2410C]">
+                                          {formatMAD(lead.budget, language)}
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                                  <StatusLabel
+                                    label={t.appointmentStatuses[apt.status]}
+                                    appointmentStatus={apt.status}
+                                  />
+                                  <div className="inline-flex items-center gap-1 bg-white border border-[#E2E8F0] rounded-xl p-1">
+                                    {apt.status === 'scheduled' && (
                                       <button
                                         type="button"
-                                        onClick={() => updateAppointment(apt.id, { status: 'attended' })}
-                                        title={t.appointments.quickActions.markAttended}
-                                        className="p-1.5 rounded-md text-emerald-700 hover:bg-emerald-50"
+                                        onClick={() => updateAppointment(apt.id, { status: 'confirmed' })}
+                                        title={t.appointments.quickActions.confirm}
+                                        className="p-1.5 rounded-lg text-[#0284C7] hover:bg-[#F0F9FF]"
                                       >
-                                        <UserCheck className="h-3.5 w-3.5" />
+                                        <Check className="h-3.5 w-3.5" />
                                       </button>
-                                      <button
-                                        type="button"
-                                        onClick={() => updateAppointment(apt.id, { status: 'no_show' })}
-                                        title={t.appointments.quickActions.markNoShow}
-                                        className="p-1.5 rounded-md text-rose-600 hover:bg-rose-50"
-                                      >
-                                        <UserX className="h-3.5 w-3.5" />
-                                      </button>
-                                    </>
-                                  )}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setRescheduleTarget(apt);
-                                      setNewDate(apt.date);
-                                      setNewTime(apt.time);
-                                    }}
-                                    title={t.appointments.quickActions.reschedule}
-                                    className="p-1.5 rounded-md text-zinc-600 hover:bg-zinc-100"
-                                  >
-                                    <CalendarClock className="h-3.5 w-3.5" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setEditingApt(apt);
-                                      setAptModalOpen(true);
-                                    }}
-                                    title={t.app.edit}
-                                    className="p-1.5 rounded-md text-zinc-600 hover:bg-zinc-100"
-                                  >
-                                    <Edit3 className="h-3.5 w-3.5" />
-                                  </button>
+                                    )}
+                                    {(apt.status === 'scheduled' || apt.status === 'confirmed') && (
+                                      <>
+                                        <button
+                                          type="button"
+                                          onClick={() => updateAppointment(apt.id, { status: 'attended' })}
+                                          title={t.appointments.quickActions.markAttended}
+                                          className="p-1.5 rounded-lg text-[#15803D] hover:bg-[#F0FDF4]"
+                                        >
+                                          <UserCheck className="h-3.5 w-3.5" />
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => updateAppointment(apt.id, { status: 'no_show' })}
+                                          title={t.appointments.quickActions.markNoShow}
+                                          className="p-1.5 rounded-lg text-[#E11D48] hover:bg-[#FFF1F2]"
+                                        >
+                                          <UserX className="h-3.5 w-3.5" />
+                                        </button>
+                                      </>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setRescheduleTarget(apt);
+                                        setNewDate(apt.date);
+                                        setNewTime(apt.time);
+                                      }}
+                                      title={t.appointments.quickActions.reschedule}
+                                      className="p-1.5 rounded-lg text-[#475569] hover:bg-[#F8FAFC]"
+                                    >
+                                      <CalendarClock className="h-3.5 w-3.5" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setEditingApt(apt);
+                                        setAptModalOpen(true);
+                                      }}
+                                      title={t.app.edit}
+                                      className="p-1.5 rounded-lg text-[#475569] hover:bg-[#F8FAFC]"
+                                    >
+                                      <Edit3 className="h-3.5 w-3.5" />
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
-                        {avail.status === 'available' && (
+                            );
+                          })}
+                          {avail.status === 'available' && (
+                            <button
+                              type="button"
+                              onClick={() => openBookingModal(selectedDay, hour)}
+                              className="text-[11px] font-bold text-[#0369A1] hover:text-[#0284C7] inline-flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-[#F0F9FF]"
+                            >
+                              <Plus className="h-3 w-3" />
+                              <span>{t.appointments.agenda.bookAtTime}</span>
+                            </button>
+                          )}
+                        </div>
+                      ) : avail.status === 'available' ? (
+                        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-xl border border-[#BAE6FD] bg-[#F0F9FF]/55 hover:bg-[#E0F2FE]/60 transition-colors">
+                          <div className="flex items-center gap-2 text-xs font-bold text-[#0369A1]">
+                            <span className="h-2.5 w-2.5 rounded-full bg-[#0284C7]" />
+                            <span>{t.appointments.agenda.availableSlot}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => openBookingModal(selectedDay, hour)}
+                              className="h-8 px-3 rounded-lg text-[11px] font-bold inline-flex items-center gap-1 btn-accent"
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                              <span>{t.appointments.agenda.bookAtTime}</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDisableHour(selectedDay, hour)}
+                              className="h-8 px-2.5 rounded-lg bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#BE123C] hover:border-[#FECDD3] hover:bg-[#FFF1F2] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
+                            >
+                              <Ban className="h-3 w-3" />
+                              <span>{t.appointments.agenda.disableHour}</span>
+                            </button>
+                          </div>
+                        </div>
+                      ) : avail.status === 'blocked_date' || avail.status === 'blocked_recurring' ? (
+                        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#FECDD3] bg-[#FFF1F2]/70">
+                          <div className="flex items-center gap-2 text-xs font-bold text-[#9F1239]">
+                            <Ban className="h-3.5 w-3.5 text-[#E11D48]" />
+                            <span>{t.appointments.agenda.blockedSlot}</span>
+                          </div>
                           <button
                             type="button"
-                            onClick={() => openBookingModal(selectedDay, hour)}
-                            className="text-[11px] font-semibold text-zinc-600 hover:text-zinc-950 inline-flex items-center gap-1 px-2 py-0.5 rounded-md hover:bg-zinc-100"
+                            onClick={() => handleEnableHour(selectedDay, hour, avail.status)}
+                            className="h-8 px-3 rounded-lg bg-white border border-[#FECDD3] text-[#9F1239] hover:bg-[#FFE4E6] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
                           >
-                            <Plus className="h-3 w-3" />
-                            <span>{t.appointments.agenda.bookAtTime}</span>
-                          </button>
-                        )}
-                      </div>
-                    ) : avail.status === 'available' ? (
-                      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border border-dashed border-emerald-200 bg-emerald-50/40 hover:bg-emerald-50/70 transition-colors">
-                        <div className="flex items-center gap-2 text-xs font-medium text-emerald-900">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                          <span>{t.appointments.agenda.availableSlot}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => openBookingModal(selectedDay, hour)}
-                            className="h-7 px-3 rounded-lg text-[11px] font-bold inline-flex items-center gap-1 btn-primary"
-                          >
-                            <Plus className="h-3 w-3" />
-                            <span>{t.appointments.agenda.bookAtTime}</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDisableHour(selectedDay, hour)}
-                            className="h-7 px-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-700 hover:text-rose-700 hover:border-rose-200 text-[11px] font-semibold inline-flex items-center gap-1"
-                          >
-                            <Ban className="h-3 w-3" />
-                            <span>{t.appointments.agenda.disableHour}</span>
+                            <RotateCcw className="h-3 w-3" />
+                            <span>{t.appointments.agenda.enableHour}</span>
                           </button>
                         </div>
-                      </div>
-                    ) : avail.status === 'blocked_date' || avail.status === 'blocked_recurring' ? (
-                      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl border border-dashed border-rose-200 bg-rose-50/50">
-                        <div className="flex items-center gap-2 text-xs font-medium text-rose-800">
-                          <Ban className="h-3.5 w-3.5 text-rose-600" />
-                          <span>{t.appointments.agenda.blockedSlot}</span>
+                      ) : avail.status === 'break' ? (
+                        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-[#FDE68A] bg-[#FFFBEB]/80 text-xs font-bold text-[#92400E]">
+                          <Coffee className="h-4 w-4 text-[#D97706] shrink-0" />
+                          <span>
+                            {t.appointments.agenda.breakPeriod}
+                            {avail.label ? ` — ${avail.label}` : ''}
+                          </span>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleEnableHour(selectedDay, hour, avail.status)}
-                          className="h-7 px-2.5 rounded-lg bg-white border border-rose-200 text-rose-800 hover:bg-rose-100 text-[11px] font-semibold inline-flex items-center gap-1"
-                        >
-                          <RotateCcw className="h-3 w-3" />
-                          <span>{t.appointments.agenda.enableHour}</span>
-                        </button>
-                      </div>
-                    ) : avail.status === 'break' ? (
-                      <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-amber-200 bg-amber-50/70 text-xs font-medium text-amber-900">
-                        <Coffee className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                        <span>
-                          {t.appointments.agenda.breakPeriod}
-                          {avail.label ? ` — ${avail.label}` : ''}
-                        </span>
-                      </div>
-                    ) : (
-                      <div className="px-3.5 py-1.5 rounded-xl bg-zinc-50 border border-zinc-100 text-[11px] text-zinc-400">
-                        {avail.status === 'closed_day'
-                          ? t.appointments.agenda.closedDayBanner
-                          : t.appointments.agenda.outsideHours}
-                      </div>
-                    )}
+                      ) : (
+                        <div className="px-3.5 py-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]/70 text-[11px] font-medium text-[#94A3B8]">
+                          {avail.status === 'closed_day'
+                            ? t.appointments.agenda.closedDayBanner
+                            : t.appointments.agenda.outsideHours}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </React.Fragment>
               );
             })}
           </div>
@@ -981,12 +1100,12 @@ export const AppointmentsSection: React.FC = () => {
       {/* Redesigned Weekly Calendar View */}
       {viewTab === 'weekly' && (
         <div className="space-y-3">
-          <div className="bg-white border border-zinc-200 card-surface rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setWeekAnchor((d) => addDaysIso(d, -7))}
-                className="h-8 w-8 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 inline-flex items-center justify-center text-zinc-800"
+                className="h-8 w-8 rounded-lg border border-[#E2E8F0] bg-white hover:bg-[#FFF7ED] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937]"
               >
                 {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </button>
@@ -1000,11 +1119,11 @@ export const AppointmentsSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setWeekAnchor((d) => addDaysIso(d, 7))}
-                className="h-8 w-8 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 inline-flex items-center justify-center text-zinc-800"
+                className="h-8 w-8 rounded-lg border border-[#E2E8F0] bg-white hover:bg-[#FFF7ED] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937]"
               >
                 {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
-              <span className="text-xs font-bold font-mono-num text-zinc-900 ms-1">
+              <span className="text-xs font-extrabold font-mono-num text-[#1F2937] ms-1">
                 {formatShortDate(weekDays[0], language)} — {formatShortDate(weekDays[6], language)}
               </span>
             </div>
@@ -1022,15 +1141,19 @@ export const AppointmentsSection: React.FC = () => {
                   key={day}
                   className={`bg-white border card-surface rounded-2xl overflow-hidden flex flex-col min-h-[260px] ${
                     isToday
-                      ? 'border-[#16966A] ring-2 ring-[#16966A]/20'
+                      ? 'border-[#EA580C] ring-2 ring-[#EA580C]/20'
                       : isSelected
-                        ? 'border-[#10B981]'
-                        : 'border-[#E3EAE5]'
+                        ? 'border-[#0284C7] ring-1 ring-[#0284C7]/20'
+                        : 'border-[#E2E8F0]'
                   }`}
                 >
                   <div
                     className={`px-3 py-2.5 border-b space-y-1 ${
-                      isToday ? 'bg-[#ECFDF5] border-[#A7F3D0]' : 'bg-[#F5F7F5] border-[#E3EAE5]'
+                      isToday
+                        ? 'bg-[#FFF7ED] border-[#FED7AA]'
+                        : isSelected
+                          ? 'bg-[#F0F9FF] border-[#BAE6FD]'
+                          : 'bg-[#F8FAFC] border-[#E2E8F0]'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
@@ -1045,7 +1168,7 @@ export const AppointmentsSection: React.FC = () => {
                         <div className="text-xs font-extrabold text-[#1F2937] flex items-center gap-1.5">
                           <span>{t.days[dKey]}</span>
                           {isToday && (
-                            <span className="px-1.5 py-0.5 rounded bg-[#12352B] text-white text-[9px] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-[#EA580C] text-white text-[9px] font-bold">
                               {t.appointments.agenda.today}
                             </span>
                           )}
@@ -1057,17 +1180,24 @@ export const AppointmentsSection: React.FC = () => {
                       <span
                         className={`px-2 py-0.5 rounded-md text-[11px] font-extrabold tabular-nums ${
                           dayApts.length > 0
-                            ? 'bg-[#16966A] text-white'
-                            : 'bg-[#E3EAE5] text-[#64748B]'
+                            ? 'bg-[#0284C7] text-white'
+                            : 'bg-[#E2E8F0] text-[#64748B]'
                         }`}
                       >
                         {dayApts.length}
                       </span>
                     </div>
-                    <div className="text-[10px] font-mono-num text-zinc-500">
-                      {dCfg?.enabled
-                        ? `${dCfg.open}–${dCfg.close}`
-                        : t.appointments.agenda.closedDayBanner}
+                    <div className="text-[10px] font-mono-num text-[#475569] font-semibold" dir="ltr">
+                      {dCfg?.enabled ? (
+                        <span>
+                          {dCfg.open}–{dCfg.close}
+                          {dCfg.break_start && dCfg.break_end
+                            ? ` (☕ ${dCfg.break_start}–${dCfg.break_end})`
+                            : ''}
+                        </span>
+                      ) : (
+                        <span className="text-[#BE123C]">{t.settings.hoursForm.closedLabel}</span>
+                      )}
                     </div>
                   </div>
 
@@ -1098,7 +1228,7 @@ export const AppointmentsSection: React.FC = () => {
                             <div className="flex items-center justify-between gap-1 mt-1">
                               <a
                                 href={buildTelHref(lead.phone)}
-                                className="text-[10px] font-mono-num text-sky-700 hover:underline truncate"
+                                className="text-[10px] font-mono-num text-[#0369A1] font-semibold hover:underline truncate"
                                 dir="ltr"
                               >
                                 {lead.phone}
@@ -1114,7 +1244,7 @@ export const AppointmentsSection: React.FC = () => {
                               </a>
                             </div>
                           )}
-                          <div className="text-[10px] font-bold text-zinc-700 mt-1">
+                          <div className="text-[10px] font-bold text-[#475569] mt-1">
                             {t.appointmentStatuses[apt.status]}
                           </div>
                         </div>
@@ -1123,11 +1253,11 @@ export const AppointmentsSection: React.FC = () => {
                   </div>
 
                   {dCfg?.enabled && (
-                    <div className="p-2 border-t border-zinc-100">
+                    <div className="p-2 border-t border-[#E2E8F0]">
                       <button
                         type="button"
                         onClick={() => openBookingModal(day, '10:00')}
-                        className="w-full h-8 rounded-xl text-[11px] font-bold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 inline-flex items-center justify-center gap-1"
+                        className="w-full h-8 rounded-xl text-[11px] font-bold text-[#0369A1] hover:bg-[#F0F9FF] inline-flex items-center justify-center gap-1 transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>{t.appointments.agenda.addForDay}</span>
@@ -1181,7 +1311,7 @@ export const AppointmentsSection: React.FC = () => {
                 {(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const).map((dayKey) => (
                   <div
                     key={dayKey}
-                    className="py-2 px-2 rounded-lg bg-[#F5F7F5] border border-[#E3EAE5] text-center text-xs font-extrabold text-[#12352B]"
+                    className="py-2 px-2 rounded-lg bg-[#1E293B] border border-[#1E293B] border-b-2 border-b-[#EA580C] text-center text-xs font-extrabold text-white"
                   >
                     {t.days[dayKey]}
                   </div>
@@ -1206,26 +1336,26 @@ export const AppointmentsSection: React.FC = () => {
                       }}
                       className={`min-h-[96px] p-2 rounded-xl border text-start flex flex-col justify-between transition-all ${
                         isToday
-                          ? 'border-[#16966A] bg-[#ECFDF5]/60 ring-2 ring-[#16966A]/25'
+                          ? 'border-[#EA580C] bg-[#FFF7ED]/70 ring-2 ring-[#EA580C]/25'
                           : !cell.inCurrentMonth
-                            ? 'border-[#E3EAE5]/60 bg-[#F5F7F5]/60 text-[#64748B] opacity-65'
+                            ? 'border-[#E2E8F0]/60 bg-[#F8FAFC]/60 text-[#64748B] opacity-65'
                             : !dCfg?.enabled
-                              ? 'border-[#E3EAE5] bg-[#F5F7F5] text-[#64748B] hover:bg-[#E3EAE5]/50'
+                              ? 'border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:bg-[#E2E8F0]/50'
                               : dayApts.length > 0
-                                ? 'border-[#E3EAE5] bg-white hover:border-[#16966A]'
-                                : 'border-[#E3EAE5] bg-white hover:bg-[#F5F7F5]'
+                                ? 'border-[#E2E8F0] bg-white hover:border-[#EA580C]'
+                                : 'border-[#E2E8F0] bg-white hover:bg-[#FFF7ED]/40'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
                         <span
                           className={`text-xs font-extrabold font-mono-num px-1.5 py-0.5 rounded-md ${
-                            isToday ? 'bg-[#12352B] text-white' : 'text-[#1F2937]'
+                            isToday ? 'bg-[#EA580C] text-white' : 'text-[#1F2937]'
                           }`}
                         >
                           {cell.dayNum}
                         </span>
                         {dayApts.length > 0 && (
-                          <span className="text-[10px] font-extrabold font-mono-num text-[#16966A]">
+                          <span className="text-[10px] font-extrabold font-mono-num text-[#0284C7]">
                             {dayApts.length}
                           </span>
                         )}
@@ -1245,7 +1375,7 @@ export const AppointmentsSection: React.FC = () => {
                           );
                         })}
                         {dayApts.length > 2 && (
-                          <div className="text-[10px] text-[#16966A] font-extrabold px-1">
+                          <div className="text-[10px] text-[#C2410C] font-extrabold px-1">
                             +{dayApts.length - 2}
                           </div>
                         )}

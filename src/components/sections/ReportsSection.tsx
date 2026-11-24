@@ -46,24 +46,24 @@ import { EmptyState, KpiCard, StatusLabel } from '../ui/DataPrimitives';
 type ReportTab = 'leads' | 'appointments' | 'properties' | 'team' | 'sales' | 'ads';
 
 const PROPERTY_TYPE_COLORS: Record<PropertyType, string> = {
-  apartment: '#12352B',
-  villa: '#16966A',
-  house: '#0EA5E9',
-  land: '#10B981',
-  office: '#1B4335',
-  commercial: '#F59E0B',
+  apartment: '#0284C7',
+  villa: '#EA580C',
+  house: '#6366F1',
+  land: '#F59E0B',
+  office: '#1E293B',
+  commercial: '#EC4899',
   other: '#64748B',
 };
 
 const CITY_PALETTE = [
-  '#12352B',
-  '#16966A',
-  '#0EA5E9',
-  '#10B981',
-  '#1B4335',
+  '#EA580C',
+  '#0284C7',
+  '#6366F1',
   '#F59E0B',
-  '#EF4444',
-  '#117A57',
+  '#EC4899',
+  '#1E293B',
+  '#0EA5E9',
+  '#D97706',
   '#64748B',
 ];
 
@@ -512,7 +512,7 @@ export const ReportsSection: React.FC = () => {
       <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl p-4 space-y-3 no-print">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-[#12352B] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="h-9 w-9 rounded-xl bg-[#1E293B] text-white flex items-center justify-center shrink-0 shadow-xs">
               <Calendar className="h-4 w-4" />
             </div>
             <div>
@@ -534,7 +534,7 @@ export const ReportsSection: React.FC = () => {
                 className={`h-8 px-3.5 rounded-xl text-xs font-bold border transition-all ${
                   timePeriod === opt.id
                     ? 'btn-primary border-transparent shadow-xs'
-                    : 'bg-[#F5F7F5] border-[#E3EAE5] text-[#1F2937] hover:bg-[#E3EAE5]/60'
+                    : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#1F2937] hover:bg-[#FFF7ED] hover:border-[#FDBA74] hover:text-[#C2410C]'
                 }`}
               >
                 {opt.label}
@@ -551,7 +551,7 @@ export const ReportsSection: React.FC = () => {
                 type="date"
                 value={customFrom}
                 onChange={(e) => setCustomFrom(e.target.value)}
-                className="h-9 px-3 text-xs font-semibold font-mono-num border border-[#E3EAE5] rounded-xl bg-white text-[#1F2937] focus:outline-none focus:border-[#16966A]"
+                className="h-9 px-3 text-xs font-semibold font-mono-num border border-[#E3EAE5] rounded-xl bg-white text-[#1F2937] focus:outline-none focus:border-[#EA580C]"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -560,7 +560,7 @@ export const ReportsSection: React.FC = () => {
                 type="date"
                 value={customTo}
                 onChange={(e) => setCustomTo(e.target.value)}
-                className="h-9 px-3 text-xs font-semibold font-mono-num border border-[#E3EAE5] rounded-xl bg-white text-[#1F2937] focus:outline-none focus:border-[#16966A]"
+                className="h-9 px-3 text-xs font-semibold font-mono-num border border-[#E3EAE5] rounded-xl bg-white text-[#1F2937] focus:outline-none focus:border-[#EA580C]"
               />
             </div>
           </div>
@@ -706,16 +706,16 @@ export const ReportsSection: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
               {/* By Property Type */}
-              <div className="bg-white border-2 border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
-                <div className="h-1.5 w-full bg-[#12352B]" />
-                <div className="px-5 py-4 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center justify-between gap-2">
+              <div className="bg-white border-2 border-[#FDBA74] card-surface rounded-2xl overflow-hidden">
+                <div className="h-1.5 w-full bg-[#EA580C]" />
+                <div className="px-5 py-4 bg-[#FFF7ED] border-b border-[#FFEDD5] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#12352B]" />
+                    <span className="h-3 w-3 rounded-full bg-[#EA580C]" />
                     <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                       {t.reports.leadsSection.byPropertyType}
                     </h3>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#12352B] text-white text-xs font-extrabold font-mono-num">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#EA580C] text-white text-xs font-extrabold font-mono-num">
                     {leadStats.total}
                   </span>
                 </div>
@@ -734,16 +734,16 @@ export const ReportsSection: React.FC = () => {
               </div>
 
               {/* By Desired City */}
-              <div className="bg-white border-2 border-[#A7F3D0] card-surface rounded-2xl overflow-hidden">
-                <div className="h-1.5 w-full bg-[#16966A]" />
-                <div className="px-5 py-4 bg-[#ECFDF5] border-b border-[#D1FAE5] flex items-center justify-between gap-2">
+              <div className="bg-white border-2 border-[#BAE6FD] card-surface rounded-2xl overflow-hidden">
+                <div className="h-1.5 w-full bg-[#0284C7]" />
+                <div className="px-5 py-4 bg-[#F0F9FF] border-b border-[#E0F2FE] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#16966A]" />
+                    <span className="h-3 w-3 rounded-full bg-[#0284C7]" />
                     <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                       {t.reports.leadsSection.byDesiredCity}
                     </h3>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#0284C7] text-white text-xs font-extrabold font-mono-num">
                     {leadStats.byDesiredCity.length}
                   </span>
                 </div>
@@ -870,13 +870,13 @@ export const ReportsSection: React.FC = () => {
                       {
                         label: t.reports.appointmentsSection.closedDealsFromVisits,
                         value: aptStats.attendedWonCount,
-                        color: '#10B981',
+                        color: '#EA580C',
                         sublabel: `${t.reports.appointmentsSection.closingRate}: ${aptStats.closingRate}%`,
                       },
                       {
                         label: t.reports.appointmentsSection.attendedNoDeal,
                         value: aptStats.attendedNoDealCount,
-                        color: '#0EA5E9',
+                        color: '#0284C7',
                         sublabel: `${t.reports.appointmentsSection.attendanceRate}: ${aptStats.attendanceRate}%`,
                       },
                       {
@@ -1029,16 +1029,16 @@ export const ReportsSection: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
               {/* Most Requested Property Types Chart */}
-              <div className="xl:col-span-5 bg-white border-2 border-[#A7F3D0] card-surface rounded-2xl overflow-hidden shadow-xs">
-                <div className="h-1.5 w-full bg-[#16966A]" />
-                <div className="px-5 py-4 bg-[#ECFDF5] border-b border-[#D1FAE5] flex items-center justify-between gap-2">
+              <div className="xl:col-span-5 bg-white border-2 border-[#FDBA74] card-surface rounded-2xl overflow-hidden shadow-xs">
+                <div className="h-1.5 w-full bg-[#EA580C]" />
+                <div className="px-5 py-4 bg-[#FFF7ED] border-b border-[#FFEDD5] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#16966A]" />
+                    <span className="h-3 w-3 rounded-full bg-[#EA580C]" />
                     <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                       {t.reports.propertiesSection.mostRequestedTypes}
                     </h3>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#EA580C] text-white text-xs font-extrabold font-mono-num">
                     {propStats.totalDemand}
                   </span>
                 </div>
@@ -1054,16 +1054,16 @@ export const ReportsSection: React.FC = () => {
               </div>
 
               {/* Requested Areas & Budgets Analysis Table */}
-              <div className="xl:col-span-7 bg-white border-2 border-[#E3EAE5] card-surface rounded-2xl overflow-hidden shadow-xs">
-                <div className="h-1.5 w-full bg-[#16966A]" />
-                <div className="px-5 py-4 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center justify-between gap-2">
+              <div className="xl:col-span-7 bg-white border-2 border-[#CBD5E1] card-surface rounded-2xl overflow-hidden shadow-xs">
+                <div className="h-1.5 w-full bg-[#0284C7]" />
+                <div className="px-5 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#16966A]" />
+                    <span className="h-3 w-3 rounded-full bg-[#0284C7]" />
                     <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                       {t.reports.propertiesSection.mostRequestedTableTitle}
                     </h3>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num md:hidden">
+                  <span className="px-2.5 py-0.5 rounded-lg bg-[#0284C7] text-white text-xs font-extrabold font-mono-num md:hidden">
                     {propStats.demandByType.length}
                   </span>
                 </div>
@@ -1072,20 +1072,20 @@ export const ReportsSection: React.FC = () => {
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-xs text-start border-collapse">
                     <thead>
-                      <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-extrabold whitespace-nowrap">
-                        <th className="py-3.5 px-4 text-start border-e border-[#E3EAE5]">
+                      <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-extrabold whitespace-nowrap">
+                        <th className="py-3.5 px-4 text-start border-e border-white/15">
                           {t.leads.columns.propertyType}
                         </th>
-                        <th className="py-3.5 px-4 text-start border-e border-[#E3EAE5]">
+                        <th className="py-3.5 px-4 text-start border-e border-white/15">
                           {t.reports.propertiesSection.demandCount}
                         </th>
-                        <th className="py-3.5 px-4 text-start border-e border-[#E3EAE5]">
+                        <th className="py-3.5 px-4 text-start border-e border-white/15">
                           {t.reports.propertiesSection.mostRequestedArea}
                         </th>
-                        <th className="py-3.5 px-4 text-start border-e border-[#E3EAE5]">
+                        <th className="py-3.5 px-4 text-start border-e border-white/15">
                           {t.reports.propertiesSection.areaRange}
                         </th>
-                        <th className="py-3.5 px-4 text-start border-e border-[#E3EAE5]">
+                        <th className="py-3.5 px-4 text-start border-e border-white/15">
                           {t.reports.propertiesSection.mostRequestedBudget}
                         </th>
                         <th className="py-3.5 px-4 text-start">
@@ -1093,13 +1093,13 @@ export const ReportsSection: React.FC = () => {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E3EAE5]">
+                    <tbody className="divide-y divide-[#E2E8F0]">
                       {propStats.demandByType.map((row, idx) => (
                         <tr
                           key={row.type}
-                          className={idx % 2 === 0 ? 'bg-white hover:bg-[#F5F7F5]' : 'bg-[#F5F7F5]/40 hover:bg-[#F5F7F5]'}
+                          className={idx % 2 === 0 ? 'bg-white hover:bg-[#FFF7ED]' : 'bg-[#F8FAFC] hover:bg-[#FFF7ED]'}
                         >
-                          <td className="py-3.5 px-4 whitespace-nowrap border-e border-[#E3EAE5]">
+                          <td className="py-3.5 px-4 whitespace-nowrap border-e border-[#E2E8F0]">
                             <span
                               className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg font-extrabold text-white text-xs shadow-2xs"
                               style={{ backgroundColor: row.color }}
@@ -1107,8 +1107,8 @@ export const ReportsSection: React.FC = () => {
                               {row.label}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4 font-mono-num border-e border-[#E3EAE5]">
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[#1F2937] font-extrabold text-sm">
+                          <td className="py-3.5 px-4 font-mono-num border-e border-[#E2E8F0]">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[#0369A1] font-extrabold text-sm">
                               {row.count}
                             </span>
                             {row.count === 1 && (
@@ -1117,9 +1117,9 @@ export const ReportsSection: React.FC = () => {
                               </span>
                             )}
                           </td>
-                          <td className="py-3.5 px-4 font-mono-num whitespace-nowrap border-e border-[#E3EAE5]">
+                          <td className="py-3.5 px-4 font-mono-num whitespace-nowrap border-e border-[#E2E8F0]">
                             {row.mostArea > 0 ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-extrabold text-[13px]">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-900 font-extrabold text-[13px]">
                                 {row.mostArea} {t.app.sqm}
                               </span>
                             ) : (
@@ -1128,16 +1128,16 @@ export const ReportsSection: React.FC = () => {
                               </span>
                             )}
                           </td>
-                          <td className="py-3.5 px-4 font-mono-num font-bold text-[#1F2937] whitespace-nowrap border-e border-[#E3EAE5]">
+                          <td className="py-3.5 px-4 font-mono-num font-bold text-[#1F2937] whitespace-nowrap border-e border-[#E2E8F0]">
                             {row.count <= 1
                               ? row.minArea > 0
                                 ? `${row.minArea} ${t.app.sqm}`
                                 : '—'
                               : `${row.minArea} – ${row.maxArea} ${t.app.sqm}`}
                           </td>
-                          <td className="py-3.5 px-4 font-mono-num whitespace-nowrap border-e border-[#E3EAE5]">
+                          <td className="py-3.5 px-4 font-mono-num whitespace-nowrap border-e border-[#E2E8F0]">
                             {row.mostBudget > 0 ? (
-                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[#12352B] font-extrabold text-[13px]">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-[#FFF7ED] border border-[#FDBA74] text-[#C2410C] font-extrabold text-[13px]">
                                 {formatMAD(row.mostBudget, language)}
                               </span>
                             ) : (
@@ -1164,9 +1164,9 @@ export const ReportsSection: React.FC = () => {
                   {propStats.demandByType.map((row) => (
                     <div
                       key={row.type}
-                      className="rounded-xl border-2 border-[#E3EAE5] bg-white p-3.5 space-y-3"
+                      className="rounded-xl border-2 border-[#E2E8F0] bg-white p-3.5 space-y-3"
                     >
-                      <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#E3EAE5]">
+                      <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#E2E8F0]">
                         <div className="min-w-0">
                           <span className="text-[10px] font-bold text-[#64748B] block mb-1">
                             {t.leads.columns.propertyType}
@@ -1182,7 +1182,7 @@ export const ReportsSection: React.FC = () => {
                           <span className="text-[10px] font-bold text-[#64748B] block mb-1">
                             {t.reports.propertiesSection.demandCount}
                           </span>
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[#1F2937] font-extrabold text-sm font-mono-num">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[#0369A1] font-extrabold text-sm font-mono-num">
                             {row.count}
                           </span>
                         </div>
@@ -1195,12 +1195,12 @@ export const ReportsSection: React.FC = () => {
                       )}
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                        <div className="rounded-xl bg-emerald-50/70 border border-emerald-200 p-2.5">
-                          <span className="text-[11px] font-bold text-emerald-950 block mb-1">
+                        <div className="rounded-xl bg-indigo-50/70 border border-indigo-200 p-2.5">
+                          <span className="text-[11px] font-bold text-indigo-950 block mb-1">
                             {t.reports.propertiesSection.mostRequestedArea}
                           </span>
                           {row.mostArea > 0 ? (
-                            <span className="font-extrabold text-sm font-mono-num text-emerald-900">
+                            <span className="font-extrabold text-sm font-mono-num text-indigo-900">
                               {row.mostArea} {t.app.sqm}
                             </span>
                           ) : (
@@ -1210,7 +1210,7 @@ export const ReportsSection: React.FC = () => {
                           )}
                         </div>
 
-                        <div className="rounded-xl bg-[#F5F7F5] border border-[#E3EAE5] p-2.5">
+                        <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-2.5">
                           <span className="text-[11px] font-bold text-[#64748B] block mb-1">
                             {t.reports.propertiesSection.areaRange}
                           </span>
@@ -1223,12 +1223,12 @@ export const ReportsSection: React.FC = () => {
                           </span>
                         </div>
 
-                        <div className="rounded-xl bg-sky-50/70 border border-sky-200 p-2.5">
-                          <span className="text-[11px] font-bold text-[#12352B] block mb-1">
+                        <div className="rounded-xl bg-[#FFF7ED] border border-[#FDBA74] p-2.5">
+                          <span className="text-[11px] font-bold text-[#C2410C] block mb-1">
                             {t.reports.propertiesSection.mostRequestedBudget}
                           </span>
                           {row.mostBudget > 0 ? (
-                            <span className="font-extrabold text-sm font-mono-num text-[#12352B]">
+                            <span className="font-extrabold text-sm font-mono-num text-[#C2410C]">
                               {formatMAD(row.mostBudget, language)}
                             </span>
                           ) : (
@@ -1238,8 +1238,8 @@ export const ReportsSection: React.FC = () => {
                           )}
                         </div>
 
-                        <div className="rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] p-2.5">
-                          <span className="text-[11px] font-bold text-[#16966A] block mb-1">
+                        <div className="rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] p-2.5">
+                          <span className="text-[11px] font-bold text-[#0369A1] block mb-1">
                             {t.reports.propertiesSection.budgetRange}
                           </span>
                           <span className="font-extrabold text-xs font-mono-num text-[#1F2937] break-words">
@@ -1281,59 +1281,59 @@ export const ReportsSection: React.FC = () => {
           </div>
 
           {/* Desktop Prominent High-Contrast Table */}
-          <div className="hidden md:block bg-white border-2 border-[#E3EAE5] card-surface rounded-2xl overflow-hidden shadow-md">
-            <div className="h-1.5 w-full bg-[#16966A]" />
-            <div className="px-6 py-4 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center justify-between">
+          <div className="hidden md:block bg-white border-2 border-[#CBD5E1] card-surface rounded-2xl overflow-hidden shadow-md">
+            <div className="h-1.5 w-full bg-[#EA580C]" />
+            <div className="px-6 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <span className="h-3 w-3 rounded-full bg-[#16966A]" />
+                <span className="h-3 w-3 rounded-full bg-[#EA580C]" />
                 <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                   {t.reports.tabs.team}
                 </h3>
               </div>
-              <span className="px-3 py-1 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num">
+              <span className="px-3 py-1 rounded-lg bg-[#EA580C] text-white text-xs font-extrabold font-mono-num">
                 {teamRows.length}
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-start border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] text-[13px] font-extrabold whitespace-nowrap">
-                    <th className="py-4 px-4 text-start border-e border-[#E3EAE5]">
+                  <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] text-[13px] font-extrabold whitespace-nowrap">
+                    <th className="py-4 px-4 text-start border-e border-white/15">
                       {t.reports.teamSection.employee}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.leadsHandled}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.appointments}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.visitsCompleted}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.successfulDeals}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.lostDeals}
                     </th>
-                    <th className="py-4 px-3.5 text-center border-e border-[#E3EAE5]">
+                    <th className="py-4 px-3.5 text-center border-e border-white/15">
                       {t.reports.teamSection.conversionRate}
                     </th>
-                    <th className="py-4 px-4 text-start border-e border-[#E3EAE5]">
+                    <th className="py-4 px-4 text-start border-e border-white/15">
                       {t.reports.teamSection.financialPerformance}
                     </th>
                     <th className="py-4 px-4 text-end">{t.app.actions}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E3EAE5]">
+                <tbody className="divide-y divide-[#E2E8F0]">
                   {teamRows.map((row, idx) => {
                     const isEditing = editingEmployeeId === row.id;
                     return (
                       <tr
                         key={row.id}
-                        className={idx % 2 === 0 ? 'bg-white hover:bg-[#F5F7F5]' : 'bg-[#F5F7F5]/40 hover:bg-[#F5F7F5]'}
+                        className={idx % 2 === 0 ? 'bg-white hover:bg-[#FFF7ED]' : 'bg-[#F8FAFC] hover:bg-[#FFF7ED]'}
                       >
-                        <td className="py-4 px-4 border-e border-[#E3EAE5]">
+                        <td className="py-4 px-4 border-e border-[#E2E8F0]">
                           <div className="font-extrabold text-[14px] text-[#1F2937]">{row.name}</div>
                           <div className="text-xs font-semibold text-[#64748B] flex items-center gap-1.5 mt-0.5">
                             <span>{row.role}</span>
@@ -1345,19 +1345,19 @@ export const ReportsSection: React.FC = () => {
                           </div>
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num text-[15px] font-extrabold text-[#1F2937] border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num text-[15px] font-extrabold text-[#1F2937] border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
                           {row.leadsHandled}
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num text-[15px] font-bold text-[#1F2937] border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num text-[15px] font-bold text-[#1F2937] border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
                           {row.appointmentsCount}
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
                           <span className="inline-flex items-center justify-center min-w-[34px] px-2 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[15px] font-extrabold text-sky-900">
@@ -1365,15 +1365,15 @@ export const ReportsSection: React.FC = () => {
                           </span>
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
-                          <span className="inline-flex items-center justify-center min-w-[34px] px-2 py-0.5 rounded-lg bg-emerald-50 border border-emerald-200 text-[15px] font-extrabold text-emerald-800">
+                          <span className="inline-flex items-center justify-center min-w-[34px] px-2 py-0.5 rounded-lg bg-indigo-50 border border-indigo-200 text-[15px] font-extrabold text-indigo-800">
                             {row.successfulDeals}
                           </span>
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
                           <span className="inline-flex items-center justify-center min-w-[34px] px-2 py-0.5 rounded-lg bg-rose-50 border border-rose-200 text-[15px] font-extrabold text-rose-800">
@@ -1381,14 +1381,14 @@ export const ReportsSection: React.FC = () => {
                           </span>
                         </td>
                         <td
-                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E3EAE5]"
+                          className="py-4 px-3.5 text-center font-mono-num border-e border-[#E2E8F0]"
                           title={t.reports.teamSection.autoComputedBadge}
                         >
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-[#16966A] text-white text-xs font-extrabold shadow-2xs">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-[#0284C7] text-white text-xs font-extrabold shadow-2xs">
                             {row.conversionRate}%
                           </span>
                         </td>
-                        <td className="py-4 px-4 whitespace-nowrap border-e border-[#E3EAE5]">
+                        <td className="py-4 px-4 whitespace-nowrap border-e border-[#E2E8F0]">
                           {isEditing ? (
                             <input
                               type="number"
@@ -1396,11 +1396,11 @@ export const ReportsSection: React.FC = () => {
                               step={1000}
                               value={financialInput}
                               onChange={(e) => setFinancialInput(e.target.value)}
-                              className="w-40 h-9 px-3 text-sm font-extrabold font-mono-num border-2 border-[#16966A] rounded-lg bg-white text-[#1F2937] focus:outline-none"
+                              className="w-40 h-9 px-3 text-sm font-extrabold font-mono-num border-2 border-[#EA580C] rounded-lg bg-white text-[#1F2937] focus:outline-none"
                             />
                           ) : (
                             <div>
-                              <div className="font-mono-num text-[15px] font-extrabold text-[#16966A]">
+                              <div className="font-mono-num text-[15px] font-extrabold text-[#C2410C]">
                                 {formatMAD(row.financialPerformance, language)}
                               </div>
                               {row.hasManualFinancial && (
@@ -1425,7 +1425,7 @@ export const ReportsSection: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => setEditingEmployeeId(null)}
-                                className="h-8 px-2.5 rounded-lg border border-[#E3EAE5] bg-white text-[#64748B] hover:bg-[#F5F7F5]"
+                                className="h-8 px-2.5 rounded-lg border border-[#E2E8F0] bg-white text-[#64748B] hover:bg-[#F8FAFC]"
                                 title={t.app.cancel}
                               >
                                 <X className="h-3.5 w-3.5" />
@@ -1437,7 +1437,7 @@ export const ReportsSection: React.FC = () => {
                                 type="button"
                                 onClick={() => startEditRow(row.id, row.financialPerformance)}
                                 title={t.reports.teamSection.financialOverrideLabel}
-                                className="h-8 px-3 rounded-lg border border-[#E3EAE5] bg-white text-[#1F2937] hover:bg-[#F5F7F5] text-xs font-bold inline-flex items-center gap-1"
+                                className="h-8 px-3 rounded-lg btn-outline text-xs font-bold inline-flex items-center gap-1"
                               >
                                 <Edit3 className="h-3.5 w-3.5" />
                                 <span>{t.app.edit}</span>
@@ -1470,11 +1470,11 @@ export const ReportsSection: React.FC = () => {
               return (
                 <div
                   key={row.id}
-                  className="bg-white border-2 border-[#E3EAE5] card-surface rounded-2xl overflow-hidden shadow-xs"
+                  className="bg-white border-2 border-[#E2E8F0] card-surface rounded-2xl overflow-hidden shadow-xs"
                 >
-                  <div className="h-1.5 w-full bg-[#16966A]" />
+                  <div className="h-1.5 w-full bg-[#EA580C]" />
                   <div className="p-4 space-y-3.5">
-                    <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E3EAE5]">
+                    <div className="flex items-start justify-between gap-2 pb-3 border-b border-[#E2E8F0]">
                       <div className="min-w-0">
                         <span className="text-[10px] font-bold text-[#64748B] block">
                           {t.reports.teamSection.employee}
@@ -1493,14 +1493,14 @@ export const ReportsSection: React.FC = () => {
                         <span className="text-[10px] font-bold text-[#64748B] block mb-0.5">
                           {t.reports.teamSection.conversionRate}
                         </span>
-                        <span className="inline-flex px-2.5 py-1 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num">
+                        <span className="inline-flex px-2.5 py-1 rounded-lg bg-[#0284C7] text-white text-xs font-extrabold font-mono-num">
                           {row.conversionRate}%
                         </span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
-                      <div className="bg-[#F5F7F5] border border-[#E3EAE5] rounded-xl p-2.5">
+                      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5">
                         <span className="text-[11px] font-bold text-[#64748B] block">
                           {t.reports.teamSection.leadsHandled}
                         </span>
@@ -1508,7 +1508,7 @@ export const ReportsSection: React.FC = () => {
                           {row.leadsHandled}
                         </span>
                       </div>
-                      <div className="bg-[#F5F7F5] border border-[#E3EAE5] rounded-xl p-2.5">
+                      <div className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-2.5">
                         <span className="text-[11px] font-bold text-[#64748B] block">
                           {t.reports.teamSection.appointments}
                         </span>
@@ -1524,11 +1524,11 @@ export const ReportsSection: React.FC = () => {
                           {row.visitsCompleted}
                         </span>
                       </div>
-                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
-                        <span className="text-[11px] font-bold text-emerald-900 block">
+                      <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-2.5">
+                        <span className="text-[11px] font-bold text-indigo-900 block">
                           {t.reports.teamSection.successfulDeals}
                         </span>
-                        <span className="font-extrabold text-base font-mono-num text-emerald-950">
+                        <span className="font-extrabold text-base font-mono-num text-indigo-950">
                           {row.successfulDeals}
                         </span>
                       </div>
@@ -1540,11 +1540,11 @@ export const ReportsSection: React.FC = () => {
                           {row.lostDeals}
                         </span>
                       </div>
-                      <div className="col-span-2 sm:col-span-1 bg-[#ECFDF5] border border-[#A7F3D0] rounded-xl p-2.5">
-                        <span className="text-[11px] font-bold text-[#12352B] block">
+                      <div className="col-span-2 sm:col-span-1 bg-[#FFF7ED] border border-[#FDBA74] rounded-xl p-2.5">
+                        <span className="text-[11px] font-bold text-[#C2410C] block">
                           {t.reports.teamSection.financialPerformance}
                         </span>
-                        <span className="font-extrabold font-mono-num text-[#16966A] text-sm block mt-0.5">
+                        <span className="font-extrabold font-mono-num text-[#C2410C] text-sm block mt-0.5">
                           {formatMAD(row.financialPerformance, language)}
                         </span>
                         {row.hasManualFinancial && (
@@ -1555,7 +1555,7 @@ export const ReportsSection: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="pt-2.5 border-t border-[#E3EAE5] flex items-center justify-between gap-2">
+                    <div className="pt-2.5 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                       {isEditing ? (
                         <div className="flex items-center gap-2 w-full">
                           <input
@@ -1564,7 +1564,7 @@ export const ReportsSection: React.FC = () => {
                             step={1000}
                             value={financialInput}
                             onChange={(e) => setFinancialInput(e.target.value)}
-                            className="flex-1 h-9 px-3 text-xs font-bold font-mono-num border-2 border-[#16966A] rounded-lg text-[#1F2937]"
+                            className="flex-1 h-9 px-3 text-xs font-bold font-mono-num border-2 border-[#EA580C] rounded-lg text-[#1F2937]"
                           />
                           <button
                             type="button"
@@ -1576,7 +1576,7 @@ export const ReportsSection: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setEditingEmployeeId(null)}
-                            className="h-9 px-2.5 rounded-lg border border-[#E3EAE5] text-xs font-semibold text-[#1F2937]"
+                            className="h-9 px-2.5 rounded-lg border border-[#E2E8F0] text-xs font-semibold text-[#1F2937]"
                           >
                             {t.app.cancel}
                           </button>
@@ -1586,7 +1586,7 @@ export const ReportsSection: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => startEditRow(row.id, row.financialPerformance)}
-                            className="h-8 px-3 rounded-lg border border-[#E3EAE5] bg-white text-[#1F2937] hover:bg-[#F5F7F5] text-xs font-bold inline-flex items-center gap-1.5"
+                            className="h-8 px-3 rounded-lg btn-outline text-xs font-bold inline-flex items-center gap-1.5"
                           >
                             <Edit3 className="h-3.5 w-3.5" />
                             <span>{t.reports.teamSection.financialOverrideLabel}</span>
@@ -1717,16 +1717,16 @@ export const ReportsSection: React.FC = () => {
               title={t.reports.adsSection.noAdDataInPeriod}
             />
           ) : (
-            <div className="bg-white border-2 border-[#E3EAE5] card-surface rounded-2xl overflow-hidden shadow-md">
-              <div className="h-1.5 w-full bg-[#16966A]" />
-              <div className="px-6 py-4 bg-[#F5F7F5] border-b border-[#E3EAE5] flex items-center justify-between gap-2">
+            <div className="bg-white border-2 border-[#CBD5E1] card-surface rounded-2xl overflow-hidden shadow-md">
+              <div className="h-1.5 w-full bg-[#0284C7]" />
+              <div className="px-6 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5">
-                  <span className="h-3 w-3 rounded-full bg-[#16966A]" />
+                  <span className="h-3 w-3 rounded-full bg-[#0284C7]" />
                   <h3 className="text-[15px] font-extrabold text-[#1F2937]">
                     {t.reports.adsSection.campaignBreakdown}
                   </h3>
                 </div>
-                <span className="px-3 py-1 rounded-lg bg-[#16966A] text-white text-xs font-extrabold font-mono-num">
+                <span className="px-3 py-1 rounded-lg bg-[#0284C7] text-white text-xs font-extrabold font-mono-num">
                   {adsStats.campaignRows.length}
                 </span>
               </div>
@@ -1734,55 +1734,55 @@ export const ReportsSection: React.FC = () => {
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm text-start border-collapse">
                   <thead>
-                    <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] text-[13px] font-extrabold whitespace-nowrap">
-                      <th className="py-4 px-5 text-start border-e border-[#E3EAE5]">
+                    <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] text-[13px] font-extrabold whitespace-nowrap">
+                      <th className="py-4 px-5 text-start border-e border-white/15">
                         {t.ads.table.campaignName}
                       </th>
-                      <th className="py-4 px-4 text-start border-e border-[#E3EAE5]">
+                      <th className="py-4 px-4 text-start border-e border-white/15">
                         {t.ads.table.platform}
                       </th>
-                      <th className="py-4 px-4 text-start border-e border-[#E3EAE5]">
+                      <th className="py-4 px-4 text-start border-e border-white/15">
                         {t.ads.table.spend}
                       </th>
-                      <th className="py-4 px-4 text-center border-e border-[#E3EAE5]">
+                      <th className="py-4 px-4 text-center border-e border-white/15">
                         {t.ads.table.leads}
                       </th>
-                      <th className="py-4 px-4 text-center border-e border-[#E3EAE5]">
+                      <th className="py-4 px-4 text-center border-e border-white/15">
                         {t.ads.table.appointments}
                       </th>
-                      <th className="py-4 px-4 text-start border-e border-[#E3EAE5]">
+                      <th className="py-4 px-4 text-start border-e border-white/15">
                         {t.ads.table.cpl}
                       </th>
                       <th className="py-4 px-5 text-start">{t.ads.table.status}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E3EAE5]">
+                  <tbody className="divide-y divide-[#E2E8F0]">
                     {adsStats.campaignRows.map((camp, idx) => (
                       <tr
                         key={camp.id}
-                        className={idx % 2 === 0 ? 'bg-white hover:bg-[#F5F7F5]' : 'bg-[#F5F7F5]/40 hover:bg-[#F5F7F5]'}
+                        className={idx % 2 === 0 ? 'bg-white hover:bg-[#FFF7ED]' : 'bg-[#F8FAFC] hover:bg-[#FFF7ED]'}
                       >
-                        <td className="py-4 px-5 font-extrabold text-[14px] text-[#1F2937] border-e border-[#E3EAE5]">
+                        <td className="py-4 px-5 font-extrabold text-[14px] text-[#1F2937] border-e border-[#E2E8F0]">
                           {localizeCampaignName(camp.name, language)}
                         </td>
-                        <td className="py-4 px-4 whitespace-nowrap font-bold text-[#1F2937] border-e border-[#E3EAE5]">
+                        <td className="py-4 px-4 whitespace-nowrap font-bold text-[#1F2937] border-e border-[#E2E8F0]">
                           {t.adPlatforms[camp.platform]}
                         </td>
-                        <td className="py-4 px-4 font-mono-num text-[15px] font-extrabold text-[#1F2937] whitespace-nowrap border-e border-[#E3EAE5]">
+                        <td className="py-4 px-4 font-mono-num text-[15px] font-extrabold text-[#1F2937] whitespace-nowrap border-e border-[#E2E8F0]">
                           {formatMAD(camp.periodSpend, language)}
                         </td>
-                        <td className="py-4 px-4 text-center font-mono-num border-e border-[#E3EAE5]">
-                          <span className="inline-flex items-center justify-center min-w-[40px] px-2.5 py-0.5 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[15px] font-extrabold text-[#16966A]">
+                        <td className="py-4 px-4 text-center font-mono-num border-e border-[#E2E8F0]">
+                          <span className="inline-flex items-center justify-center min-w-[40px] px-2.5 py-0.5 rounded-lg bg-[#FFF7ED] border border-[#FDBA74] text-[15px] font-extrabold text-[#C2410C]">
                             {camp.periodLeads}
                           </span>
                         </td>
-                        <td className="py-4 px-4 text-center font-mono-num border-e border-[#E3EAE5]">
-                          <span className="inline-flex items-center justify-center min-w-[40px] px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[15px] font-extrabold text-[#0EA5E9]">
+                        <td className="py-4 px-4 text-center font-mono-num border-e border-[#E2E8F0]">
+                          <span className="inline-flex items-center justify-center min-w-[40px] px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[15px] font-extrabold text-[#0284C7]">
                             {camp.periodAppointments}
                           </span>
                         </td>
-                        <td className="py-4 px-4 font-mono-num whitespace-nowrap border-e border-[#E3EAE5]">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-[#F5F7F5] border border-[#E3EAE5] text-[15px] font-extrabold text-[#12352B]">
+                        <td className="py-4 px-4 font-mono-num whitespace-nowrap border-e border-[#E2E8F0]">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-[#F0F9FF] border border-[#BAE6FD] text-[15px] font-extrabold text-[#0369A1]">
                             {formatMAD(camp.periodCpl, language)}
                           </span>
                         </td>
@@ -1809,9 +1809,9 @@ export const ReportsSection: React.FC = () => {
                 {adsStats.campaignRows.map((camp) => (
                   <div
                     key={camp.id}
-                    className="rounded-xl border-2 border-[#E3EAE5] bg-white p-4 space-y-3"
+                    className="rounded-xl border-2 border-[#E2E8F0] bg-white p-4 space-y-3"
                   >
-                    <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#E3EAE5]">
+                    <div className="flex items-start justify-between gap-2 pb-2.5 border-b border-[#E2E8F0]">
                       <div className="min-w-0">
                         <span className="text-[10px] font-bold text-[#64748B] block">
                           {t.ads.table.campaignName}
@@ -1838,7 +1838,7 @@ export const ReportsSection: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2.5 text-xs">
-                      <div className="rounded-xl bg-[#F5F7F5] border border-[#E3EAE5] p-2.5">
+                      <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-2.5">
                         <span className="text-[11px] font-bold text-[#64748B] block">
                           {t.ads.table.spend}
                         </span>
@@ -1846,19 +1846,19 @@ export const ReportsSection: React.FC = () => {
                           {formatMAD(camp.periodSpend, language)}
                         </span>
                       </div>
-                      <div className="rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] p-2.5">
-                        <span className="text-[11px] font-bold text-[#12352B] block">
+                      <div className="rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] p-2.5">
+                        <span className="text-[11px] font-bold text-[#0369A1] block">
                           {t.ads.table.cpl}
                         </span>
-                        <span className="font-extrabold text-sm font-mono-num text-[#12352B] mt-0.5 block">
+                        <span className="font-extrabold text-sm font-mono-num text-[#0369A1] mt-0.5 block">
                           {formatMAD(camp.periodCpl, language)}
                         </span>
                       </div>
-                      <div className="rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] p-2.5">
-                        <span className="text-[11px] font-bold text-[#12352B] block">
+                      <div className="rounded-xl bg-[#FFF7ED] border border-[#FDBA74] p-2.5">
+                        <span className="text-[11px] font-bold text-[#C2410C] block">
                           {t.ads.table.leads}
                         </span>
-                        <span className="font-extrabold text-base font-mono-num text-[#16966A] mt-0.5 block">
+                        <span className="font-extrabold text-base font-mono-num text-[#C2410C] mt-0.5 block">
                           {camp.periodLeads}
                         </span>
                       </div>
@@ -1866,7 +1866,7 @@ export const ReportsSection: React.FC = () => {
                         <span className="text-[11px] font-bold text-sky-900 block">
                           {t.ads.table.appointments}
                         </span>
-                        <span className="font-extrabold text-base font-mono-num text-[#0EA5E9] mt-0.5 block">
+                        <span className="font-extrabold text-base font-mono-num text-[#0284C7] mt-0.5 block">
                           {camp.periodAppointments}
                         </span>
                       </div>

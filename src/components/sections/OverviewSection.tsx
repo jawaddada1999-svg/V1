@@ -3,7 +3,6 @@ import {
   Building2,
   CalendarCheck2,
   CalendarClock,
-  CheckCircle2,
   FileBarChart2,
   Handshake,
   House,
@@ -16,25 +15,18 @@ import {
 } from 'lucide-react';
 import { useAgency } from '../../context/AgencyContext';
 import {
-  localizeActivityAction,
-  localizeActivityTarget,
   localizeCity,
-  localizeNotification,
   localizePersonName,
   localizePropertyTitle,
-  localizeRelativeTime,
 } from '../../i18n/localizeData';
 import { formatMAD, formatNumber } from '../../i18n/translations';
-import { LeadSource } from '../../types/domain';
 import { getDateRangeBounds, getTodayIso, isIsoDateInRange } from '../../utils/dateUtils';
 import { computeLeadScore } from '../../utils/leadScoring';
 import {
-  AreaTrendChart,
-  BarComparisonChart,
   ConversionFunnelChart,
   DonutDistributionChart,
 } from '../ui/Charts';
-import { Avatar, KpiCard, LeadScoreBadge, SafeImage, StatusLabel } from '../ui/DataPrimitives';
+import { KpiCard, LeadScoreBadge, StatusLabel } from '../ui/DataPrimitives';
 
 type DatePreset = 'today' | 'last7' | 'last30' | 'thisMonth' | 'custom';
 
@@ -46,13 +38,9 @@ export const OverviewSection: React.FC = () => {
     properties,
     appointments,
     conversations,
-    employees,
-    notifications,
     setActiveSection,
     openLeadProfile,
-    openPropertyDetails,
     setQuickModal,
-    markNotificationRead,
   } = useAgency();
 
   const todayIso = getTodayIso();
@@ -99,117 +87,22 @@ export const OverviewSection: React.FC = () => {
       isIsoDateInRange(l.closed_date ?? l.last_interaction ?? l.created_at, bounds.from, bounds.to)
   ).length;
 
-  // Real acquisition trend grouped by date across filtered leads (or recent buckets)
-  const acquisitionSeries = useMemo(() => {
-    const countsByDate: Record<string, number> = {};
-    filteredLeads.forEach((l) => {
-      countsByDate[l.created_at] = (countsByDate[l.created_at] ?? 0) + 1;
-    });
-    const sortedDates = Object.keys(countsByDate).sort();
-    if (!sortedDates.length) {
-      return [{ label: todayIso.slice(5), value: 0 }];
-    }
-    const recent = sortedDates.slice(-8);
-    const locale = language === 'ar' ? 'ar-MA-u-nu-latn' : language === 'fr' ? 'fr-MA' : 'en-GB';
-    return recent.map((iso) => {
-      const d = new Date(`${iso}T12:00:00`);
-      const label = new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short' }).format(d);
-      return { label, value: countsByDate[iso] };
-    });
-  }, [filteredLeads, language, todayIso]);
-
-  // Real weekly breakdown of scheduled vs completed visits from filteredAppointments
-  const visitsWeeklySeries = useMemo(() => {
-    const labels =
-      language === 'ar'
-        ? ['الأسبوع 1', 'الأسبوع 2', 'الأسبوع 3', 'الأسبوع 4']
-        : language === 'fr'
-          ? ['Sem. 1', 'Sem. 2', 'Sem. 3', 'Sem. 4']
-          : ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-    const buckets = [
-      { scheduled: 0, completed: 0 },
-      { scheduled: 0, completed: 0 },
-      { scheduled: 0, completed: 0 },
-      { scheduled: 0, completed: 0 },
-    ];
-    filteredAppointments.forEach((a) => {
-      const dayOfMonth = Number(a.date.slice(8, 10)) || 1;
-      const idx = Math.min(3, Math.floor((dayOfMonth - 1) / 8));
-      if (a.status === 'scheduled' || a.status === 'confirmed' || a.status === 'rescheduled') {
-        buckets[idx].scheduled += 1;
-      } else if (a.status === 'attended' || a.status === 'no_show') {
-        buckets[idx].completed += 1;
-      }
-    });
-    return labels.map((label, i) => ({
-      label,
-      value: buckets[i].scheduled,
-      secondaryValue: buckets[i].completed,
-    }));
-  }, [filteredAppointments, language]);
-
-  // Real monthly comparison (last 3 months from CRM leads)
-  const monthlySeries = useMemo(() => {
-    const monthKeys = ['2026-09', '2026-10', '2026-11'];
-    const labels =
-      language === 'ar'
-        ? ['شتنبر 2026', 'أكتوبر 2026', 'نوفمبر 2026']
-        : language === 'fr'
-          ? ['Sept 2026', 'Oct 2026', 'Nov 2026']
-          : ['Sep 2026', 'Oct 2026', 'Nov 2026'];
-
-    return monthKeys.map((ym, i) => {
-      const monthLeads = leads.filter((l) => l.created_at.startsWith(ym)).length;
-      const monthDeals = leads.filter(
-        (l) =>
-          l.status === 'closed_won' &&
-          (l.closed_date ?? l.last_interaction ?? l.created_at).startsWith(ym)
-      ).length;
-      return {
-        label: labels[i],
-        value: monthLeads,
-        secondaryValue: monthDeals,
-      };
-    });
-  }, [leads, language]);
-
-  const sourceCounts = useMemo(() => {
-    const palette: Record<LeadSource, string> = {
-      facebook_ads: '#12352B',
-      instagram_ads: '#16966A',
-      google_ads: '#0EA5E9',
-      whatsapp: '#10B981',
-      website: '#64748B',
-      referral: '#F59E0B',
-      walk_in: '#1B4335',
-    };
-    const grouped: Partial<Record<LeadSource, number>> = {};
-    filteredLeads.forEach((l) => {
-      grouped[l.source] = (grouped[l.source] ?? 0) + 1;
-    });
-    return (Object.keys(grouped) as LeadSource[]).map((src) => ({
-      label: t.leadSources[src],
-      value: grouped[src] ?? 0,
-      color: palette[src],
-    }));
-  }, [filteredLeads, t.leadSources]);
-
   const funnelStages = useMemo(
     () => [
-      { label: t.leadStatuses.new, count: filteredLeads.length, color: '#12352B' },
+      { label: t.leadStatuses.new, count: filteredLeads.length, color: '#1E293B' },
       {
         label: t.leadStatuses.visit_scheduled,
         count: filteredLeads.filter(
           (l) => !['new', 'not_interested', 'closed_lost'].includes(l.status)
         ).length,
-        color: '#1B4335',
+        color: '#0284C7',
       },
       {
         label: t.leadStatuses.visited,
         count: filteredLeads.filter((l) =>
           ['visited', 'follow_up', 'closed_won'].includes(l.status)
         ).length,
-        color: '#16966A',
+        color: '#8B5CF6',
       },
       {
         label: t.leadStatuses.follow_up,
@@ -219,7 +112,7 @@ export const OverviewSection: React.FC = () => {
       {
         label: t.leadStatuses.closed_won,
         count: filteredLeads.filter((l) => l.status === 'closed_won').length,
-        color: '#10B981',
+        color: '#EA580C',
       },
     ],
     [filteredLeads, t.leadStatuses]
@@ -232,25 +125,6 @@ export const OverviewSection: React.FC = () => {
         .sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`))
         .slice(0, 4),
     [appointments, todayIso]
-  );
-
-  const topProperties = useMemo(
-    () => [...properties].sort((a, b) => b.views - a.views).slice(0, 4),
-    [properties]
-  );
-
-  const recentActivities = useMemo(
-    () =>
-      employees
-        .flatMap((e) =>
-          e.recent_activities.map((act) => ({
-            ...act,
-            employeeName: e.name,
-            employeeAvatar: e.avatar,
-          }))
-        )
-        .slice(0, 5),
-    [employees]
   );
 
   const attendancePct =
@@ -432,45 +306,15 @@ export const OverviewSection: React.FC = () => {
             onClick={() => setActiveSection('reports')}
             className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-outline"
           >
-            <FileBarChart2 className="h-3.5 w-3.5 text-[#16966A]" />
+            <FileBarChart2 className="h-3.5 w-3.5 text-[#EA580C]" />
             <span>{t.overview.widgets.openReportsBtn}</span>
           </button>
         </div>
       </div>
 
-      {/* 6 Charts & Analytics Driven by Real CRM Data */}
+      {/* Charts & Analytics Driven by Real CRM Data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* 1. Customer Acquisition Over Time */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.charts.acquisitionTitle}
-            </h3>
-            <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.overview.charts.acquisitionSub}</p>
-          </div>
-          <div className="p-6">
-            <AreaTrendChart data={acquisitionSeries} primaryLabel={t.overview.charts.leadsLabel} />
-          </div>
-        </div>
-
-        {/* 2. Appointments & Property Visits */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.charts.visitsTitle}
-            </h3>
-            <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.overview.charts.visitsSub}</p>
-          </div>
-          <div className="p-6">
-            <BarComparisonChart
-              data={visitsWeeklySeries}
-              primaryLabel={t.overview.charts.scheduled}
-              secondaryLabel={t.overview.charts.completed}
-            />
-          </div>
-        </div>
-
-        {/* 3. Attendance vs Absence */}
+        {/* Attendance vs Absence */}
         <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
           <div className="px-6 py-4 border-b border-[#E3EAE5]">
             <h3 className="text-[15px] font-extrabold text-[#1F2937]">
@@ -481,7 +325,7 @@ export const OverviewSection: React.FC = () => {
           <div className="p-6">
             <DonutDistributionChart
               slices={[
-                { label: t.overview.charts.attended, value: attendedCount, color: '#10B981' },
+                { label: t.overview.charts.attended, value: attendedCount, color: '#0284C7' },
                 { label: t.overview.charts.absent, value: noShowCount, color: '#EF4444' },
               ]}
               centerValue={`${attendancePct}%`}
@@ -490,7 +334,7 @@ export const OverviewSection: React.FC = () => {
           </div>
         </div>
 
-        {/* 4. Sales Conversion Funnel */}
+        {/* Sales Conversion Funnel */}
         <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
           <div className="px-6 py-4 border-b border-[#E3EAE5]">
             <h3 className="text-[15px] font-extrabold text-[#1F2937]">
@@ -500,46 +344,6 @@ export const OverviewSection: React.FC = () => {
           </div>
           <div className="p-6">
             <ConversionFunnelChart stages={funnelStages} />
-          </div>
-        </div>
-
-        {/* 5. Lead Sources Distribution */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.charts.sourcesTitle}
-            </h3>
-            <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.overview.charts.sourcesSub}</p>
-          </div>
-          <div className="p-6">
-            {sourceCounts.length > 0 ? (
-              <DonutDistributionChart
-                slices={sourceCounts}
-                centerValue={filteredLeads.length}
-                centerLabel={t.overview.charts.leadsLabel}
-              />
-            ) : (
-              <div className="py-10 text-center text-xs font-semibold text-[#64748B]">
-                {t.app.noData}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* 6. Monthly Performance Overview */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.charts.monthlyTitle}
-            </h3>
-            <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.overview.charts.monthlySub}</p>
-          </div>
-          <div className="p-6">
-            <BarComparisonChart
-              data={monthlySeries}
-              primaryLabel={t.overview.charts.leadsLabel}
-              secondaryLabel={t.overview.charts.dealsLabel}
-            />
           </div>
         </div>
       </div>
@@ -638,127 +442,6 @@ export const OverviewSection: React.FC = () => {
                     />
                     <StatusLabel label={t.leadStatuses[lead.status]} leadStatus={lead.status} />
                   </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Best-Performing Properties */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.widgets.topProperties}
-            </h3>
-            <button
-              type="button"
-              onClick={() => setActiveSection('properties')}
-              className="px-3 py-1 rounded-lg text-[11px] font-bold btn-outline"
-            >
-              {t.app.viewAll}
-            </button>
-          </div>
-          <div className="divide-y divide-[#E3EAE5]">
-            {topProperties.map((prop) => {
-              const inquiries = leads.filter((l) => l.interested_property_id === prop.id).length;
-              return (
-                <button
-                  key={prop.id}
-                  type="button"
-                  onClick={() => openPropertyDetails(prop.id)}
-                  className="w-full text-start px-6 py-3.5 flex items-center gap-3 hover:bg-[#F5F7F5] transition-colors"
-                >
-                  <SafeImage
-                    src={prop.images[0]}
-                    alt={localizePropertyTitle(prop.title, language)}
-                    className="h-12 w-16 rounded-xl object-cover shrink-0 border border-[#E3EAE5]"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-bold text-[#1F2937] truncate">
-                      {localizePropertyTitle(prop.title, language)}
-                    </div>
-                    <div className="text-[11px] text-[#64748B] font-medium mt-0.5 tabular-nums">
-                      {localizeCity(prop.city, language)} · {prop.views} {t.overview.widgets.viewsCount} ·{' '}
-                      {inquiries} {t.overview.widgets.inquiriesCount}
-                    </div>
-                  </div>
-                  <div className="text-xs font-extrabold text-[#16966A] font-mono-num shrink-0">
-                    {formatMAD(prop.price, language)}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Recent Team Activity & Important Notifications */}
-        <div className="bg-white border border-[#E3EAE5] card-surface rounded-[20px] overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[#E3EAE5]">
-            <h3 className="text-[15px] font-extrabold text-[#1F2937]">
-              {t.overview.widgets.recentActivity}
-            </h3>
-            <button
-              type="button"
-              onClick={() => setActiveSection('team')}
-              className="px-3 py-1 rounded-lg text-[11px] font-bold btn-outline"
-            >
-              {t.app.viewAll}
-            </button>
-          </div>
-          <div className="divide-y divide-[#E3EAE5]">
-            {recentActivities.slice(0, 3).map((act) => (
-              <div key={act.id} className="px-6 py-3 flex items-center gap-3">
-                <Avatar
-                  name={localizePersonName(act.employeeName, language)}
-                  src={act.employeeAvatar}
-                  size="sm"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="text-xs text-[#1F2937] truncate">
-                    <span className="font-bold">{localizePersonName(act.employeeName, language)}</span> —{' '}
-                    {localizeActivityAction(act.action, language)}
-                  </div>
-                  <div className="text-[11px] text-[#64748B] font-medium truncate">
-                    {localizeActivityTarget(act.target, language)} ·{' '}
-                    {localizeRelativeTime(act.timestamp, language)}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center justify-between px-6 py-3 border-y border-[#E3EAE5] bg-[#F5F7F5]">
-            <span className="font-display text-xs font-extrabold text-[#1F2937]">
-              {t.overview.widgets.importantNotifications}
-            </span>
-            <button
-              type="button"
-              onClick={() => setActiveSection('notifications')}
-              className="px-2.5 py-0.5 rounded-lg text-[11px] font-bold btn-outline"
-            >
-              {t.app.viewAll}
-            </button>
-          </div>
-          <div className="divide-y divide-[#E3EAE5]">
-            {notifications.slice(0, 2).map((n) => {
-              const loc = localizeNotification(n.id, n.title, n.message, language);
-              return (
-                <button
-                  key={n.id}
-                  type="button"
-                  onClick={() => {
-                    markNotificationRead(n.id);
-                    setActiveSection(n.related_section);
-                  }}
-                  className="w-full text-start px-6 py-3 flex items-center justify-between gap-2 hover:bg-[#F5F7F5] transition-colors"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-[#10B981] shrink-0" />
-                    <span className="text-xs font-semibold text-[#1F2937] truncate">{loc.message}</span>
-                  </div>
-                  <span className="text-[10px] font-semibold text-[#64748B] shrink-0">
-                    {localizeRelativeTime(n.timestamp, language)}
-                  </span>
                 </button>
               );
             })}

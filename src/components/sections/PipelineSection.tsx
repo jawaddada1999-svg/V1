@@ -330,10 +330,10 @@ export const PipelineSection: React.FC = () => {
         {(
           [
             { id: 'all', label: t.pipeline.tabs.all, count: leads.length, activeClass: 'btn-primary' },
-            { id: 'sale', label: t.pipeline.tabs.sale, count: saleCount, activeClass: 'btn-primary' },
-            { id: 'rent', label: t.pipeline.tabs.rent, count: rentCount, activeClass: 'btn-accent' },
-            { id: 'sell', label: t.leads.tabs.sellers, count: sellCount, activeClass: 'bg-emerald-700 text-white border-emerald-700 shadow-sm' },
-            { id: 'rent_out', label: t.leads.tabs.landlordsRent, count: rentOutCount, activeClass: 'bg-teal-700 text-white border-teal-700 shadow-sm' },
+            { id: 'sale', label: t.pipeline.tabs.sale, count: saleCount, activeClass: 'btn-accent' },
+            { id: 'rent', label: t.pipeline.tabs.rent, count: rentCount, activeClass: 'bg-[#7C3AED] text-white border-[#6D28D9] shadow-sm' },
+            { id: 'sell', label: t.leads.tabs.sellers, count: sellCount, activeClass: 'bg-[#D97706] text-white border-[#B45309] shadow-sm' },
+            { id: 'rent_out', label: t.leads.tabs.landlordsRent, count: rentOutCount, activeClass: 'bg-[#1E293B] text-white border-[#0F172A] shadow-sm' },
           ] as const
         ).map((tab) => {
           const isActive = pipelineTab === tab.id;
@@ -438,8 +438,8 @@ export const PipelineSection: React.FC = () => {
                 onClick={() => setSmartPreset(preset)}
                 className={`h-8 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 border transition-all ${
                   active
-                    ? 'bg-[#16966A] text-white border-[#117A57] shadow-xs'
-                    : 'bg-[#F5F7F5] text-[#1F2937] border-[#E3EAE5] hover:border-[#16966A]/60 hover:bg-[#ECFDF5]'
+                    ? 'bg-[#EA580C] text-white border-[#C2410C] shadow-xs'
+                    : 'bg-[#F8FAFC] text-[#1F2937] border-[#E2E8F0] hover:border-[#EA580C]/60 hover:bg-[#FFF7ED]'
                 }`}
               >
                 {preset !== 'all' && <Sparkles className="h-3 w-3 shrink-0" />}
@@ -534,7 +534,7 @@ export const PipelineSection: React.FC = () => {
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as PipelineSortBy)}
             aria-label={t.pipeline.smartFilter.sortLabel}
-            className="h-9 px-3 text-xs font-bold border border-[#A7F3D0] rounded-xl bg-[#ECFDF5] text-[#12352B]"
+            className="h-9 px-3 text-xs font-bold border border-[#FDBA74] rounded-xl bg-[#FFF7ED] text-[#C2410C]"
           >
             {(
               ['default', 'score_desc', 'budget_desc', 'recent'] as PipelineSortBy[]

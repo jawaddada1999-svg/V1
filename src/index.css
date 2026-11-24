@@ -4,12 +4,12 @@
   color-scheme: light;
   --agency-sidebar: #12352B;
   --agency-header: #1B4335;
-  --agency-primary: #16966A;
-  --agency-primary-hover: #117A57;
-  --agency-primary-soft: rgba(22, 150, 106, 0.10);
-  --agency-accent: #10B981;
-  --agency-accent-hover: #117A57;
-  --agency-accent-soft: rgba(16, 185, 129, 0.14);
+  --agency-primary: #EA580C;
+  --agency-primary-hover: #C2410C;
+  --agency-primary-soft: rgba(234, 88, 12, 0.10);
+  --agency-accent: #0284C7;
+  --agency-accent-hover: #0369A1;
+  --agency-accent-soft: rgba(2, 132, 199, 0.14);
   --agency-warning: #F59E0B;
   --agency-danger: #EF4444;
   --agency-info: #0EA5E9;
@@ -67,7 +67,7 @@ a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--agency-accent) 30%, transparent);
+  outline: 3px solid rgba(2, 132, 199, 0.30);
   outline-offset: 2px;
 }
 
@@ -153,62 +153,62 @@ main .card-surface.grid:hover {
   box-shadow: var(--app-shadow-hover);
 }
 
-/* Emerald Theme button system */
+/* Harmonious Contrast Button System (Terracotta + Ocean Blue against Emerald Shell) */
 .btn-primary {
-  background-color: #16966A;
+  background-color: #EA580C;
   color: #FFFFFF;
-  border: 1px solid #117A57;
+  border: 1px solid #C2410C;
   min-height: 38px;
   border-radius: 12px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 8px rgba(22, 150, 106, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
 }
 .btn-primary:hover:not(:disabled) {
-  background-color: #117A57;
-  box-shadow: 0 4px 14px rgba(17, 122, 87, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  background-color: #C2410C;
+  box-shadow: 0 4px 14px rgba(194, 65, 12, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 .btn-primary:active:not(:disabled) {
   transform: translateY(1px);
 }
 
 .btn-accent {
-  background-color: #10B981;
+  background-color: #0284C7;
   color: #FFFFFF;
-  border: 1px solid #16966A;
+  border: 1px solid #0369A1;
   min-height: 38px;
   border-radius: 12px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.22),
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
 }
 .btn-accent:hover:not(:disabled) {
-  background-color: #117A57;
-  box-shadow: 0 4px 14px rgba(17, 122, 87, 0.28);
+  background-color: #0369A1;
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.28);
 }
 .btn-accent:active:not(:disabled) {
   transform: translateY(1px);
 }
 
 .btn-secondary {
-  background-color: #ECFDF5;
-  color: #12352B;
-  border: 1px solid #A7F3D0;
+  background-color: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FDBA74;
   min-height: 38px;
   border-radius: 12px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  box-shadow: 0 1px 2px rgba(18, 53, 43, 0.05);
+  box-shadow: 0 1px 2px rgba(234, 88, 12, 0.06);
   transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
 .btn-secondary:hover:not(:disabled) {
-  background-color: #D1FAE5;
-  border-color: #10B981;
+  background-color: #FFEDD5;
+  border-color: #EA580C;
 }
 .btn-secondary:active:not(:disabled) {
   transform: translateY(1px);
@@ -217,18 +217,18 @@ main .card-surface.grid:hover {
 .btn-outline {
   background-color: #FFFFFF;
   color: #1F2937;
-  border: 1px solid #E3EAE5;
+  border: 1px solid #E2E8F0;
   min-height: 38px;
   border-radius: 12px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  box-shadow: 0 1px 2px rgba(18, 53, 43, 0.04);
-  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 .btn-outline:hover:not(:disabled) {
-  background-color: #F5F7F5;
-  border-color: #16966A;
-  color: #12352B;
+  background-color: #FFF7ED;
+  border-color: #EA580C;
+  color: #C2410C;
 }
 .btn-outline:active:not(:disabled) {
   transform: translateY(1px);
@@ -247,8 +247,8 @@ main textarea {
 main input:not([type="checkbox"]):not([type="radio"]):focus,
 main select:focus,
 main textarea:focus {
-  border-color: #16966A !important;
-  box-shadow: 0 0 0 3px rgba(22, 150, 106, 0.14);
+  border-color: #EA580C !important;
+  box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.14);
 }
 
 main input::placeholder,
@@ -281,12 +281,12 @@ aside nav button:not([aria-current="page"]):hover {
   border-color: rgba(255, 255, 255, 0.07);
 }
 
-/* Tables: clean Emerald Theme styling matching reference */
+/* Tables: distinct Slate-Navy header + Terracotta accent + clean warm zebra/hover */
 main .overflow-x-auto {
   max-width: 100%;
   overscroll-behavior-x: contain;
   scrollbar-width: thin;
-  scrollbar-color: #b4c7c1 transparent;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
 main table {
@@ -296,8 +296,8 @@ main table {
 }
 
 main table thead tr {
-  background-color: #F5F7F5;
-  color: #1F2937;
+  background-color: #1E293B;
+  color: #FFFFFF;
 }
 
 main table thead th {
@@ -305,20 +305,20 @@ main table thead th {
   font-weight: 700;
   letter-spacing: 0.01em;
   white-space: nowrap;
-  color: #1F2937;
-  border-bottom: 2px solid #E3EAE5;
+  color: #FFFFFF;
+  border-bottom: 2px solid #EA580C;
 }
 
 main table thead th button {
-  color: #1F2937;
+  color: #FFFFFF;
 }
 
 main table thead th button:hover {
-  color: #16966A;
+  color: #FDBA74;
 }
 
 main table tbody tr:nth-child(even) {
-  background-color: #FFFFFF;
+  background-color: #F8FAFC;
 }
 
 main table tbody tr {
@@ -326,11 +326,11 @@ main table tbody tr {
 }
 
 main table tbody tr:hover {
-  background: #F5F7F5;
+  background: #FFF7ED;
 }
 
 main table tbody td {
-  border-bottom-color: #E3EAE5;
+  border-bottom-color: #E2E8F0;
   color: #1F2937;
   vertical-align: middle;
 }

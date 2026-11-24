@@ -287,10 +287,10 @@ export const LeadsSection: React.FC = () => {
         {(
           [
             { id: 'all', label: t.leads.tabs.all, count: leads.length, activeClass: 'btn-primary' },
-            { id: 'sale', label: t.leads.tabs.buyers, count: buyersCount, activeClass: 'bg-[#0EA5E9] text-white border-[#0EA5E9] shadow-sm shadow-[#0EA5E9]/25' },
-            { id: 'rent', label: t.leads.tabs.renters, count: rentersCount, activeClass: 'btn-accent' },
-            { id: 'sell', label: t.leads.tabs.sellers, count: sellersCount, activeClass: 'bg-[#117A57] text-white border-[#117A57] shadow-sm' },
-            { id: 'rent_out', label: t.leads.tabs.landlordsRent, count: landlordsRentCount, activeClass: 'bg-[#12352B] text-white border-[#12352B] shadow-sm' },
+            { id: 'sale', label: t.leads.tabs.buyers, count: buyersCount, activeClass: 'bg-[#0284C7] text-white border-[#0284C7] shadow-sm shadow-[#0284C7]/25' },
+            { id: 'rent', label: t.leads.tabs.renters, count: rentersCount, activeClass: 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-sm shadow-[#8B5CF6]/25' },
+            { id: 'sell', label: t.leads.tabs.sellers, count: sellersCount, activeClass: 'bg-[#D97706] text-white border-[#D97706] shadow-sm shadow-[#D97706]/25' },
+            { id: 'rent_out', label: t.leads.tabs.landlordsRent, count: landlordsRentCount, activeClass: 'bg-[#1E293B] text-white border-[#1E293B] shadow-sm' },
           ] as const
         ).map((tab) => {
           const isActive = txTab === tab.id;
@@ -461,7 +461,7 @@ export const LeadsSection: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExport(leads.filter((l) => selectedIds.includes(l.id)))}
-              className="h-8 px-3 text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg"
+              className="h-8 px-3 text-xs font-bold bg-[#EA580C] hover:bg-[#C2410C] text-white rounded-lg"
             >
               {t.leads.bulk.exportSelected}
             </button>
@@ -500,7 +500,7 @@ export const LeadsSection: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-start border-collapse">
               <thead className="sticky top-0 z-10">
-                <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                   <th className="py-3.5 px-3 w-9">
                     <input
                       type="checkbox"
@@ -513,7 +513,7 @@ export const LeadsSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => toggleSort('name')}
-                      className="inline-flex items-center gap-1 text-[#1F2937] hover:text-[#16966A]"
+                      className="inline-flex items-center gap-1 text-white hover:text-[#FDBA74]"
                     >
                       <span>{t.leads.columns.name}</span>
                       <ArrowUpDown className="h-3 w-3" />
@@ -524,7 +524,7 @@ export const LeadsSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => toggleSort('score')}
-                      className="inline-flex items-center gap-1 text-[#1F2937] hover:text-[#16966A]"
+                      className="inline-flex items-center gap-1 text-white hover:text-[#FDBA74]"
                     >
                       <span>{t.leads.columns.score}</span>
                       <ArrowUpDown className="h-3 w-3" />
@@ -540,7 +540,7 @@ export const LeadsSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => toggleSort('budget')}
-                      className="inline-flex items-center gap-1 text-[#1F2937] hover:text-[#16966A]"
+                      className="inline-flex items-center gap-1 text-white hover:text-[#FDBA74]"
                     >
                       <span>{txTab === 'sell' ? (language === 'ar' ? 'الثمن المطلوب' : language === 'fr' ? 'Prix demandé' : 'Asking Price') : txTab === 'rent_out' ? (language === 'ar' ? 'سومة الكراء المطلوبة' : language === 'fr' ? 'Loyer demandé' : 'Asking Rent') : txTab === 'rent' ? (language === 'ar' ? 'ميزانية الكراء / الشهر' : language === 'fr' ? 'Loyer mensuel max' : 'Monthly Rent Budget') : txTab === 'all' ? (language === 'ar' ? 'الميزانية / الثمن' : language === 'fr' ? 'Budget / Prix' : 'Budget / Asking Price') : t.leads.columns.budget}</span>
                       <ArrowUpDown className="h-3 w-3" />
@@ -553,7 +553,7 @@ export const LeadsSection: React.FC = () => {
                   <th className="py-3.5 px-3 text-end">{t.app.actions}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E3EAE5]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {pagedLeads.map((lead) => {
                   const emp = employees.find((e) => e.id === lead.assigned_employee_id);
                   const isSale = lead.transaction_type === 'sale';
@@ -561,7 +561,7 @@ export const LeadsSection: React.FC = () => {
                   return (
                     <tr
                       key={lead.id}
-                      className="transition-colors hover:bg-[#F5F7F5]"
+                      className="transition-colors hover:bg-[#FFF7ED]"
                     >
                       <td className="py-3 px-3">
                         <input

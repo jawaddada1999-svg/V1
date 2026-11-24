@@ -32,6 +32,23 @@ export function generateHourlyRange(startHour = 8, endHour = 20): string[] {
   return slots;
 }
 
+export function generateHalfHourOptions(startHour = 7, endHour = 22): string[] {
+  const options: string[] = [];
+  for (let h = startHour; h <= endHour; h += 1) {
+    const hh = String(h).padStart(2, '0');
+    options.push(`${hh}:00`);
+    if (h < endHour) {
+      options.push(`${hh}:30`);
+    }
+  }
+  return options;
+}
+
+export function ensureTimeOption(options: string[], value?: string): string[] {
+  if (!value || options.includes(value)) return options;
+  return [...options, value].sort((a, b) => a.localeCompare(b));
+}
+
 export function generateDayWorkingHours(open: string, close: string): string[] {
   const openMin = timeToMinutes(open);
   const closeMin = timeToMinutes(close);

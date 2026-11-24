@@ -395,7 +395,7 @@ export const TopHeader: React.FC<{
         <button
           type="button"
           onClick={contextualAction.onClick}
-          className="h-9 px-4 rounded-xl text-xs font-extrabold inline-flex items-center gap-2 whitespace-nowrap shrink-0 bg-[#16966A] hover:bg-[#117A57] text-white border border-[#117A57] shadow-sm transition-colors"
+          className="h-9 px-4 rounded-xl text-xs font-extrabold inline-flex items-center gap-2 whitespace-nowrap shrink-0 bg-[#EA580C] hover:bg-[#C2410C] text-white border border-[#C2410C] shadow-sm transition-colors"
         >
           <ActionIcon className="h-4 w-4 shrink-0" />
           <span className="hidden sm:inline">{contextualAction.label}</span>

@@ -424,7 +424,7 @@ export const PropertiesSection: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-start border-collapse">
               <thead>
-                <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                   <th className="py-3.5 px-4 text-start">{t.properties.form.ref}</th>
                   <th className="py-3.5 px-4 text-start">{t.properties.form.title}</th>
                   <th className="py-3.5 px-4 text-start">{t.properties.form.type}</th>
@@ -438,11 +438,11 @@ export const PropertiesSection: React.FC = () => {
                   <th className="py-3.5 px-4 text-end">{t.app.actions}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E3EAE5]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {filteredProperties.map((prop) => {
                   const emp = employees.find((e) => e.id === prop.assigned_employee_id);
                   return (
-                    <tr key={prop.id} className="hover:bg-[#F5F7F5]">
+                    <tr key={prop.id} className="hover:bg-[#FFF7ED]">
                       <td className="py-3 px-4 font-mono-num font-bold text-[#1F2937] whitespace-nowrap">
                         {prop.ref}
                       </td>

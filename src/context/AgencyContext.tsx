@@ -121,10 +121,29 @@ const AgencyContext = createContext<AgencyContextValue | null>(null);
 
 export const AgencyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [persisted] = useState<Partial<PersistedAgencyState>>(() => loadPersistedState());
-  const [language, setLanguageState] = useState<Language>(persisted.language ?? 'ar');
+  const initialLang: Language =
+    persisted.language === 'ar' || persisted.language === 'fr' || persisted.language === 'en'
+      ? persisted.language
+      : 'ar';
+  const [language, setLanguageState] = useState<Language>(initialLang);
   const [activeSection, setActiveSection] = useState<SectionId>('overview');
   const [settings, setSettings] = useState<AgencySettings>(() => {
-    const s = persisted.settings ?? initialAgencySettings;
+    const rawSettings: Partial<AgencySettings> =
+      persisted.settings && typeof persisted.settings === 'object' ? persisted.settings : {};
+    const s: AgencySettings = {
+      ...initialAgencySettings,
+      ...rawSettings,
+      working_days: Array.isArray(rawSettings.working_days)
+        ? rawSettings.working_days
+        : initialAgencySettings.working_days,
+      blocked_date_slots:
+        rawSettings.blocked_date_slots && typeof rawSettings.blocked_date_slots === 'object'
+          ? rawSettings.blocked_date_slots
+          : initialAgencySettings.blocked_date_slots,
+      active_sessions: Array.isArray(rawSettings.active_sessions)
+        ? rawSettings.active_sessions
+        : initialAgencySettings.active_sessions,
+    };
     const migratedKey = 'ibonda_emerald_theme_v1';
     const alreadyMigrated =
       typeof window !== 'undefined' && window.localStorage.getItem(migratedKey) === '1';
@@ -154,20 +173,36 @@ export const AgencyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
     return s;
   });
-  const [leads, setLeads] = useState<Lead[]>(persisted.leads ?? initialLeads);
-  const [properties, setProperties] = useState<Property[]>(persisted.properties ?? initialProperties);
-  const [owners, setOwners] = useState<PropertyOwner[]>(persisted.owners ?? initialOwners);
-  const [appointments, setAppointments] = useState<Appointment[]>(persisted.appointments ?? initialAppointments);
-  const [employees, setEmployees] = useState<Employee[]>(persisted.employees ?? initialEmployees);
+  const [leads, setLeads] = useState<Lead[]>(
+    Array.isArray(persisted.leads) ? persisted.leads : initialLeads
+  );
+  const [properties, setProperties] = useState<Property[]>(
+    Array.isArray(persisted.properties) ? persisted.properties : initialProperties
+  );
+  const [owners, setOwners] = useState<PropertyOwner[]>(
+    Array.isArray(persisted.owners) ? persisted.owners : initialOwners
+  );
+  const [appointments, setAppointments] = useState<Appointment[]>(
+    Array.isArray(persisted.appointments) ? persisted.appointments : initialAppointments
+  );
+  const [employees, setEmployees] = useState<Employee[]>(
+    Array.isArray(persisted.employees) && persisted.employees.length > 0
+      ? persisted.employees
+      : initialEmployees
+  );
   const [conversations, setConversations] = useState<Conversation[]>(
-    persisted.conversations ?? initialConversations
+    Array.isArray(persisted.conversations) ? persisted.conversations : initialConversations
   );
   const [notifications, setNotifications] = useState<NotificationItem[]>(
-    persisted.notifications ?? initialNotifications
+    Array.isArray(persisted.notifications) ? persisted.notifications : initialNotifications
   );
   const [teamPerformanceOverrides, setTeamPerformanceOverrides] = useState<
     Record<string, TeamPerformanceOverride>
-  >(persisted.teamPerformanceOverrides ?? {});
+  >(
+    persisted.teamPerformanceOverrides && typeof persisted.teamPerformanceOverrides === 'object'
+      ? persisted.teamPerformanceOverrides
+      : {}
+  );
   const [adCampaigns] = useState<AdCampaign[]>(initialAdCampaigns);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 

@@ -122,10 +122,61 @@ const DashboardShell: React.FC = () => {
   );
 };
 
+class DashboardErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, message: error?.message || 'Unexpected error' };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          dir="rtl"
+          className="min-h-screen flex items-center justify-center bg-[#F5F7F5] p-6 text-[#1F2937]"
+        >
+          <div className="max-w-md w-full bg-white border border-[#E3EAE5] rounded-2xl p-6 shadow-md space-y-4 text-center">
+            <h1 className="text-lg font-extrabold text-[#1F2937]">
+              حدث خطأ غير متوقع أثناء تحميل لوحة التحكم
+            </h1>
+            <p className="text-xs text-[#64748B] font-medium">
+              قد يكون السبب بيانات قديمة محفوظة في المتصفح. يمكنك إعادة ضبط الجلسة لتشغيل اللوحة بشكل سليم.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  window.localStorage.removeItem('ibonda_crm_state_v2');
+                } catch {
+                  // ignore
+                }
+                window.location.reload();
+              }}
+              className="btn-primary px-5 py-2.5 text-xs font-bold"
+            >
+              إعادة تحميل وتصفير البيانات المحلية
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
-    <AgencyProvider>
-      <DashboardShell />
-    </AgencyProvider>
+    <DashboardErrorBoundary>
+      <AgencyProvider>
+        <DashboardShell />
+      </AgencyProvider>
+    </DashboardErrorBoundary>
   );
 }

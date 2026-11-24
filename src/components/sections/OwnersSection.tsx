@@ -235,7 +235,7 @@ export const OwnersSection: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-xs text-start border-collapse">
               <thead>
-                <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                   <th className="py-3.5 px-4 text-start">{t.owners.columns.name}</th>
                   <th className="py-3.5 px-4 text-start">{t.owners.columns.phone}</th>
                   <th className="py-3.5 px-4 text-start">{t.owners.columns.city}</th>
@@ -247,12 +247,12 @@ export const OwnersSection: React.FC = () => {
                   <th className="py-3.5 px-4 text-end">{t.app.actions}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E3EAE5]">
+              <tbody className="divide-y divide-[#E2E8F0]">
                 {filteredOwners.map((owner) => {
                   const ownedProps = getOwnerProperties(owner);
                   const localizedName = localizePersonName(owner.name, language);
                   return (
-                    <tr key={owner.id} className="hover:bg-[#F5F7F5] transition-colors">
+                    <tr key={owner.id} className="hover:bg-[#FFF7ED] transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2.5">
                           <Avatar name={localizedName} size="sm" />

@@ -518,6 +518,12 @@ export interface TranslationDict {
       addForDay: string;
       directWhatsapp: string;
       directCall: string;
+      legendLabel: string;
+      morningPeriod: string;
+      afternoonPeriod: string;
+      eveningPeriod: string;
+      jumpToNearestApt: string;
+      noAptsTodayHint: string;
     };
   };
   team: {
@@ -792,6 +798,17 @@ export interface TranslationDict {
       periodReasonPlaceholder: string;
       removePeriod: string;
       holidays: string;
+      openLabel: string;
+      closedLabel: string;
+      closedDayHint: string;
+      quickTemplatesLabel: string;
+      presetStandard: string;
+      presetContinuous: string;
+      presetWeekdays: string;
+      presetAppliedToast: string;
+      manageSlotsBtn: string;
+      hideSlotsBtn: string;
+      quickBreakPreset: string;
     };
     appointmentsForm: {
       duration: string;
@@ -1486,6 +1503,12 @@ export const translations: Record<Language, TranslationDict> = {
         addForDay: 'موعد جديد',
         directWhatsapp: 'مراسلة فورية عبر واتساب',
         directCall: 'اتصال هاتفي مباشر',
+        legendLabel: 'دليل الألوان:',
+        morningPeriod: 'الفترة الصباحية',
+        afternoonPeriod: 'بعد الزوال',
+        eveningPeriod: 'المساء',
+        jumpToNearestApt: 'أقرب يوم به موعد',
+        noAptsTodayHint: 'لا توجد مواعيد محجوزة في هذا اليوم — الساعات المفتوحة جاهزة للحجز.',
       },
     },
     team: {
@@ -1760,6 +1783,17 @@ export const translations: Record<Language, TranslationDict> = {
         periodReasonPlaceholder: 'مثال: صلاة الجمعة، اجتماع الفريق...',
         removePeriod: 'حذف الفترة',
         holidays: 'العطل الرسمية والأيام المغلقة',
+        openLabel: 'مفتوح',
+        closedLabel: 'عطلة',
+        closedDayHint: 'مغلق — لا يتم استقبال الحجوزات في هذا اليوم',
+        quickTemplatesLabel: 'قوالب سريعة للدوام:',
+        presetStandard: 'دوام قياسي (09:00–18:30)',
+        presetContinuous: 'دوام مستمر (08:30–17:00)',
+        presetWeekdays: 'الإثنين–الجمعة فقط',
+        presetAppliedToast: 'تم تحديث جدول العمل وفق القالب المختار',
+        manageSlotsBtn: 'تخصيص الساعات',
+        hideSlotsBtn: 'إخفاء الساعات',
+        quickBreakPreset: 'استراحة سريعة:',
       },
       appointmentsForm: {
         duration: 'مدة المعاينة الافتراضية',
@@ -2453,6 +2487,12 @@ export const translations: Record<Language, TranslationDict> = {
         addForDay: 'Book',
         directWhatsapp: 'Message on WhatsApp',
         directCall: 'Call client',
+        legendLabel: 'Color Guide:',
+        morningPeriod: 'Morning',
+        afternoonPeriod: 'Afternoon',
+        eveningPeriod: 'Evening',
+        jumpToNearestApt: 'Nearest Booked Day',
+        noAptsTodayHint: 'No viewings scheduled on this day — open slots are ready to book.',
       },
     },
     team: {
@@ -2727,6 +2767,17 @@ export const translations: Record<Language, TranslationDict> = {
         periodReasonPlaceholder: 'e.g., Weekly briefing...',
         removePeriod: 'Remove',
         holidays: 'Public Holidays & Closures',
+        openLabel: 'Open',
+        closedLabel: 'Closed',
+        closedDayHint: 'Closed — no client viewings accepted on this day',
+        quickTemplatesLabel: 'Quick Schedule Presets:',
+        presetStandard: 'Standard Split (09:00–18:30)',
+        presetContinuous: 'Continuous (08:30–17:00)',
+        presetWeekdays: 'Mon–Fri Only',
+        presetAppliedToast: 'Schedule preset applied successfully',
+        manageSlotsBtn: 'Customize Hours',
+        hideSlotsBtn: 'Hide Slots',
+        quickBreakPreset: 'Quick break:',
       },
       appointmentsForm: {
         duration: 'Default Viewing Duration',
@@ -3420,6 +3471,12 @@ export const translations: Record<Language, TranslationDict> = {
         addForDay: 'Planifier',
         directWhatsapp: 'Contacter sur WhatsApp',
         directCall: 'Appeler le client',
+        legendLabel: 'Légende :',
+        morningPeriod: 'Matinée',
+        afternoonPeriod: 'Après-midi',
+        eveningPeriod: 'Fin de journée',
+        jumpToNearestApt: 'Jour avec RDV',
+        noAptsTodayHint: 'Aucun rendez-vous prévu ce jour — les créneaux ouverts sont disponibles.',
       },
     },
     team: {
@@ -3694,6 +3751,17 @@ export const translations: Record<Language, TranslationDict> = {
         periodReasonPlaceholder: 'Ex. : Point hebdomadaire...',
         removePeriod: 'Supprimer',
         holidays: 'Jours fériés & Fermetures',
+        openLabel: 'Ouvert',
+        closedLabel: 'Fermé',
+        closedDayHint: 'Fermé — aucune visite planifiée ce jour',
+        quickTemplatesLabel: 'Modèles rapides :',
+        presetStandard: 'Classique (09:00–18:30)',
+        presetContinuous: 'Journée continue (08:30–17:00)',
+        presetWeekdays: 'Lun–Ven uniquement',
+        presetAppliedToast: 'Modèle horaire appliqué avec succès',
+        manageSlotsBtn: 'Personnaliser',
+        hideSlotsBtn: 'Masquer',
+        quickBreakPreset: 'Pause rapide :',
       },
       appointmentsForm: {
         duration: 'Durée standard d’une visite',

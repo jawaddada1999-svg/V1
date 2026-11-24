@@ -11,7 +11,7 @@ export const AreaTrendChart: React.FC<{
   primaryLabel: string;
   color?: string;
   height?: number;
-}> = ({ data, primaryLabel, color = '#16966A', height = 190 }) => {
+}> = ({ data, primaryLabel, color = '#EA580C', height = 190 }) => {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   if (!data.length) return null;
 
@@ -85,7 +85,7 @@ export const AreaTrendChart: React.FC<{
 
         {hoverIdx !== null && coords[hoverIdx] && (
           <g transform={`translate(${Math.min(Math.max(coords[hoverIdx].x - 45, 10), width - 105)}, ${Math.max(coords[hoverIdx].y - 38, 2)})`}>
-            <rect width="92" height="28" rx="6" fill="#12352B" />
+            <rect width="92" height="28" rx="6" fill="#1E293B" />
             <text x="46" y="18" textAnchor="middle" className="fill-white text-[11px] font-semibold font-mono-num">
               {coords[hoverIdx].label}: {coords[hoverIdx].value}
             </text>
@@ -111,8 +111,8 @@ export const BarComparisonChart: React.FC<{
   data,
   primaryLabel,
   secondaryLabel,
-  primaryColor = '#16966A',
-  secondaryColor = '#0EA5E9',
+  primaryColor = '#EA580C',
+  secondaryColor = '#0284C7',
   height = 195,
 }) => {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
@@ -187,7 +187,7 @@ export const BarComparisonChart: React.FC<{
               </text>
               {hoverIdx === idx && (
                 <g transform={`translate(${Math.min(Math.max(cx - 52, 6), width - 110)}, ${Math.max(Math.min(y1, y2) - 30, 2)})`}>
-                  <rect width="104" height="24" rx="5" fill="#12352B" />
+                  <rect width="104" height="24" rx="5" fill="#1E293B" />
                   <text x="52" y="16" textAnchor="middle" className="fill-white text-[10px] font-mono-num">
                     {hasSecondary ? `${d.value} / ${d.secondaryValue}` : d.value}
                   </text>
@@ -304,8 +304,8 @@ export const DonutDistributionChart: React.FC<{
               onMouseLeave={() => setHoverIdx(null)}
               className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-xs transition-all cursor-pointer ${
                 isHovered
-                  ? 'bg-[#F5F7F5] border-[#16966A]/40 shadow-xs'
-                  : 'bg-white border-[#E3EAE5] hover:bg-[#F5F7F5]'
+                  ? 'bg-[#FFF7ED] border-[#EA580C]/45 shadow-xs'
+                  : 'bg-white border-[#E2E8F0] hover:bg-[#F8FAFC]'
               }`}
             >
               <div className="flex items-center gap-2.5 min-w-0">
@@ -467,7 +467,7 @@ export const DualAxisSpendCplChart: React.FC<{
                 x={width - padRight + 8}
                 y={y + 3}
                 textAnchor="start"
-                className="fill-emerald-700 text-[10px] font-semibold font-mono-num"
+                className="fill-[#C2410C] text-[10px] font-semibold font-mono-num"
               >
                 {cplTick}
               </text>
@@ -492,7 +492,7 @@ export const DualAxisSpendCplChart: React.FC<{
                 width={barW}
                 height={Math.max(barH, 3)}
                 rx="6"
-                fill="var(--agency-primary)"
+                fill="#0284C7"
                 opacity={hoverIdx === null || isHovered ? 0.92 : 0.45}
               />
               <text
@@ -518,7 +518,7 @@ export const DualAxisSpendCplChart: React.FC<{
         <path
           d={linePath}
           fill="none"
-          stroke="#10B981"
+          stroke="#EA580C"
           strokeWidth="2.8"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -538,14 +538,14 @@ export const DualAxisSpendCplChart: React.FC<{
                 cy={pt.cy}
                 r={isHovered ? 6 : 4.5}
                 fill="#FFFFFF"
-                stroke="#10B981"
+                stroke="#EA580C"
                 strokeWidth="2.6"
               />
               <text
                 x={pt.cx}
                 y={Math.max(pt.cy - 10, 12)}
                 textAnchor="middle"
-                className="fill-emerald-800 text-[10px] font-bold font-mono-num"
+                className="fill-[#C2410C] text-[10px] font-bold font-mono-num"
               >
                 {pt.cpl}
               </text>
@@ -560,11 +560,11 @@ export const DualAxisSpendCplChart: React.FC<{
               width - padRight - 155
             )}, 4)`}
           >
-            <rect width="154" height="38" rx="7" fill="#12352B" />
+            <rect width="154" height="38" rx="7" fill="#1E293B" />
             <text x="77" y="16" textAnchor="middle" className="fill-white text-[10px] font-bold font-mono-num">
               {spendLabel}: {lineCoords[hoverIdx].spend.toLocaleString()} {currencyUnit}
             </text>
-            <text x="77" y="30" textAnchor="middle" className="fill-emerald-300 text-[10px] font-bold font-mono-num">
+            <text x="77" y="30" textAnchor="middle" className="fill-amber-300 text-[10px] font-bold font-mono-num">
               {cplLabel}: {lineCoords[hoverIdx].cpl} {currencyUnit}
             </text>
           </g>
@@ -573,11 +573,11 @@ export const DualAxisSpendCplChart: React.FC<{
 
       <div className="mt-2 flex flex-wrap items-center justify-end gap-5 text-xs font-semibold text-[#1F2937]">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: 'var(--agency-primary)' }} />
+          <span className="h-3 w-3 rounded-sm bg-[#0284C7]" />
           {spendLabel} ({currencyUnit})
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-200" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#EA580C] ring-2 ring-orange-200" />
           {cplLabel} ({currencyUnit})
         </span>
       </div>
@@ -624,8 +624,8 @@ export const MonthlyFinancialChart: React.FC<{
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
         <defs>
           <linearGradient id="finBarGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#16966A" stopOpacity="0.98" />
-            <stop offset="100%" stopColor="#10B981" stopOpacity="0.82" />
+            <stop offset="0%" stopColor="#EA580C" stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.85" />
           </linearGradient>
         </defs>
 
@@ -698,11 +698,11 @@ export const MonthlyFinancialChart: React.FC<{
                     width - padRight - 146
                   )}, 2)`}
                 >
-                  <rect width="144" height="36" rx="7" fill="#12352B" />
+                  <rect width="144" height="36" rx="7" fill="#1E293B" />
                   <text x="72" y="15" textAnchor="middle" className="fill-white text-[10px] font-bold font-mono-num">
                     {pt.revenue.toLocaleString()} {currencyUnit}
                   </text>
-                  <text x="72" y="29" textAnchor="middle" className="fill-emerald-300 text-[10px] font-semibold">
+                  <text x="72" y="29" textAnchor="middle" className="fill-amber-300 text-[10px] font-semibold">
                     {dealsLabel}: {pt.dealsCount}
                   </text>
                 </g>
@@ -714,7 +714,7 @@ export const MonthlyFinancialChart: React.FC<{
 
       <div className="mt-2 flex flex-wrap items-center justify-end gap-5 text-xs font-semibold text-[#1F2937]">
         <span className="inline-flex items-center gap-2">
-          <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: 'var(--agency-primary)' }} />
+          <span className="h-3 w-3 rounded-sm bg-[#EA580C]" />
           {revenueLabel}
         </span>
         <span className="inline-flex items-center gap-1.5 text-[#64748B]">

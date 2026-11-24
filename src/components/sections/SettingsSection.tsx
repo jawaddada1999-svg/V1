@@ -5,12 +5,15 @@ import {
   Building2,
   CalendarClock,
   Check,
+  ChevronDown,
+  ChevronUp,
   Clock,
   Coffee,
   Copy,
   Globe,
   Plus,
   Shield,
+  Sparkles,
   Trash2,
   Users,
 } from 'lucide-react';
@@ -20,7 +23,10 @@ import { EmployeePermissions, Language, WorkingDayConfig } from '../../types/dom
 import {
   computeDayActiveHours,
   computeWeeklyActiveHours,
+  ensureTimeOption,
   generateDayWorkingHours,
+  generateHalfHourOptions,
+  generateHourlyRange,
   getSlotAvailability,
 } from '../../utils/scheduleUtils';
 
@@ -231,470 +237,806 @@ export const SettingsSection: React.FC = () => {
             </form>
           )}
 
-          {/* B. Working Hours — Practical Midday Break & Removable Slots */}
-          {activeTab === 'hours' && (
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-200">
-                <div>
-                  <h3 className="text-sm font-bold text-zinc-950">{t.settings.tabs.hours}</h3>
-                  <p className="text-[11px] text-zinc-500 mt-0.5">{t.settings.hoursForm.hourlySlotsHint}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const mon = formState.working_days.find((d) => d.day_key === 'mon');
-                    if (!mon) return;
-                    const updated = formState.working_days.map((d) =>
-                      d.enabled && d.day_key !== 'mon'
-                        ? {
-                            ...d,
-                            open: mon.open,
-                            close: mon.close,
-                            break_start: mon.break_start,
-                            break_end: mon.break_end,
-                            blocked_slots: [...(mon.blocked_slots ?? [])],
-                            excluded_periods: (mon.excluded_periods ?? []).map((p) => ({ ...p })),
-                          }
-                        : d
-                    );
-                    setFormState({ ...formState, working_days: updated });
-                    pushToast({ type: 'info', title: t.settings.hoursForm.copiedToast });
-                  }}
-                  className="h-8 px-3 rounded-lg text-[11px] font-semibold btn-outline inline-flex items-center gap-1.5"
-                >
-                  <Copy className="h-3.5 w-3.5 text-zinc-700" />
-                  <span>{t.settings.hoursForm.copyMonToAll}</span>
-                </button>
-              </div>
+          {/* B. Working Hours — Clear, Smooth, Visual Schedule Selector */}
+          {activeTab === 'hours' && (() => {
+            const halfHourOptions = generateHalfHourOptions(7, 22);
+            const timelineHours = generateHourlyRange(8, 20);
+            const enabledDaysCount = formState.working_days.filter((d) => d.enabled).length;
+            const totalWeeklyHours = computeWeeklyActiveHours(formState.working_days);
 
-              {/* Weekly Summary Strip */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="px-4 py-3 rounded-xl bg-[#F5F7F5] border border-[#E3EAE5] flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#1F2937]">{t.settings.hoursForm.activeDaysCount}</span>
-                  <span className="text-sm font-bold font-mono-num text-[#1F2937]">
-                    {formState.working_days.filter((d) => d.enabled).length} / 7
-                  </span>
-                </div>
-                <div className="px-4 py-3 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] flex items-center justify-between">
-                  <span className="text-xs font-semibold text-[#1F2937]">{t.settings.hoursForm.weeklyHoursTotal}</span>
-                  <span className="text-sm font-bold font-mono-num text-[#16966A]">
-                    {computeWeeklyActiveHours(formState.working_days)} {t.settings.hoursForm.hoursUnit}
-                  </span>
-                </div>
-              </div>
-
-              {/* Per-day Cards */}
-              <div className="space-y-2.5">
-                {formState.working_days.map((day, idx) => {
-                  const daySlots = day.enabled ? generateDayWorkingHours(day.open, day.close) : [];
-                  const hasBreak = Boolean(day.break_start && day.break_end);
-                  const activeHours = computeDayActiveHours(day);
-                  const isExpanded = expandedDayKey === day.day_key && day.enabled;
-
-                  const updateDay = (patch: Partial<WorkingDayConfig>) => {
-                    const updated = [...formState.working_days];
-                    updated[idx] = { ...day, ...patch };
-                    setFormState({ ...formState, working_days: updated });
+            const applyPreset = (preset: 'standard' | 'continuous' | 'weekdays_only') => {
+              const updated = formState.working_days.map((d) => {
+                if (preset === 'weekdays_only') {
+                  const isWeekday = !['sat', 'sun'].includes(d.day_key);
+                  return { ...d, enabled: isWeekday };
+                }
+                if (preset === 'standard') {
+                  if (d.day_key === 'sun') {
+                    return { ...d, enabled: false };
+                  }
+                  if (d.day_key === 'sat') {
+                    return {
+                      ...d,
+                      enabled: true,
+                      open: '09:30',
+                      close: '14:00',
+                      break_start: '',
+                      break_end: '',
+                    };
+                  }
+                  return {
+                    ...d,
+                    enabled: true,
+                    open: '09:00',
+                    close: '18:30',
+                    break_start: '13:00',
+                    break_end: '14:30',
                   };
-
-                  const toggleDaySlot = (slot: string) => {
-                    const current = day.blocked_slots ?? [];
-                    const next = current.includes(slot)
-                      ? current.filter((s) => s !== slot)
-                      : [...current, slot];
-                    updateDay({ blocked_slots: next });
+                }
+                // continuous
+                if (d.day_key === 'sun') {
+                  return { ...d, enabled: false };
+                }
+                if (d.day_key === 'sat') {
+                  return {
+                    ...d,
+                    enabled: true,
+                    open: '09:00',
+                    close: '13:00',
+                    break_start: '',
+                    break_end: '',
                   };
+                }
+                return {
+                  ...d,
+                  enabled: true,
+                  open: '08:30',
+                  close: '17:00',
+                  break_start: '',
+                  break_end: '',
+                };
+              });
+              setFormState({ ...formState, working_days: updated });
+              pushToast({ type: 'info', title: t.settings.hoursForm.presetAppliedToast });
+            };
 
-                  return (
-                    <div
-                      key={day.day_key}
-                      className={`border rounded-xl overflow-hidden transition-colors ${
-                        day.enabled
-                          ? isExpanded
-                            ? 'border-[#16966A]/50 bg-white shadow-2xs'
-                            : 'border-[#E3EAE5] bg-white'
-                          : 'border-[#E3EAE5]/80 bg-[#F5F7F5]/70'
-                      }`}
-                    >
-                      {/* Main Day Row */}
-                      <div className="p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
-                        <div className="flex items-center gap-3 min-w-[160px]">
-                          <label className="flex items-center gap-2.5 font-semibold text-[#1F2937] cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={day.enabled}
-                              onChange={(e) => {
-                                updateDay({ enabled: e.target.checked });
-                                if (e.target.checked) setExpandedDayKey(day.day_key);
-                              }}
-                              className="h-4 w-4 accent-[#16966A]"
-                            />
-                            <span>{t.days[day.day_key]}</span>
-                          </label>
-                          {day.enabled && (
-                            <span className="text-[11px] font-mono-num font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                              {activeHours} {t.settings.hoursForm.hoursUnit}
-                            </span>
-                          )}
-                        </div>
+            return (
+              <div className="space-y-5">
+                {/* Header */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
+                  <div>
+                    <h3 className="text-sm sm:text-base font-extrabold text-[#1F2937]">
+                      {t.settings.tabs.hours}
+                    </h3>
+                    <p className="text-xs text-[#64748B] mt-0.5">{t.settings.hoursForm.hourlySlotsHint}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const mon = formState.working_days.find((d) => d.day_key === 'mon');
+                      if (!mon) return;
+                      const updated = formState.working_days.map((d) =>
+                        d.enabled && d.day_key !== 'mon'
+                          ? {
+                              ...d,
+                              open: mon.open,
+                              close: mon.close,
+                              break_start: mon.break_start,
+                              break_end: mon.break_end,
+                              blocked_slots: [...(mon.blocked_slots ?? [])],
+                              excluded_periods: (mon.excluded_periods ?? []).map((p) => ({ ...p })),
+                            }
+                          : d
+                      );
+                      setFormState({ ...formState, working_days: updated });
+                      pushToast({ type: 'info', title: t.settings.hoursForm.copiedToast });
+                    }}
+                    className="h-9 px-3.5 rounded-xl text-xs font-bold btn-outline inline-flex items-center gap-1.5"
+                  >
+                    <Copy className="h-3.5 w-3.5 text-[#0284C7]" />
+                    <span>{t.settings.hoursForm.copyMonToAll}</span>
+                  </button>
+                </div>
 
-                        <div className="flex flex-wrap items-center gap-2.5">
-                          {/* Open - Close */}
-                          <div className="flex items-center gap-1.5 font-mono-num">
-                            <input
-                              type="time"
-                              disabled={!day.enabled}
-                              value={day.open}
-                              onChange={(e) => updateDay({ open: e.target.value })}
-                              className="h-8 px-2 border border-zinc-200 rounded-lg text-xs disabled:opacity-40 bg-white"
-                            />
-                            <span className="text-zinc-400">–</span>
-                            <input
-                              type="time"
-                              disabled={!day.enabled}
-                              value={day.close}
-                              onChange={(e) => updateDay({ close: e.target.value })}
-                              className="h-8 px-2 border border-zinc-200 rounded-lg text-xs disabled:opacity-40 bg-white"
-                            />
-                          </div>
+                {/* Weekly Summary + Quick Schedule Presets */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
+                  <div className="lg:col-span-5 grid grid-cols-2 gap-3">
+                    <div className="px-4 py-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col justify-between">
+                      <span className="text-[11px] font-bold text-[#64748B]">
+                        {t.settings.hoursForm.activeDaysCount}
+                      </span>
+                      <span className="text-lg font-extrabold font-mono-num text-[#1E293B] mt-1">
+                        {enabledDaysCount} / 7
+                      </span>
+                    </div>
+                    <div className="px-4 py-3 rounded-xl bg-[#F0F9FF] border border-[#BAE6FD] flex flex-col justify-between">
+                      <span className="text-[11px] font-bold text-[#0369A1]">
+                        {t.settings.hoursForm.weeklyHoursTotal}
+                      </span>
+                      <span className="text-lg font-extrabold font-mono-num text-[#0284C7] mt-1">
+                        {totalWeeklyHours} {t.settings.hoursForm.hoursUnit}
+                      </span>
+                    </div>
+                  </div>
 
-                          {/* Break toggle + times */}
-                          {day.enabled && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                updateDay(
-                                  hasBreak
-                                    ? { break_start: '', break_end: '' }
-                                    : { break_start: '13:00', break_end: '14:30' }
-                                )
-                              }
-                              className={`h-8 px-2.5 rounded-lg text-[11px] font-medium border inline-flex items-center gap-1.5 transition-colors ${
-                                hasBreak
-                                  ? 'bg-amber-50 border-amber-200 text-amber-900'
-                                  : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'
-                              }`}
-                            >
-                              <Coffee className="h-3.5 w-3.5" />
-                              <span>{hasBreak ? t.settings.hoursForm.hasBreak : t.settings.hoursForm.noBreak}</span>
-                            </button>
-                          )}
+                  <div className="lg:col-span-7 px-4 py-3 rounded-xl bg-[#FFF7ED]/70 border border-[#FED7AA] flex flex-col justify-center gap-2">
+                    <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-[#C2410C]">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>{t.settings.hoursForm.quickTemplatesLabel}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => applyPreset('standard')}
+                        className="h-8 px-3 rounded-lg bg-white border border-[#FDBA74] text-[#9A3412] hover:bg-[#FFEDD5] text-[11px] font-bold transition-colors"
+                      >
+                        {t.settings.hoursForm.presetStandard}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyPreset('continuous')}
+                        className="h-8 px-3 rounded-lg bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold transition-colors"
+                      >
+                        {t.settings.hoursForm.presetContinuous}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyPreset('weekdays_only')}
+                        className="h-8 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#1F2937] hover:bg-[#F8FAFC] text-[11px] font-bold transition-colors"
+                      >
+                        {t.settings.hoursForm.presetWeekdays}
+                      </button>
+                    </div>
+                  </div>
+                </div>
 
-                          {day.enabled && hasBreak && (
-                            <div className="flex items-center gap-1 font-mono-num">
-                              <input
-                                type="time"
-                                value={day.break_start}
-                                onChange={(e) => updateDay({ break_start: e.target.value })}
-                                className="h-8 px-2 border border-amber-200 bg-amber-50/40 rounded-lg text-xs"
-                              />
-                              <span className="text-zinc-400">–</span>
-                              <input
-                                type="time"
-                                value={day.break_end}
-                                onChange={(e) => updateDay({ break_end: e.target.value })}
-                                className="h-8 px-2 border border-amber-200 bg-amber-50/40 rounded-lg text-xs"
-                              />
-                            </div>
-                          )}
+                {/* Per-day Clear Structured Cards */}
+                <div className="space-y-3">
+                  {formState.working_days.map((day, idx) => {
+                    const daySlots = day.enabled ? generateDayWorkingHours(day.open, day.close) : [];
+                    const hasBreak = Boolean(day.break_start && day.break_end);
+                    const activeHours = computeDayActiveHours(day);
+                    const isExpanded = expandedDayKey === day.day_key && day.enabled;
+                    const customBlocksCount =
+                      (day.blocked_slots?.length ?? 0) + (day.excluded_periods?.length ?? 0);
 
-                          {day.enabled && (
-                            <button
-                              type="button"
-                              onClick={() => setExpandedDayKey(isExpanded ? ('' as WorkingDayConfig['day_key']) : day.day_key)}
-                              className={`h-8 px-2.5 rounded-lg text-[11px] font-semibold border transition-colors ${
-                                isExpanded
-                                  ? 'bg-[#16966A] text-white border-[#117A57]'
-                                  : 'bg-white text-[#1F2937] border-[#E3EAE5] hover:bg-[#ECFDF5]'
-                              }`}
-                            >
-                              {t.settings.hoursForm.hourlySlotsTitle.split('(')[0].trim()}
-                              {((day.blocked_slots?.length ?? 0) + (day.excluded_periods?.length ?? 0)) > 0 && (
-                                <span className="ms-1.5 px-1.5 py-0.2 rounded bg-rose-500 text-white text-[10px] font-mono-num">
-                                  {(day.blocked_slots?.length ?? 0) + (day.excluded_periods?.length ?? 0)}
-                                </span>
-                              )}
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                    const openOptions = ensureTimeOption(halfHourOptions, day.open);
+                    const closeOptions = ensureTimeOption(halfHourOptions, day.close);
+                    const breakStartOptions = ensureTimeOption(halfHourOptions, day.break_start);
+                    const breakEndOptions = ensureTimeOption(halfHourOptions, day.break_end);
 
-                      {/* Expanded Interactive Midday Slots & Custom Excluded Periods */}
-                      {isExpanded && (
-                        <div className="px-4 py-3.5 bg-[#F8FAFC] border-t border-zinc-200/80 space-y-3.5">
-                          <div>
-                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                              <span className="text-[11px] font-bold text-zinc-900">
-                                {t.settings.hoursForm.hourlySlotsTitle}
-                              </span>
-                              <div className="flex items-center gap-3 text-[10px] text-zinc-600">
-                                <span className="inline-flex items-center gap-1">
-                                  <span className="h-2 w-2 rounded-full bg-emerald-600" />
-                                  {t.settings.hoursForm.slotOpen}
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  <span className="h-2 w-2 rounded-full bg-amber-500" />
-                                  {t.settings.hoursForm.slotBreak}
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  <span className="h-2 w-2 rounded-full bg-rose-500" />
-                                  {t.settings.hoursForm.slotRemoved}
-                                </span>
-                              </div>
-                            </div>
+                    const updateDay = (patch: Partial<WorkingDayConfig>) => {
+                      const updated = [...formState.working_days];
+                      updated[idx] = { ...day, ...patch };
+                      setFormState({ ...formState, working_days: updated });
+                    };
 
-                            <div className="flex flex-wrap gap-1.5">
-                              {daySlots.map((slot) => {
-                                const avail = getSlotAvailability(day, slot);
-                                const isBreakSlot = avail.status === 'break';
-                                const isBlocked = avail.status === 'blocked_recurring';
-                                return (
-                                  <button
-                                    key={slot}
-                                    type="button"
-                                    disabled={isBreakSlot}
-                                    onClick={() => toggleDaySlot(slot)}
-                                    className={`h-8 px-2.5 rounded-lg text-[11px] font-mono-num font-semibold border inline-flex items-center gap-1 transition-all ${
-                                      isBreakSlot
-                                        ? 'bg-amber-50 border-amber-200 text-amber-800 cursor-not-allowed'
-                                        : isBlocked
-                                          ? 'bg-rose-50 border-rose-200 text-rose-700 line-through hover:bg-rose-100'
-                                          : 'bg-white border-emerald-300 text-zinc-950 hover:bg-emerald-50 hover:border-emerald-500 shadow-2xs'
+                    const toggleDaySlot = (slot: string) => {
+                      const current = day.blocked_slots ?? [];
+                      const next = current.includes(slot)
+                        ? current.filter((s) => s !== slot)
+                        : [...current, slot];
+                      updateDay({ blocked_slots: next });
+                    };
+
+                    return (
+                      <div
+                        key={day.day_key}
+                        className={`border rounded-2xl overflow-hidden transition-all ${
+                          day.enabled
+                            ? isExpanded
+                              ? 'border-[#EA580C]/60 bg-white shadow-sm'
+                              : 'border-[#E2E8F0] bg-white hover:border-[#CBD5E1]'
+                            : 'border-[#E2E8F0] bg-[#F8FAFC]/85'
+                        }`}
+                      >
+                        {/* Main Day Row */}
+                        <div className="p-4 space-y-3">
+                          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
+                            {/* Day Name & Switch */}
+                            <div className="flex items-center justify-between sm:justify-start gap-3 min-w-[205px]">
+                              <div className="flex items-center gap-3">
+                                <button
+                                  type="button"
+                                  role="switch"
+                                  aria-checked={day.enabled}
+                                  aria-label={t.days[day.day_key]}
+                                  onClick={() => {
+                                    const nextEnabled = !day.enabled;
+                                    updateDay({ enabled: nextEnabled });
+                                    if (nextEnabled) setExpandedDayKey(day.day_key);
+                                  }}
+                                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors ${
+                                    day.enabled ? 'bg-[#EA580C]' : 'bg-slate-300'
+                                  }`}
+                                >
+                                  <span
+                                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform ${
+                                      day.enabled
+                                        ? 'ltr:translate-x-5 rtl:-translate-x-5'
+                                        : 'translate-x-0'
+                                    }`}
+                                  />
+                                </button>
+
+                                <div>
+                                  <div className="text-sm font-extrabold text-[#1F2937]">
+                                    {t.days[day.day_key]}
+                                  </div>
+                                  <span
+                                    className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md mt-0.5 ${
+                                      day.enabled
+                                        ? 'bg-[#F0F9FF] text-[#0369A1] border border-[#BAE6FD]'
+                                        : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'
                                     }`}
                                   >
-                                    {isBreakSlot ? (
-                                      <Coffee className="h-3 w-3 text-amber-600" />
-                                    ) : isBlocked ? (
-                                      <Ban className="h-3 w-3 text-rose-500" />
-                                    ) : (
-                                      <Check className="h-3 w-3 text-emerald-600" />
-                                    )}
-                                    <span>{slot}</span>
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
+                                    {day.enabled
+                                      ? `${t.settings.hoursForm.openLabel} · ${activeHours} ${t.settings.hoursForm.hoursUnit}`
+                                      : t.settings.hoursForm.closedLabel}
+                                  </span>
+                                </div>
+                              </div>
 
-                          {/* Custom Excluded Periods inside this day */}
-                          <div className="pt-3 border-t border-zinc-200/80 space-y-2.5">
-                            <div className="text-[11px] font-bold text-zinc-900">
-                              {t.settings.hoursForm.excludedPeriodsTitle}
-                            </div>
-
-                            {(day.excluded_periods ?? []).length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {(day.excluded_periods ?? []).map((p) => (
-                                  <div
-                                    key={p.id}
-                                    className="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-zinc-900"
-                                  >
-                                    <span className="font-mono-num font-semibold" dir="ltr">
-                                      {p.start} – {p.end}
+                              {day.enabled && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setExpandedDayKey(
+                                      isExpanded ? ('' as WorkingDayConfig['day_key']) : day.day_key
+                                    )
+                                  }
+                                  className={`xl:hidden h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-1.5 transition-colors ${
+                                    isExpanded
+                                      ? 'bg-[#EA580C] text-white border-[#C2410C]'
+                                      : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#FFF7ED] hover:border-[#EA580C]'
+                                  }`}
+                                >
+                                  <span>
+                                    {isExpanded
+                                      ? t.settings.hoursForm.hideSlotsBtn
+                                      : t.settings.hoursForm.manageSlotsBtn}
+                                  </span>
+                                  {customBlocksCount > 0 && (
+                                    <span className="px-1.5 py-0.5 rounded bg-rose-600 text-white text-[10px] font-mono-num">
+                                      {customBlocksCount}
                                     </span>
-                                    {p.label && <span className="text-zinc-600">· {p.label}</span>}
-                                    <button
-                                      type="button"
-                                      title={t.settings.hoursForm.removePeriod}
-                                      onClick={() =>
-                                        updateDay({
-                                          excluded_periods: (day.excluded_periods ?? []).filter(
-                                            (item) => item.id !== p.id
-                                          ),
-                                        })
-                                      }
-                                      className="text-rose-600 hover:text-rose-800"
-                                    >
-                                      <Trash2 className="h-3 w-3" />
-                                    </button>
+                                  )}
+                                  {isExpanded ? (
+                                    <ChevronUp className="h-3.5 w-3.5" />
+                                  ) : (
+                                    <ChevronDown className="h-3.5 w-3.5" />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Structured Labeled Time Controls */}
+                            {day.enabled ? (
+                              <div className="flex flex-wrap items-end gap-2.5 flex-1">
+                                {/* Open Time */}
+                                <div className="min-w-[104px]">
+                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                    {t.settings.hoursForm.open}
+                                  </label>
+                                  <select
+                                    value={day.open}
+                                    onChange={(e) => updateDay({ open: e.target.value })}
+                                    dir="ltr"
+                                    className="w-full h-9 px-2.5 border border-[#CBD5E1] rounded-xl text-xs font-mono-num font-bold text-[#1F2937] bg-white"
+                                  >
+                                    {openOptions.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Close Time */}
+                                <div className="min-w-[104px]">
+                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                    {t.settings.hoursForm.close}
+                                  </label>
+                                  <select
+                                    value={day.close}
+                                    onChange={(e) => updateDay({ close: e.target.value })}
+                                    dir="ltr"
+                                    className="w-full h-9 px-2.5 border border-[#CBD5E1] rounded-xl text-xs font-mono-num font-bold text-[#1F2937] bg-white"
+                                  >
+                                    {closeOptions.map((opt) => (
+                                      <option key={opt} value={opt}>
+                                        {opt}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+
+                                {/* Break Toggle */}
+                                <div>
+                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                    {t.settings.hoursForm.breakTime}
+                                  </label>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      updateDay(
+                                        hasBreak
+                                          ? { break_start: '', break_end: '' }
+                                          : { break_start: '13:00', break_end: '14:30' }
+                                      )
+                                    }
+                                    className={`h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-1.5 transition-colors ${
+                                      hasBreak
+                                        ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E]'
+                                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
+                                    }`}
+                                  >
+                                    <Coffee className="h-3.5 w-3.5 shrink-0" />
+                                    <span>
+                                      {hasBreak
+                                        ? t.settings.hoursForm.hasBreak
+                                        : t.settings.hoursForm.noBreak}
+                                    </span>
+                                  </button>
+                                </div>
+
+                                {/* Break Start & End */}
+                                {hasBreak && (
+                                  <div className="flex items-end gap-1.5 bg-[#FFFBEB]/65 border border-[#FDE68A] rounded-xl px-2.5 py-1.5">
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-[#92400E] mb-0.5">
+                                        {t.settings.hoursForm.periodStart}
+                                      </span>
+                                      <select
+                                        value={day.break_start}
+                                        onChange={(e) => updateDay({ break_start: e.target.value })}
+                                        dir="ltr"
+                                        className="h-7 px-2 border border-[#FCD34D] bg-white rounded-lg text-xs font-mono-num font-bold text-[#78350F]"
+                                      >
+                                        {breakStartOptions.map((opt) => (
+                                          <option key={opt} value={opt}>
+                                            {opt}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <span className="text-[#B45309] pb-1 font-bold">–</span>
+                                    <div>
+                                      <span className="block text-[10px] font-bold text-[#92400E] mb-0.5">
+                                        {t.settings.hoursForm.periodEnd}
+                                      </span>
+                                      <select
+                                        value={day.break_end}
+                                        onChange={(e) => updateDay({ break_end: e.target.value })}
+                                        dir="ltr"
+                                        className="h-7 px-2 border border-[#FCD34D] bg-white rounded-lg text-xs font-mono-num font-bold text-[#78350F]"
+                                      >
+                                        {breakEndOptions.map((opt) => (
+                                          <option key={opt} value={opt}>
+                                            {opt}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
                                   </div>
-                                ))}
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex-1 text-xs font-medium text-[#64748B]">
+                                {t.settings.hoursForm.closedDayHint}
                               </div>
                             )}
 
-                            <div className="flex flex-wrap items-center gap-2 text-xs">
-                              <span className="text-[11px] text-zinc-600">{t.settings.hoursForm.periodStart}</span>
-                              <input
-                                type="time"
-                                value={newPeriodStart}
-                                onChange={(e) => setNewPeriodStart(e.target.value)}
-                                className="h-8 px-2 border border-zinc-200 rounded-lg bg-white font-mono-num text-xs"
-                              />
-                              <span className="text-[11px] text-zinc-600">{t.settings.hoursForm.periodEnd}</span>
-                              <input
-                                type="time"
-                                value={newPeriodEnd}
-                                onChange={(e) => setNewPeriodEnd(e.target.value)}
-                                className="h-8 px-2 border border-zinc-200 rounded-lg bg-white font-mono-num text-xs"
-                              />
-                              <input
-                                type="text"
-                                value={newPeriodReason}
-                                onChange={(e) => setNewPeriodReason(e.target.value)}
-                                placeholder={t.settings.hoursForm.periodReasonPlaceholder}
-                                className="h-8 px-2.5 border border-zinc-200 rounded-lg bg-white text-xs min-w-[180px] flex-1"
-                              />
+                            {/* Desktop Expand Button */}
+                            {day.enabled && (
                               <button
                                 type="button"
-                                onClick={() => {
-                                  if (!newPeriodStart || !newPeriodEnd || newPeriodEnd <= newPeriodStart) return;
-                                  updateDay({
-                                    excluded_periods: [
-                                      ...(day.excluded_periods ?? []),
-                                      {
-                                        id: `ep_${Date.now()}`,
-                                        start: newPeriodStart,
-                                        end: newPeriodEnd,
-                                        label: newPeriodReason.trim() || undefined,
-                                      },
-                                    ],
-                                  });
-                                  setNewPeriodReason('');
-                                }}
-                                className="h-8 px-3 rounded-lg text-[11px] font-semibold btn-outline inline-flex items-center gap-1"
+                                onClick={() =>
+                                  setExpandedDayKey(
+                                    isExpanded ? ('' as WorkingDayConfig['day_key']) : day.day_key
+                                  )
+                                }
+                                className={`hidden xl:inline-flex h-9 px-3.5 rounded-xl text-xs font-bold border items-center gap-1.5 shrink-0 transition-colors ${
+                                  isExpanded
+                                    ? 'bg-[#EA580C] text-white border-[#C2410C]'
+                                    : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#FFF7ED] hover:border-[#EA580C]'
+                                }`}
                               >
-                                <Plus className="h-3.5 w-3.5" />
-                                <span>{t.settings.hoursForm.addExcludedPeriod}</span>
+                                <span>
+                                  {isExpanded
+                                    ? t.settings.hoursForm.hideSlotsBtn
+                                    : t.settings.hoursForm.manageSlotsBtn}
+                                </span>
+                                {customBlocksCount > 0 && (
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-[10px] font-mono-num ${
+                                      isExpanded
+                                        ? 'bg-white/25 text-white'
+                                        : 'bg-rose-600 text-white'
+                                    }`}
+                                  >
+                                    {customBlocksCount}
+                                  </span>
+                                )}
+                                {isExpanded ? (
+                                  <ChevronUp className="h-3.5 w-3.5" />
+                                ) : (
+                                  <ChevronDown className="h-3.5 w-3.5" />
+                                )}
                               </button>
+                            )}
+                          </div>
+
+                          {/* Instant Visual Hourly Bar (08:00 -> 20:00) */}
+                          {day.enabled && (
+                            <div className="pt-1">
+                              <div className="grid grid-cols-13 gap-1" dir="ltr">
+                                {timelineHours.map((slot) => {
+                                  const avail = getSlotAvailability(day, slot);
+                                  const barTone =
+                                    avail.status === 'available'
+                                      ? 'bg-[#0284C7]'
+                                      : avail.status === 'break'
+                                        ? 'bg-[#F59E0B]'
+                                        : avail.status === 'blocked_recurring'
+                                          ? 'bg-[#FB7185]'
+                                          : 'bg-[#E2E8F0]';
+                                  return (
+                                    <div key={slot} className="space-y-1">
+                                      <div
+                                        title={`${slot} — ${
+                                          avail.status === 'available'
+                                            ? t.settings.hoursForm.slotOpen
+                                            : avail.status === 'break'
+                                              ? t.settings.hoursForm.slotBreak
+                                              : avail.status === 'blocked_recurring'
+                                                ? t.settings.hoursForm.slotRemoved
+                                                : t.appointments.agenda.outsideHours
+                                        }`}
+                                        className={`h-2 rounded-full transition-colors ${barTone}`}
+                                      />
+                                      <div className="hidden sm:block text-[9px] font-mono-num text-[#64748B] text-center">
+                                        {slot.slice(0, 2)}
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Expanded Interactive Hourly Slots & Custom Excluded Periods */}
+                        {isExpanded && (
+                          <div className="px-4 py-4 bg-[#F8FAFC] border-t border-[#E2E8F0] space-y-4">
+                            <div>
+                              <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                                <span className="text-xs font-extrabold text-[#1F2937]">
+                                  {t.settings.hoursForm.hourlySlotsTitle}
+                                </span>
+                                <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#475569]">
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#0284C7]" />
+                                    {t.settings.hoursForm.slotOpen}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]" />
+                                    {t.settings.hoursForm.slotBreak}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1.5">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#E11D48]" />
+                                    {t.settings.hoursForm.slotRemoved}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
+                                {daySlots.map((slot) => {
+                                  const avail = getSlotAvailability(day, slot);
+                                  const isBreakSlot = avail.status === 'break';
+                                  const isBlocked = avail.status === 'blocked_recurring';
+                                  return (
+                                    <button
+                                      key={slot}
+                                      type="button"
+                                      disabled={isBreakSlot}
+                                      onClick={() => toggleDaySlot(slot)}
+                                      className={`h-9 px-2.5 rounded-xl text-xs font-mono-num font-bold border inline-flex items-center justify-center gap-1.5 transition-all ${
+                                        isBreakSlot
+                                          ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E] cursor-not-allowed'
+                                          : isBlocked
+                                            ? 'bg-[#FFF1F2] border-[#FECDD3] text-[#BE123C] line-through hover:bg-[#FFE4E6]'
+                                            : 'bg-white border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] hover:border-[#0284C7] shadow-2xs'
+                                      }`}
+                                    >
+                                      {isBreakSlot ? (
+                                        <Coffee className="h-3.5 w-3.5 text-[#D97706] shrink-0" />
+                                      ) : isBlocked ? (
+                                        <Ban className="h-3.5 w-3.5 text-[#E11D48] shrink-0" />
+                                      ) : (
+                                        <Check className="h-3.5 w-3.5 text-[#0284C7] shrink-0" />
+                                      )}
+                                      <span>{slot}</span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              {/* Quick break presets */}
+                              <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px]">
+                                <span className="font-bold text-[#64748B]">
+                                  {t.settings.hoursForm.quickBreakPreset}
+                                </span>
+                                {[
+                                  { start: '12:30', end: '14:00' },
+                                  { start: '13:00', end: '14:30' },
+                                  { start: '13:00', end: '14:00' },
+                                ].map((preset) => (
+                                  <button
+                                    key={`${preset.start}-${preset.end}`}
+                                    type="button"
+                                    onClick={() =>
+                                      updateDay({ break_start: preset.start, break_end: preset.end })
+                                    }
+                                    className="px-2.5 py-1 rounded-lg bg-white border border-[#FDE68A] text-[#92400E] hover:bg-[#FFFBEB] font-mono-num font-bold"
+                                  >
+                                    {preset.start}–{preset.end}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Custom Excluded Periods inside this day */}
+                            <div className="pt-3.5 border-t border-[#E2E8F0] space-y-2.5">
+                              <div className="text-xs font-extrabold text-[#1F2937]">
+                                {t.settings.hoursForm.excludedPeriodsTitle}
+                              </div>
+
+                              {(day.excluded_periods ?? []).length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                  {(day.excluded_periods ?? []).map((p) => (
+                                    <div
+                                      key={p.id}
+                                      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#FFFBEB] border border-[#FDE68A] text-xs text-[#78350F]"
+                                    >
+                                      <span className="font-mono-num font-bold" dir="ltr">
+                                        {p.start} – {p.end}
+                                      </span>
+                                      {p.label && <span className="font-medium">· {p.label}</span>}
+                                      <button
+                                        type="button"
+                                        title={t.settings.hoursForm.removePeriod}
+                                        onClick={() =>
+                                          updateDay({
+                                            excluded_periods: (day.excluded_periods ?? []).filter(
+                                              (item) => item.id !== p.id
+                                            ),
+                                          })
+                                        }
+                                        className="text-rose-600 hover:text-rose-800"
+                                      >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              <div className="flex flex-wrap items-center gap-2 text-xs">
+                                <span className="text-[11px] font-bold text-[#64748B]">
+                                  {t.settings.hoursForm.periodStart}
+                                </span>
+                                <select
+                                  value={newPeriodStart}
+                                  onChange={(e) => setNewPeriodStart(e.target.value)}
+                                  dir="ltr"
+                                  className="h-9 px-2.5 border border-[#CBD5E1] rounded-xl bg-white font-mono-num text-xs font-bold"
+                                >
+                                  {ensureTimeOption(halfHourOptions, newPeriodStart).map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt}
+                                    </option>
+                                  ))}
+                                </select>
+                                <span className="text-[11px] font-bold text-[#64748B]">
+                                  {t.settings.hoursForm.periodEnd}
+                                </span>
+                                <select
+                                  value={newPeriodEnd}
+                                  onChange={(e) => setNewPeriodEnd(e.target.value)}
+                                  dir="ltr"
+                                  className="h-9 px-2.5 border border-[#CBD5E1] rounded-xl bg-white font-mono-num text-xs font-bold"
+                                >
+                                  {ensureTimeOption(halfHourOptions, newPeriodEnd).map((opt) => (
+                                    <option key={opt} value={opt}>
+                                      {opt}
+                                    </option>
+                                  ))}
+                                </select>
+                                <input
+                                  type="text"
+                                  value={newPeriodReason}
+                                  onChange={(e) => setNewPeriodReason(e.target.value)}
+                                  placeholder={t.settings.hoursForm.periodReasonPlaceholder}
+                                  className="h-9 px-3 border border-[#CBD5E1] rounded-xl bg-white text-xs min-w-[180px] flex-1"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (!newPeriodStart || !newPeriodEnd || newPeriodEnd <= newPeriodStart) return;
+                                    updateDay({
+                                      excluded_periods: [
+                                        ...(day.excluded_periods ?? []),
+                                        {
+                                          id: `ep_${Date.now()}`,
+                                          start: newPeriodStart,
+                                          end: newPeriodEnd,
+                                          label: newPeriodReason.trim() || undefined,
+                                        },
+                                      ],
+                                    });
+                                    setNewPeriodReason('');
+                                  }}
+                                  className="h-9 px-3.5 rounded-xl text-xs font-bold btn-outline inline-flex items-center gap-1.5"
+                                >
+                                  <Plus className="h-3.5 w-3.5" />
+                                  <span>{t.settings.hoursForm.addExcludedPeriod}</span>
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  {t.settings.hoursForm.holidays}
-                </label>
-                <input
-                  type="text"
-                  value={formState.holidays}
-                  onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
-                  className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
-                />
-              </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#1F2937] mb-1.5">
+                    {t.settings.hoursForm.holidays}
+                  </label>
+                  <input
+                    type="text"
+                    value={formState.holidays}
+                    onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
+                    className="w-full h-10 px-3.5 text-xs border border-[#CBD5E1] rounded-xl bg-white"
+                  />
+                </div>
 
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => handleSave()}
-                  className="px-5 py-2.5 text-xs font-bold rounded-xl btn-primary"
-                >
-                  {t.app.save}
-                </button>
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleSave()}
+                    className="px-6 py-2.5 text-xs font-bold rounded-xl btn-primary"
+                  >
+                    {t.app.save}
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* D. Appointment Settings */}
-          {activeTab === 'appointments' && (
-            <div className="space-y-4">
-              <h3 className="text-sm font-extrabold text-zinc-950 pb-3 border-b border-zinc-200">
-                {t.settings.tabs.appointments}
-              </h3>
+          {activeTab === 'appointments' && (() => {
+            const halfHourOptions = generateHalfHourOptions(7, 22);
+            return (
+              <div className="space-y-4">
+                <h3 className="text-sm font-extrabold text-[#1F2937] pb-3 border-b border-[#E2E8F0]">
+                  {t.settings.tabs.appointments}
+                </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <label className="block font-medium text-slate-700 mb-1">
-                    {t.settings.appointmentsForm.duration} ({t.settings.appointmentsForm.minutes})
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                      {t.settings.appointmentsForm.duration} ({t.settings.appointmentsForm.minutes})
+                    </label>
+                    <select
+                      value={formState.appointment_duration_minutes}
+                      onChange={(e) =>
+                        setFormState({ ...formState, appointment_duration_minutes: Number(e.target.value) })
+                      }
+                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-semibold"
+                    >
+                      {[30, 45, 60, 90].map((m) => (
+                        <option key={m} value={m}>{m} {t.settings.appointmentsForm.minutes}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                      {t.settings.appointmentsForm.rescheduleLimit}
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={formState.allow_reschedule_hours}
+                      onChange={(e) =>
+                        setFormState({ ...formState, allow_reschedule_hours: Number(e.target.value) })
+                      }
+                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl font-mono-num font-semibold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                      {t.settings.appointmentsForm.bookingWindowStart}
+                    </label>
+                    <select
+                      value={formState.booking_window_start}
+                      onChange={(e) =>
+                        setFormState({ ...formState, booking_window_start: e.target.value })
+                      }
+                      dir="ltr"
+                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-bold"
+                    >
+                      {ensureTimeOption(halfHourOptions, formState.booking_window_start).map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                      {t.settings.appointmentsForm.bookingWindowEnd}
+                    </label>
+                    <select
+                      value={formState.booking_window_end}
+                      onChange={(e) =>
+                        setFormState({ ...formState, booking_window_end: e.target.value })
+                      }
+                      dir="ltr"
+                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-bold"
+                    >
+                      {ensureTimeOption(halfHourOptions, formState.booking_window_end).map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5 pt-2">
+                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1F2937] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formState.auto_confirm_appointments}
+                      onChange={(e) =>
+                        setFormState({ ...formState, auto_confirm_appointments: e.target.checked })
+                      }
+                      className="h-4 w-4 accent-[#EA580C]"
+                    />
+                    <span>{t.settings.appointmentsForm.autoConfirm}</span>
                   </label>
-                  <select
-                    value={formState.appointment_duration_minutes}
-                    onChange={(e) =>
-                      setFormState({ ...formState, appointment_duration_minutes: Number(e.target.value) })
-                    }
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg bg-white font-mono-num"
+
+                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1F2937] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formState.send_visit_reminders}
+                      onChange={(e) =>
+                        setFormState({ ...formState, send_visit_reminders: e.target.checked })
+                      }
+                      className="h-4 w-4 accent-[#EA580C]"
+                    />
+                    <span>{t.settings.appointmentsForm.visitReminders}</span>
+                  </label>
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => handleSave()}
+                    className="px-6 py-2.5 text-xs font-bold rounded-xl btn-primary"
                   >
-                    {[30, 45, 60, 90].map((m) => (
-                      <option key={m} value={m}>{m} {t.settings.appointmentsForm.minutes}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-medium text-slate-700 mb-1">
-                    {t.settings.appointmentsForm.rescheduleLimit}
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={formState.allow_reschedule_hours}
-                    onChange={(e) =>
-                      setFormState({ ...formState, allow_reschedule_hours: Number(e.target.value) })
-                    }
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg font-mono-num"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-medium text-slate-700 mb-1">
-                    {t.settings.appointmentsForm.bookingWindowStart}
-                  </label>
-                  <input
-                    type="time"
-                    value={formState.booking_window_start}
-                    onChange={(e) =>
-                      setFormState({ ...formState, booking_window_start: e.target.value })
-                    }
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg font-mono-num"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-medium text-slate-700 mb-1">
-                    {t.settings.appointmentsForm.bookingWindowEnd}
-                  </label>
-                  <input
-                    type="time"
-                    value={formState.booking_window_end}
-                    onChange={(e) =>
-                      setFormState({ ...formState, booking_window_end: e.target.value })
-                    }
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg font-mono-num"
-                  />
+                    {t.app.save}
+                  </button>
                 </div>
               </div>
-
-              <div className="space-y-2.5 pt-2">
-                <label className="flex items-center gap-2.5 text-xs text-slate-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formState.auto_confirm_appointments}
-                    onChange={(e) =>
-                      setFormState({ ...formState, auto_confirm_appointments: e.target.checked })
-                    }
-                    className="h-4 w-4 accent-[#16966A]"
-                  />
-                  <span>{t.settings.appointmentsForm.autoConfirm}</span>
-                </label>
-
-                <label className="flex items-center gap-2.5 text-xs text-slate-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formState.send_visit_reminders}
-                    onChange={(e) =>
-                      setFormState({ ...formState, send_visit_reminders: e.target.checked })
-                    }
-                    className="h-4 w-4 accent-[#16966A]"
-                  />
-                  <span>{t.settings.appointmentsForm.visitReminders}</span>
-                </label>
-              </div>
-
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => handleSave()}
-                  className="px-5 py-2.5 text-xs font-bold rounded-xl btn-primary"
-                >
-                  {t.app.save}
-                </button>
-              </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* E. Notifications Settings */}
           {activeTab === 'notifications' && (
@@ -845,7 +1187,7 @@ export const SettingsSection: React.FC = () => {
               <div className="overflow-x-auto border border-[#E3EAE5] rounded-2xl overflow-hidden">
                 <table className="w-full text-xs text-start border-collapse">
                   <thead>
-                    <tr className="bg-[#F5F7F5] text-[#1F2937] border-b-2 border-[#E3EAE5] font-bold whitespace-nowrap">
+                    <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
                       <th className="py-3 px-3.5 text-start">{t.reports.teamSection.employee}</th>
                       {(Object.keys(t.team.permissionsLabels) as (keyof EmployeePermissions)[]).map((pk) => (
                         <th key={pk} className="py-3 px-2.5 text-center whitespace-nowrap">
@@ -854,9 +1196,9 @@ export const SettingsSection: React.FC = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E3EAE5]">
+                  <tbody className="divide-y divide-[#E2E8F0]">
                     {employees.map((emp) => (
-                      <tr key={emp.id} className="hover:bg-[#F5F7F5]">
+                      <tr key={emp.id} className="hover:bg-[#FFF7ED]">
                         <td className="py-3 px-3.5 font-bold text-[#1F2937] whitespace-nowrap">
                           <div>{localizePersonName(emp.name, language)}</div>
                           <div className="text-[11px] text-[#64748B] font-medium">
