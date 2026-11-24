@@ -49,6 +49,8 @@ export const AdsAnalyticsSection: React.FC = () => {
   const { t, language, adCampaigns } = useAgency();
 
   const [platformFilter, setPlatformFilter] = useState<string>('all');
+  const [campaignStatusOverrides, setCampaignStatusOverrides] = useState<Record<string, AdCampaign['status']>>({});
+  const getCampaignStatus = (campaign: AdCampaign) => campaignStatusOverrides[campaign.id] ?? campaign.status;
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateRange, setDateRange] = useState<GlobalTimePeriod>('all');
   const [customFrom, setCustomFrom] = useState('2026-10-01');
@@ -63,7 +65,7 @@ export const AdsAnalyticsSection: React.FC = () => {
     return adCampaigns
       .filter((c) => {
         if (platformFilter !== 'all' && c.platform !== platformFilter) return false;
-        if (statusFilter !== 'all' && c.status !== statusFilter) return false;
+        if (statusFilter !== 'all' && getCampaignStatus(c) !== statusFilter) return false;
         return true;
       })
       .map((c) => {
@@ -329,16 +331,7 @@ export const AdsAnalyticsSection: React.FC = () => {
                           {formatMAD(cpl, language)}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
-                          <StatusLabel
-                            label={t.ads.campaignStatuses[camp.status]}
-                            tone={
-                              camp.status === 'active'
-                                ? 'success'
-                                : camp.status === 'paused'
-                                  ? 'warning'
-                                  : 'neutral'
-                            }
-                          />
+                          <select value={getCampaignStatus(camp)} onChange={(e) => setCampaignStatusOverrides((prev) => ({ ...prev, [camp.id]: e.target.value as AdCampaign['status'] }))} className="rounded-lg border border-[#E2E8F0] bg-white px-2 py-1.5 text-[11px] font-bold text-[#1F2937] focus:outline-none focus:ring-2 focus:ring-orange-200" aria-label={t.ads.table.status}>{(['active', 'paused', 'completed'] as AdCampaign['status'][]).map((status) => <option key={status} value={status}>{t.ads.campaignStatuses[status]}</option>)}</select>
                         </td>
                       </tr>
                     );
