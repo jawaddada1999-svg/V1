@@ -986,7 +986,7 @@ export const translations: Record<Language, TranslationDict> = {
     },
     leadClassifications: {
       vip: 'VIP (أولوية قصوى)',
-      hot: 'ساخن (Hot)',
+      hot: 'VIP',
       warm: 'دافئ (Warm)',
       cold: 'بارد (Cold)',
     },
@@ -1970,7 +1970,7 @@ export const translations: Record<Language, TranslationDict> = {
     },
     leadClassifications: {
       vip: 'VIP',
-      hot: 'Hot',
+      hot: 'VIP',
       warm: 'Warm',
       cold: 'Cold',
     },
@@ -2954,7 +2954,7 @@ export const translations: Record<Language, TranslationDict> = {
     },
     leadClassifications: {
       vip: 'VIP',
-      hot: 'Chaud',
+      hot: 'VIP',
       warm: 'Tiède',
       cold: 'Froid',
     },
