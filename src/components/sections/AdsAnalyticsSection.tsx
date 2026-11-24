@@ -281,63 +281,8 @@ export const AdsAnalyticsSection: React.FC = () => {
       ) : (
         <>
           {/* Charts Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <div className="bg-white border border-[#E2E8F0] card-surface rounded-[20px] overflow-hidden">
-              <div className="h-1 w-full bg-[#EA580C]" />
-              <div className="px-5 py-3.5 bg-[#FFF7ED]/70 border-b border-[#E2E8F0] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#EA580C]" />
-                <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.leadsByCampaign}</h3>
-              </div>
-              <div className="p-5">
-                <BarComparisonChart
-                  data={leadsByCampaignSeries}
-                  primaryLabel={t.ads.table.leads}
-                  secondaryLabel={t.ads.table.appointments}
-                />
-              </div>
-            </div>
-
-            <div className="bg-white border border-[#E2E8F0] card-surface rounded-[20px] overflow-hidden">
-              <div className="h-1 w-full bg-[#0284C7]" />
-              <div className="px-5 py-3.5 bg-[#F0F9FF]/70 border-b border-[#E2E8F0] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#0284C7]" />
-                <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.leadsByPlatform}</h3>
-              </div>
-              <div className="p-5">
-                <DonutDistributionChart
-                  slices={platformSlices}
-                  centerValue={totals.leads}
-                  centerLabel={t.ads.table.leads}
-                />
-              </div>
-            </div>
-
-            <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
-              <div className="h-1 w-full bg-[#F59E0B]" />
-              <div className="px-5 py-3.5 bg-[#FFFBEB]/70 border-b border-[#E2E8F0] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#F59E0B]" />
-                <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.dailyTrends}</h3>
-              </div>
-              <div className="p-5">
-                <AreaTrendChart data={campaignTrend} primaryLabel={t.ads.table.leads} />
-              </div>
-            </div>
-
-            <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
-              <div className="h-1 w-full bg-[#1E293B]" />
-              <div className="px-5 py-3.5 bg-[#F8FAFC] border-b border-[#E2E8F0] flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-[#1E293B]" />
-                <h3 className="text-sm font-extrabold text-[#1F2937]">{t.ads.charts.spendAndCpl}</h3>
-              </div>
-              <div className="p-5">
-                <DualAxisSpendCplChart
-                  data={spendAndCplSeries}
-                  spendLabel={t.ads.table.spend}
-                  cplLabel={t.ads.table.cpl}
-                  currencyUnit={t.app.currencyCode}
-                />
-              </div>
-            </div>
+                    <div className="rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-slate-600 mb-4">
+            Campaign performance is presented in the table below for a clearer, more focused view.
           </div>
 
           {/* Campaigns Table */}
