@@ -291,7 +291,7 @@ export const PropertiesSection: React.FC = () => {
           {filteredProperties.map((prop) => (
             <div
               key={prop.id}
-              className={`border card-surface rounded-2xl overflow-hidden flex flex-col transition-all hover:-translate-y-0.5 hover:shadow-md ${
+              className={`border border-[#D7E1DC] ring-1 ring-[#12352B]/5 card-surface rounded-[22px] overflow-hidden flex flex-col transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_28px_-14px_rgba(18,53,43,0.28)] ${
                 prop.transaction_type === 'sale'
                   ? 'bg-gradient-to-b from-white to-[#F0F9FF] border-[#BAE6FD]'
                   : 'bg-gradient-to-b from-white to-[#ECFDF5] border-[#A7F3D0]'
