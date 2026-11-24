@@ -417,3 +417,8 @@ main table tbody tr:last-child td {
     background: #ffffff !important;
   }
 }
+
+/* Responsive polish for app-like mobile and spacious desktop */
+@media (max-width: 640px) { html { font-size: 13px; } body { overscroll-behavior-y: contain; } #root main { padding: 0.75rem !important; } #root main > * { min-width: 0; } #root main .card-surface { border-radius: 18px; } #root main button, #root main select, #root main input, #root main textarea { min-height: 40px; } #root main table { min-width: 680px; } #root main .overflow-x-auto { -webkit-overflow-scrolling: touch; } #root main h1, #root main h2 { letter-spacing: -0.02em; } }
+@media (min-width: 1024px) { #root main { padding: 1.5rem 1.75rem !important; } #root main > * { animation: ibonda-enter 220ms ease-out both; } }
+@keyframes ibonda-enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
