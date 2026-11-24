@@ -436,21 +436,6 @@ export const LeadFormModal: React.FC<{
             </div>
 
             <div>
-              <label className={LABEL_CLASS}>{t.leads.form.contactMethod}</label>
-              <select
-                value={contactMethod}
-                onChange={(e) => setContactMethod(e.target.value as ContactMethod)}
-                className={SELECT_CLASS}
-              >
-                {(Object.keys(t.contactMethods) as ContactMethod[]).map((cm) => (
-                  <option key={cm} value={cm}>
-                    {t.contactMethods[cm]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
               <label className={LABEL_CLASS}>{t.leads.form.source}</label>
               <select
                 value={source}
