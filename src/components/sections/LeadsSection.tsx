@@ -599,7 +599,7 @@ export const LeadsSection: React.FC = () => {
                                 : t.appointments.agenda.directCall
                             }
                           />
-                          {<a
+                          <a
                               href={buildTelHref(lead.phone)}
                               onClick={(e) => e.stopPropagation()}
                               title={t.appointments.agenda.directCall}
