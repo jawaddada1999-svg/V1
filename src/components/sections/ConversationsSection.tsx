@@ -278,7 +278,7 @@ export const ConversationsSection: React.FC = () => {
 
         {/* Center: Message Thread */}
         <div
-          className={`lg:col-span-5 border-b lg:border-b-0 lg:border-e border-slate-200 flex-col bg-[#F8FAFC] ${
+          className={`lg:col-span-5 border-b lg:border-b-0 lg:border-e border-indigo-200 flex-col bg-indigo-50/40 shadow-inner ${
             mobilePane === 'chat' ? 'flex' : 'hidden lg:flex'
           }`}
         >
