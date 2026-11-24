@@ -59,6 +59,7 @@ export const OwnersSection: React.FC = () => {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [cityFilter, setCityFilter] = useState<string>('all');
+  const [propertyIntentFilter, setPropertyIntentFilter] = useState<'all' | 'sale' | 'rent'>('all');
   const [ownerModalOpen, setOwnerModalOpen] = useState(false);
   const [editingOwner, setEditingOwner] = useState<PropertyOwner | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
@@ -71,6 +72,9 @@ export const OwnersSection: React.FC = () => {
     return owners.filter((o) => {
       if (typeFilter !== 'all' && o.owner_type !== typeFilter) return false;
       if (cityFilter !== 'all' && o.city !== cityFilter) return false;
+      const linked = properties.filter((p) => p.owner_id === o.id || p.owner_name === o.name);
+      if (propertyIntentFilter === 'sale' && !(linked.some((p) => p.transaction_type === 'sale') || o.owner_intent === 'sell' || o.owner_intent === 'both')) return false;
+      if (propertyIntentFilter === 'rent' && !(linked.some((p) => p.transaction_type === 'rent') || o.owner_intent === 'rent_out' || o.owner_intent === 'both')) return false;
       if (
         q &&
         !matchesLocalizedQuery(q, language, [o.name, o.phone, o.email, o.city, o.national_id])
@@ -79,7 +83,7 @@ export const OwnersSection: React.FC = () => {
       }
       return true;
     });
-  }, [owners, language, search, typeFilter, cityFilter]);
+  }, [owners, properties, language, search, typeFilter, cityFilter, propertyIntentFilter]);
 
   const stats = useMemo(() => {
 const ownersForSale = owners.filter((owner) => {
@@ -166,7 +170,7 @@ const ownersForSale = owners.filter((owner) => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-zinc-200 card-surface rounded-2xl p-3.5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="bg-white border border-zinc-200 card-surface rounded-2xl p-3.5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="relative">
           <Search className="h-3.5 w-3.5 text-slate-400 absolute top-1/2 -translate-y-1/2 start-3" />
           <input
@@ -198,6 +202,11 @@ const ownersForSale = owners.filter((owner) => {
           {MOROCCAN_CITIES.map((c) => (
             <option key={c} value={c}>{localizeCity(c, language)}</option>
           ))}
+        </select>
+        <select value={propertyIntentFilter} onChange={(e) => setPropertyIntentFilter(e.target.value as 'all' | 'sale' | 'rent')} className="h-9 px-3 text-xs font-semibold border border-slate-200 rounded-lg bg-white">
+          <option value="all">{language === 'ar' ? 'جميع الملاك' : language === 'fr' ? 'Tous les propriétaires' : 'All owners'}</option>
+          <option value="sale">{language === 'ar' ? 'ملاك عندهم عقارات للبيع' : language === 'fr' ? 'Propriétaires pour vente' : 'Owners with properties for sale'}</option>
+          <option value="rent">{language === 'ar' ? 'ملاك عندهم عقارات للكراء' : language === 'fr' ? 'Propriétaires pour location' : 'Owners with properties for rent'}</option>
         </select>
       </div>
 
