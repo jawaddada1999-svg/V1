@@ -1835,6 +1835,7 @@ export const AppointmentFormModal: React.FC<{
   const [employeeId, setEmployeeId] = useState(employees[1]?.id ?? employees[0]?.id ?? '');
   const [date, setDate] = useState(defaultDate || getTodayIso());
   const [time, setTime] = useState(defaultTime || '11:00');
+  const [durationMinutes, setDurationMinutes] = useState<number>(20);
   const [type, setType] = useState<AppointmentType>('in_person_visit');
   const [status, setStatus] = useState<AppointmentStatus>('scheduled');
   const [notes, setNotes] = useState('');
@@ -1860,6 +1861,7 @@ export const AppointmentFormModal: React.FC<{
       setEmployeeId(editingAppointment.employee_id);
       setDate(editingAppointment.date);
       setTime(editingAppointment.time);
+      setDurationMinutes(editingAppointment.duration_minutes ?? 20);
       setType(editingAppointment.type);
       setStatus(editingAppointment.status);
       setNotes(editingAppointment.notes);
@@ -1870,6 +1872,7 @@ export const AppointmentFormModal: React.FC<{
       setEmployeeId(targetLead?.assigned_employee_id ?? employees[0]?.id ?? '');
       setDate(defaultDate || getTodayIso());
       setTime(defaultTime || '11:00');
+      setDurationMinutes(20);
       setType('in_person_visit');
       setStatus('scheduled');
       setNotes('');
@@ -1904,6 +1907,7 @@ export const AppointmentFormModal: React.FC<{
       employee_id: employeeId,
       date,
       time,
+      duration_minutes: durationMinutes,
       type,
       status,
       notes: notes.trim(),
@@ -2074,6 +2078,12 @@ export const AppointmentFormModal: React.FC<{
                   className="w-full h-11 px-3.5 text-sm font-bold text-[#1F2937] bg-white border-2 border-[#E3EAE5] rounded-xl font-mono-num focus:outline-none focus:border-[#16966A]"
                 />
               </div>
+            </div>
+            <div>
+              <label className={LABEL_CLASS}>{language === 'ar' ? 'مدة الموعد' : language === 'fr' ? 'Durée du rendez-vous' : 'Appointment duration'}</label>
+              <select value={durationMinutes} onChange={(e) => setDurationMinutes(Number(e.target.value))} className={SELECT_CLASS}>
+                {[10, 15, 20, 30, 45, 60].map((minutes) => <option key={minutes} value={minutes}>{minutes} {language === 'ar' ? 'دقيقة' : language === 'fr' ? 'min' : 'min'}</option>)}
+              </select>
             </div>
           </div>
 
