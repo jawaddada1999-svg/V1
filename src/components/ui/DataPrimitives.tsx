@@ -358,7 +358,7 @@ export const KpiCard: React.FC<{
   const styles = kpiToneStyles[tone];
 
   return (
-    <div className="bg-white rounded-[20px] border border-[#E3EAE5] hover:border-[#16966A]/45 card-surface p-5 flex flex-col justify-between gap-4 transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md">
+    <div className="bg-white rounded-[22px] border border-[#D5E2DB] ring-1 ring-[#12352B]/[0.04] shadow-[0_8px_24px_-16px_rgba(18,53,43,0.35)] hover:border-[#16966A]/55 card-surface p-5 flex flex-col justify-between gap-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_30px_-14px_rgba(18,53,43,0.3)]">
       <div className="flex items-start justify-between gap-3">
         <div
           className={`h-9 w-9 rounded-xl border flex items-center justify-center shrink-0 ${styles.iconBg} ${styles.iconText} ${styles.iconBorder}`}
