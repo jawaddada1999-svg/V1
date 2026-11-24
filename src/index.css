@@ -422,3 +422,6 @@ main table tbody tr:last-child td {
 @media (max-width: 640px) { html { font-size: 13px; } body { overscroll-behavior-y: contain; } #root main { padding: 0.75rem !important; } #root main > * { min-width: 0; } #root main .card-surface { border-radius: 18px; } #root main button, #root main select, #root main input, #root main textarea { min-height: 40px; } #root main table { min-width: 680px; } #root main .overflow-x-auto { -webkit-overflow-scrolling: touch; } #root main h1, #root main h2 { letter-spacing: -0.02em; } }
 @media (min-width: 1024px) { #root main { padding: 1.5rem 1.75rem !important; } #root main > * { animation: ibonda-enter 220ms ease-out both; } }
 @keyframes ibonda-enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+.mobile-app-nav { padding-bottom: env(safe-area-inset-bottom); }
+@media (max-width: 1023px) { #root { min-height: 100dvh; } }
