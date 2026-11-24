@@ -219,6 +219,7 @@ export interface Appointment {
   employee_id: string;
   date: string;
   time: string;
+  duration_minutes?: number;
   type: AppointmentType;
   status: AppointmentStatus;
   notes: string;
