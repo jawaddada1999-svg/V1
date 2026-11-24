@@ -275,14 +275,6 @@ export const PipelineSection: React.FC = () => {
     setSortBy('default');
   };
 
-  const activePipelineValue = useMemo(
-    () =>
-      filteredLeads
-        .filter((l) => !['closed_lost', 'not_interested'].includes(l.status))
-        .reduce((sum, l) => sum + l.budget, 0),
-    [filteredLeads]
-  );
-
   const conversionRate = useMemo(() => {
     if (!filteredLeads.length) return 0;
     const won = filteredLeads.filter((l) => l.status === 'closed_won').length;
@@ -360,13 +352,7 @@ export const PipelineSection: React.FC = () => {
       </div>
 
       {/* Pipeline Performance Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard
-          title={t.pipeline.indicators.totalPipelineValue}
-          value={formatMAD(activePipelineValue, language)}
-          icon={<Coins className="h-4 w-4" />}
-          tone="navy"
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
         <KpiCard
           title={t.pipeline.indicators.conversionRate}
           value={`${conversionRate}%`}
@@ -378,12 +364,6 @@ export const PipelineSection: React.FC = () => {
           value={`${attendanceRate}%`}
           icon={<UserCheck className="h-4 w-4" />}
           tone="sky"
-        />
-        <KpiCard
-          title={t.pipeline.indicators.avgDealBudget}
-          value={formatMAD(avgBudget, language)}
-          icon={<TrendingUp className="h-4 w-4" />}
-          tone="orange"
         />
       </div>
 
