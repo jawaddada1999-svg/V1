@@ -76,7 +76,7 @@ export function getSlotAvailability(
   settings?: AgencySettings,
   isoDate?: string
 ): SlotAvailability {
-  if (!dayConfig || !dayConfig.enabled) {
+  if (!dayConfig || !dayConfig.enabled || (isoDate && settings?.blocked_dates?.includes(isoDate))) {
     return { status: 'closed_day' };
   }
 
