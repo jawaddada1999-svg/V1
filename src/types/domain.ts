@@ -342,6 +342,7 @@ export interface AgencySettings {
   secondary_color: string;
   working_days: WorkingDayConfig[];
   blocked_date_slots?: Record<string, string[]>;
+  blocked_dates?: string[];
   holidays: string;
   appointment_duration_minutes: number;
   booking_window_start: string;
