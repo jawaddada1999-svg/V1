@@ -98,8 +98,8 @@ export const SettingsSection: React.FC = () => {
   return (
     <div className="space-y-5 settings-workspace">
       <div>
-        <h2 className="text-lg sm:text-[19px] font-extrabold text-[#1F2937]">{t.settings.title}</h2>
-        <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.settings.subtitle}</p>
+        <h2 className="text-lg sm:text-[19px] font-extrabold text-[#1B3554]">{t.settings.title}</h2>
+        <p className="text-xs text-[#647B96] font-medium mt-0.5">{t.settings.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
@@ -113,7 +113,7 @@ export const SettingsSection: React.FC = () => {
                 type="button"
                 onClick={() => setActiveTab(id)}
                 className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all text-start ${
-                  isActive ? 'btn-primary' : 'text-[#1F2937] hover:bg-[#F5F7F5]'
+                  isActive ? 'btn-primary' : 'text-[#1B3554] hover:bg-[#F8FBFF]'
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -128,34 +128,34 @@ export const SettingsSection: React.FC = () => {
           {/* A. Agency Info */}
           {activeTab === 'agency' && (
             <form onSubmit={handleSave} className="space-y-4">
-              <h3 className="text-sm font-extrabold text-[#1F2937] pb-3 border-b border-[#E3EAE5]">
+              <h3 className="text-sm font-extrabold text-[#1B3554] pb-3 border-b border-[#D8E5F5]">
                 {t.settings.tabs.agency}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.name}
                   </label>
                   <input
                     type="text"
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.tagline}
                   </label>
                   <input
                     type="text"
                     value={formState.tagline}
                     onChange={(e) => setFormState({ ...formState, tagline: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.phone}
                   </label>
                   <input
@@ -163,11 +163,11 @@ export const SettingsSection: React.FC = () => {
                     dir="ltr"
                     value={formState.phone}
                     onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg font-mono-num"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg font-mono-num"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.email}
                   </label>
                   <input
@@ -175,22 +175,22 @@ export const SettingsSection: React.FC = () => {
                     dir="ltr"
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.city}
                   </label>
                   <input
                     type="text"
                     value={formState.city}
                     onChange={(e) => setFormState({ ...formState, city: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-medium text-[#526985] mb-1">
                     {t.settings.agencyForm.website}
                   </label>
                   <input
@@ -198,32 +198,32 @@ export const SettingsSection: React.FC = () => {
                     dir="ltr"
                     value={formState.website}
                     onChange={(e) => setFormState({ ...formState, website: e.target.value })}
-                    className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                    className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-[#526985] mb-1">
                   {t.settings.agencyForm.address}
                 </label>
                 <input
                   type="text"
                   value={formState.address}
                   onChange={(e) => setFormState({ ...formState, address: e.target.value })}
-                  className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg"
+                  className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-medium text-[#526985] mb-1">
                   {t.settings.agencyForm.description}
                 </label>
                 <textarea
                   rows={3}
                   value={formState.description}
                   onChange={(e) => setFormState({ ...formState, description: e.target.value })}
-                  className="w-full p-3 text-xs border border-slate-200 rounded-lg"
+                  className="w-full p-3 text-xs border border-[#D8E5F5] rounded-lg"
                 />
               </div>
 
@@ -304,12 +304,12 @@ export const SettingsSection: React.FC = () => {
             return (
               <div className="space-y-6 working-hours-workspace">
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E2E8F0]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E7EEF8]">
                   <div>
-                    <h3 className="text-sm sm:text-base font-extrabold text-[#1F2937]">
+                    <h3 className="text-sm sm:text-base font-extrabold text-[#1B3554]">
                       {t.settings.tabs.hours}
                     </h3>
-                    <p className="text-[13px] leading-6 text-[#64748B] mt-1 max-w-2xl">{t.settings.hoursForm.hourlySlotsHint}</p>
+                    <p className="text-[13px] leading-6 text-[#647B96] mt-1 max-w-2xl">{t.settings.hoursForm.hourlySlotsHint}</p>
                   </div>
                   <button
                     type="button"
@@ -342,8 +342,8 @@ export const SettingsSection: React.FC = () => {
                 {/* Weekly Summary + Quick Schedule Presets */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
                   <div className="lg:col-span-5 grid grid-cols-2 gap-3">
-                    <div className="px-4 py-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex flex-col justify-between">
-                      <span className="text-[11px] font-bold text-[#64748B]">
+                    <div className="px-4 py-3 rounded-xl bg-[#F8FAFC] border border-[#E7EEF8] flex flex-col justify-between">
+                      <span className="text-[11px] font-bold text-[#647B96]">
                         {t.settings.hoursForm.activeDaysCount}
                       </span>
                       <span className="text-lg font-extrabold font-mono-num text-[#1E293B] mt-1">
@@ -369,21 +369,21 @@ export const SettingsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => applyPreset('standard')}
-                        className="h-8 px-3 rounded-lg bg-white border border-[#FDBA74] text-[#9A3412] hover:bg-[#DBEAFE] text-[11px] font-bold transition-colors"
+                        className="h-8 px-3 rounded-xl bg-white border border-[#FDBA74] text-[#9A3412] hover:bg-[#DBEAFE] text-[11px] font-bold transition-colors"
                       >
                         {t.settings.hoursForm.presetStandard}
                       </button>
                       <button
                         type="button"
                         onClick={() => applyPreset('continuous')}
-                        className="h-8 px-3 rounded-lg bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold transition-colors"
+                        className="h-8 px-3 rounded-xl bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold transition-colors"
                       >
                         {t.settings.hoursForm.presetContinuous}
                       </button>
                       <button
                         type="button"
                         onClick={() => applyPreset('weekdays_only')}
-                        className="h-8 px-3 rounded-lg bg-white border border-[#E2E8F0] text-[#1F2937] hover:bg-[#F8FAFC] text-[11px] font-bold transition-colors"
+                        className="h-8 px-3 rounded-xl bg-white border border-[#E7EEF8] text-[#1B3554] hover:bg-[#F8FAFC] text-[11px] font-bold transition-colors"
                       >
                         {t.settings.hoursForm.presetWeekdays}
                       </button>
@@ -423,12 +423,12 @@ export const SettingsSection: React.FC = () => {
                     return (
                       <div
                         key={day.day_key}
-                        className={`border rounded-2xl overflow-hidden transition-all shadow-[0_2px_10px_rgba(18,53,43,0.035)] ${
+                        className={`border rounded-2xl overflow-hidden transition-all shadow-[0_4px_16px_rgba(23,54,93,0.06)] ${
                           day.enabled
                             ? isExpanded
                               ? 'border-[#2563EB]/60 bg-white shadow-sm'
-                              : 'border-[#E2E8F0] bg-white hover:border-[#CBD5E1]'
-                            : 'border-[#E2E8F0] bg-[#F8FAFC]/85'
+                              : 'border-[#E7EEF8] bg-white hover:border-[#D8E5F5]'
+                            : 'border-[#E7EEF8] bg-[#F8FAFC]/85'
                         }`}
                       >
                         {/* Main Day Row */}
@@ -461,14 +461,14 @@ export const SettingsSection: React.FC = () => {
                                 </button>
 
                                 <div>
-                                  <div className="text-[15px] font-extrabold text-[#1F2937]">
+                                  <div className="text-[15px] font-extrabold text-[#1B3554]">
                                     {t.days[day.day_key]}
                                   </div>
                                   <span
                                     className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md mt-0.5 ${
                                       day.enabled
                                         ? 'bg-[#F0F9FF] text-[#0369A1] border border-[#BAE6FD]'
-                                        : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0]'
+                                        : 'bg-[#F1F5F9] text-[#647B96] border border-[#E7EEF8]'
                                     }`}
                                   >
                                     {day.enabled
@@ -489,7 +489,7 @@ export const SettingsSection: React.FC = () => {
                                   className={`xl:hidden h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-1.5 transition-colors ${
                                     isExpanded
                                       ? 'bg-[#2563EB] text-white border-[#C2410C]'
-                                      : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
+                                      : 'bg-white text-[#1B3554] border-[#E7EEF8] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
                                   }`}
                                 >
                                   <span>
@@ -516,14 +516,14 @@ export const SettingsSection: React.FC = () => {
                               <div className="flex flex-wrap items-end gap-2.5 flex-1">
                                 {/* Open Time */}
                                 <div className="min-w-[104px]">
-                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                  <label className="block text-[10px] font-bold text-[#647B96] mb-1">
                                     {t.settings.hoursForm.open}
                                   </label>
                                   <select
                                     value={day.open}
                                     onChange={(e) => updateDay({ open: e.target.value })}
                                     dir="ltr"
-                                    className="w-full h-9 px-2.5 border border-[#CBD5E1] rounded-xl text-xs font-mono-num font-bold text-[#1F2937] bg-white"
+                                    className="w-full h-9 px-2.5 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] text-xs font-mono-num font-bold text-[#1B3554] bg-white"
                                   >
                                     {openOptions.map((opt) => (
                                       <option key={opt} value={opt}>
@@ -535,14 +535,14 @@ export const SettingsSection: React.FC = () => {
 
                                 {/* Close Time */}
                                 <div className="min-w-[104px]">
-                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                  <label className="block text-[10px] font-bold text-[#647B96] mb-1">
                                     {t.settings.hoursForm.close}
                                   </label>
                                   <select
                                     value={day.close}
                                     onChange={(e) => updateDay({ close: e.target.value })}
                                     dir="ltr"
-                                    className="w-full h-9 px-2.5 border border-[#CBD5E1] rounded-xl text-xs font-mono-num font-bold text-[#1F2937] bg-white"
+                                    className="w-full h-9 px-2.5 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] text-xs font-mono-num font-bold text-[#1B3554] bg-white"
                                   >
                                     {closeOptions.map((opt) => (
                                       <option key={opt} value={opt}>
@@ -554,7 +554,7 @@ export const SettingsSection: React.FC = () => {
 
                                 {/* Break Toggle */}
                                 <div>
-                                  <label className="block text-[10px] font-bold text-[#64748B] mb-1">
+                                  <label className="block text-[10px] font-bold text-[#647B96] mb-1">
                                     {t.settings.hoursForm.breakTime}
                                   </label>
                                   <button
@@ -569,7 +569,7 @@ export const SettingsSection: React.FC = () => {
                                     className={`h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-1.5 transition-colors ${
                                       hasBreak
                                         ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E]'
-                                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#475569] hover:bg-[#F1F5F9]'
+                                        : 'bg-[#F8FAFC] border-[#E7EEF8] text-[#475569] hover:bg-[#F1F5F9]'
                                     }`}
                                   >
                                     <Coffee className="h-3.5 w-3.5 shrink-0" />
@@ -623,7 +623,7 @@ export const SettingsSection: React.FC = () => {
                                 )}
                               </div>
                             ) : (
-                              <div className="flex-1 text-xs font-medium text-[#64748B]">
+                              <div className="flex-1 text-xs font-medium text-[#647B96]">
                                 {t.settings.hoursForm.closedDayHint}
                               </div>
                             )}
@@ -640,7 +640,7 @@ export const SettingsSection: React.FC = () => {
                                 className={`hidden xl:inline-flex h-9 px-3.5 rounded-xl text-xs font-bold border items-center gap-1.5 shrink-0 transition-colors ${
                                   isExpanded
                                     ? 'bg-[#2563EB] text-white border-[#C2410C]'
-                                    : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
+                                    : 'bg-white text-[#1B3554] border-[#E7EEF8] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
                                 }`}
                               >
                                 <span>
@@ -696,7 +696,7 @@ export const SettingsSection: React.FC = () => {
                                         }`}
                                         className={`h-2 rounded-full transition-colors ${barTone}`}
                                       />
-                                      <div className="hidden sm:block text-[9px] font-mono-num text-[#64748B] text-center">
+                                      <div className="hidden sm:block text-[9px] font-mono-num text-[#647B96] text-center">
                                         {slot.slice(0, 2)}
                                       </div>
                                     </div>
@@ -709,10 +709,10 @@ export const SettingsSection: React.FC = () => {
 
                         {/* Expanded Interactive Hourly Slots & Custom Excluded Periods */}
                         {isExpanded && (
-                          <div className="px-4 py-4 bg-[#F8FAFC] border-t border-[#E2E8F0] space-y-4">
+                          <div className="px-4 py-4 bg-[#F8FAFC] border-t border-[#E7EEF8] space-y-4">
                             <div>
                               <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                                <span className="text-xs font-extrabold text-[#1F2937]">
+                                <span className="text-xs font-extrabold text-[#1B3554]">
                                   {t.settings.hoursForm.hourlySlotsTitle}
                                 </span>
                                 <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#475569]">
@@ -765,7 +765,7 @@ export const SettingsSection: React.FC = () => {
 
                               {/* Quick break presets */}
                               <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px]">
-                                <span className="font-bold text-[#64748B]">
+                                <span className="font-bold text-[#647B96]">
                                   {t.settings.hoursForm.quickBreakPreset}
                                 </span>
                                 {[
@@ -779,7 +779,7 @@ export const SettingsSection: React.FC = () => {
                                     onClick={() =>
                                       updateDay({ break_start: preset.start, break_end: preset.end })
                                     }
-                                    className="px-2.5 py-1 rounded-lg bg-white border border-[#FDE68A] text-[#92400E] hover:bg-[#FFFBEB] font-mono-num font-bold"
+                                    className="px-2.5 py-1 rounded-xl bg-white border border-[#FDE68A] text-[#92400E] hover:bg-[#FFFBEB] font-mono-num font-bold"
                                   >
                                     {preset.start}–{preset.end}
                                   </button>
@@ -788,8 +788,8 @@ export const SettingsSection: React.FC = () => {
                             </div>
 
                             {/* Custom Excluded Periods inside this day */}
-                            <div className="pt-3.5 border-t border-[#E2E8F0] space-y-2.5">
-                              <div className="text-xs font-extrabold text-[#1F2937]">
+                            <div className="pt-3.5 border-t border-[#E7EEF8] space-y-2.5">
+                              <div className="text-xs font-extrabold text-[#1B3554]">
                                 {t.settings.hoursForm.excludedPeriodsTitle}
                               </div>
 
@@ -824,14 +824,14 @@ export const SettingsSection: React.FC = () => {
                               )}
 
                               <div className="flex flex-wrap items-center gap-2 text-xs">
-                                <span className="text-[11px] font-bold text-[#64748B]">
+                                <span className="text-[11px] font-bold text-[#647B96]">
                                   {t.settings.hoursForm.periodStart}
                                 </span>
                                 <select
                                   value={newPeriodStart}
                                   onChange={(e) => setNewPeriodStart(e.target.value)}
                                   dir="ltr"
-                                  className="h-9 px-2.5 border border-[#CBD5E1] rounded-xl bg-white font-mono-num text-xs font-bold"
+                                  className="h-9 px-2.5 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num text-xs font-bold"
                                 >
                                   {ensureTimeOption(halfHourOptions, newPeriodStart).map((opt) => (
                                     <option key={opt} value={opt}>
@@ -839,14 +839,14 @@ export const SettingsSection: React.FC = () => {
                                     </option>
                                   ))}
                                 </select>
-                                <span className="text-[11px] font-bold text-[#64748B]">
+                                <span className="text-[11px] font-bold text-[#647B96]">
                                   {t.settings.hoursForm.periodEnd}
                                 </span>
                                 <select
                                   value={newPeriodEnd}
                                   onChange={(e) => setNewPeriodEnd(e.target.value)}
                                   dir="ltr"
-                                  className="h-9 px-2.5 border border-[#CBD5E1] rounded-xl bg-white font-mono-num text-xs font-bold"
+                                  className="h-9 px-2.5 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num text-xs font-bold"
                                 >
                                   {ensureTimeOption(halfHourOptions, newPeriodEnd).map((opt) => (
                                     <option key={opt} value={opt}>
@@ -859,7 +859,7 @@ export const SettingsSection: React.FC = () => {
                                   value={newPeriodReason}
                                   onChange={(e) => setNewPeriodReason(e.target.value)}
                                   placeholder={t.settings.hoursForm.periodReasonPlaceholder}
-                                  className="h-9 px-3 border border-[#CBD5E1] rounded-xl bg-white text-xs min-w-[180px] flex-1"
+                                  className="h-9 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white text-xs min-w-[180px] flex-1"
                                 />
                                 <button
                                   type="button"
@@ -894,15 +894,15 @@ export const SettingsSection: React.FC = () => {
 
                 <div className="rounded-2xl border border-[#DCE5E1] bg-[#F8FAFC] p-4 sm:p-5 space-y-3">
                   <div>
-                    <h4 className="text-sm font-extrabold text-[#1F2937]">إغلاق يوم كامل / عطلة استثنائية</h4>
-                    <p className="mt-1 text-xs leading-5 text-[#64748B]">اختار تاريخاً باش توقف جميع المواعيد فيه، بلا ما تبدل برنامج الأسبوع المعتاد. تقدر تزيد أكثر من تاريخ وتحيد أي واحد وقت ما بغيتي.</p>
+                    <h4 className="text-sm font-extrabold text-[#1B3554]">إغلاق يوم كامل / عطلة استثنائية</h4>
+                    <p className="mt-1 text-xs leading-5 text-[#647B96]">اختار تاريخاً باش توقف جميع المواعيد فيه، بلا ما تبدل برنامج الأسبوع المعتاد. تقدر تزيد أكثر من تاريخ وتحيد أي واحد وقت ما بغيتي.</p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       type="date"
                       value={closureDate}
                       onChange={(e) => setClosureDate(e.target.value)}
-                      className="h-11 flex-1 px-3.5 text-sm border border-[#CBD5E1] rounded-xl bg-white"
+                      className="h-11 flex-1 px-3.5 text-sm border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
                     />
                     <button
                       type="button"
@@ -940,10 +940,10 @@ export const SettingsSection: React.FC = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="rounded-xl border border-dashed border-[#CBD5E1] bg-white px-3 py-3 text-xs text-[#64748B]">مازال ما ضفتي حتى يوم عطلة استثنائي.</p>
+                    <p className="rounded-xl border border-dashed border-[#D8E5F5] bg-white px-3 py-3 text-xs text-[#647B96]">مازال ما ضفتي حتى يوم عطلة استثنائي.</p>
                   )}
-                  <div className="pt-3 border-t border-[#E2E8F0]">
-                    <label className="block text-xs font-bold text-[#1F2937] mb-1.5">
+                  <div className="pt-3 border-t border-[#E7EEF8]">
+                    <label className="block text-xs font-bold text-[#1B3554] mb-1.5">
                       {t.settings.hoursForm.holidays} — ملاحظات للفريق
                     </label>
                     <input
@@ -951,9 +951,9 @@ export const SettingsSection: React.FC = () => {
                       value={formState.holidays}
                       onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
                       placeholder="مثلاً: الأعياد الرسمية، عطلة سنوية..."
-                      className="w-full h-10 px-3.5 text-[13px] border border-[#CBD5E1] rounded-xl bg-white"
+                      className="w-full h-10 px-3.5 text-[13px] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
                     />
-                    <p className="mt-1.5 text-[11px] leading-5 text-[#64748B]">الملاحظات للتذكير فقط؛ التواريخ المضافة فوق هي اللي كتمنع الحجز فعلياً.</p>
+                    <p className="mt-1.5 text-[11px] leading-5 text-[#647B96]">الملاحظات للتذكير فقط؛ التواريخ المضافة فوق هي اللي كتمنع الحجز فعلياً.</p>
                   </div>
                 </div>
 
@@ -975,13 +975,13 @@ export const SettingsSection: React.FC = () => {
             const halfHourOptions = generateHalfHourOptions(7, 22);
             return (
               <div className="space-y-4">
-                <h3 className="text-sm font-extrabold text-[#1F2937] pb-3 border-b border-[#E2E8F0]">
+                <h3 className="text-sm font-extrabold text-[#1B3554] pb-3 border-b border-[#E7EEF8]">
                   {t.settings.tabs.appointments}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div>
-                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                    <label className="block font-bold text-[#1B3554] mb-1.5">
                       {t.settings.appointmentsForm.duration} ({t.settings.appointmentsForm.minutes})
                     </label>
                     <select
@@ -989,7 +989,7 @@ export const SettingsSection: React.FC = () => {
                       onChange={(e) =>
                         setFormState({ ...formState, appointment_duration_minutes: Number(e.target.value) })
                       }
-                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-semibold"
+                      className="w-full h-10 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num font-semibold"
                     >
                       {[30, 45, 60, 90].map((m) => (
                         <option key={m} value={m}>{m} {t.settings.appointmentsForm.minutes}</option>
@@ -998,7 +998,7 @@ export const SettingsSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                    <label className="block font-bold text-[#1B3554] mb-1.5">
                       {t.settings.appointmentsForm.rescheduleLimit}
                     </label>
                     <input
@@ -1008,12 +1008,12 @@ export const SettingsSection: React.FC = () => {
                       onChange={(e) =>
                         setFormState({ ...formState, allow_reschedule_hours: Number(e.target.value) })
                       }
-                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl font-mono-num font-semibold"
+                      className="w-full h-10 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] font-mono-num font-semibold"
                     />
                   </div>
 
                   <div>
-                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                    <label className="block font-bold text-[#1B3554] mb-1.5">
                       {t.settings.appointmentsForm.bookingWindowStart}
                     </label>
                     <select
@@ -1022,7 +1022,7 @@ export const SettingsSection: React.FC = () => {
                         setFormState({ ...formState, booking_window_start: e.target.value })
                       }
                       dir="ltr"
-                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-bold"
+                      className="w-full h-10 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num font-bold"
                     >
                       {ensureTimeOption(halfHourOptions, formState.booking_window_start).map((opt) => (
                         <option key={opt} value={opt}>
@@ -1033,7 +1033,7 @@ export const SettingsSection: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-bold text-[#1F2937] mb-1.5">
+                    <label className="block font-bold text-[#1B3554] mb-1.5">
                       {t.settings.appointmentsForm.bookingWindowEnd}
                     </label>
                     <select
@@ -1042,7 +1042,7 @@ export const SettingsSection: React.FC = () => {
                         setFormState({ ...formState, booking_window_end: e.target.value })
                       }
                       dir="ltr"
-                      className="w-full h-10 px-3 border border-[#CBD5E1] rounded-xl bg-white font-mono-num font-bold"
+                      className="w-full h-10 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num font-bold"
                     >
                       {ensureTimeOption(halfHourOptions, formState.booking_window_end).map((opt) => (
                         <option key={opt} value={opt}>
@@ -1054,7 +1054,7 @@ export const SettingsSection: React.FC = () => {
                 </div>
 
                 <div className="space-y-2.5 pt-2">
-                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1F2937] cursor-pointer">
+                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1B3554] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formState.auto_confirm_appointments}
@@ -1066,7 +1066,7 @@ export const SettingsSection: React.FC = () => {
                     <span>{t.settings.appointmentsForm.autoConfirm}</span>
                   </label>
 
-                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1F2937] cursor-pointer">
+                  <label className="flex items-center gap-2.5 text-xs font-semibold text-[#1B3554] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formState.send_visit_reminders}
@@ -1095,11 +1095,11 @@ export const SettingsSection: React.FC = () => {
           {/* E. Notifications Settings */}
           {activeTab === 'notifications' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-extrabold text-zinc-950 pb-3 border-b border-zinc-200">
+              <h3 className="text-sm font-extrabold text-[#142B4A] pb-3 border-b border-zinc-200">
                 {t.settings.tabs.notifications}
               </h3>
 
-              <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl">
+              <div className="divide-y divide-slate-100 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE]">
                 {(
                   [
                     ['notify_new_lead', t.settings.notificationsForm.newLead],
@@ -1111,9 +1111,9 @@ export const SettingsSection: React.FC = () => {
                 ).map(([key, label]) => (
                   <label
                     key={key}
-                    className="flex items-center justify-between px-4 py-3 text-xs cursor-pointer hover:bg-slate-50"
+                    className="flex items-center justify-between px-4 py-3 text-xs cursor-pointer hover:bg-[#F8FBFF]"
                   >
-                    <span className="text-slate-800 font-medium">{label}</span>
+                    <span className="text-[#294766] font-medium">{label}</span>
                     <input
                       type="checkbox"
                       checked={formState[key]}
@@ -1139,13 +1139,13 @@ export const SettingsSection: React.FC = () => {
           {/* F. Language & Region */}
           {activeTab === 'localization' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-extrabold text-zinc-950 pb-3 border-b border-zinc-200">
+              <h3 className="text-sm font-extrabold text-[#142B4A] pb-3 border-b border-zinc-200">
                 {t.settings.tabs.localization}
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block font-medium text-slate-700 mb-1">
+                  <label className="block font-medium text-[#526985] mb-1">
                     {t.settings.localizationForm.language}
                   </label>
                   <select
@@ -1155,7 +1155,7 @@ export const SettingsSection: React.FC = () => {
                       setLanguage(lang);
                       setFormState({ ...formState, default_language: lang });
                     }}
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg bg-white"
+                    className="w-full h-9 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
                   >
                     <option value="ar">العربية (RTL)</option>
                     <option value="en">English (LTR)</option>
@@ -1164,13 +1164,13 @@ export const SettingsSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-700 mb-1">
+                  <label className="block font-medium text-[#526985] mb-1">
                     {t.settings.localizationForm.timezone}
                   </label>
                   <select
                     value={formState.timezone}
                     onChange={(e) => setFormState({ ...formState, timezone: e.target.value })}
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg bg-white font-mono-num"
+                    className="w-full h-9 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num"
                   >
                     <option value="Africa/Casablanca">Africa/Casablanca (GMT+1)</option>
                     <option value="Europe/Paris">Europe/Paris (GMT+1)</option>
@@ -1179,7 +1179,7 @@ export const SettingsSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-700 mb-1">
+                  <label className="block font-medium text-[#526985] mb-1">
                     {t.settings.localizationForm.dateFormat}
                   </label>
                   <select
@@ -1190,7 +1190,7 @@ export const SettingsSection: React.FC = () => {
                         date_format: e.target.value as 'DD/MM/YYYY' | 'YYYY-MM-DD' | 'MM/DD/YYYY',
                       })
                     }
-                    className="w-full h-9 px-3 border border-slate-200 rounded-lg bg-white font-mono-num"
+                    className="w-full h-9 px-3 border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num"
                   >
                     <option value="DD/MM/YYYY">DD/MM/YYYY</option>
                     <option value="YYYY-MM-DD">YYYY-MM-DD</option>
@@ -1199,7 +1199,7 @@ export const SettingsSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-slate-700 mb-1">
+                  <label className="block font-medium text-[#526985] mb-1">
                     {t.settings.localizationForm.currency}
                   </label>
                   <input
@@ -1212,7 +1212,7 @@ export const SettingsSection: React.FC = () => {
                           ? 'MAD (Dirham marocain)'
                           : 'MAD (Moroccan Dirham)'
                     }
-                    className="w-full h-9 px-3 border border-[#E3EAE5] rounded-lg bg-[#F5F7F5] text-[#1F2937] font-semibold font-mono-num"
+                    className="w-full h-9 px-3 border border-[#D8E5F5] rounded-lg bg-[#F8FBFF] text-[#1B3554] font-semibold font-mono-num"
                   />
                 </div>
               </div>
@@ -1234,11 +1234,11 @@ export const SettingsSection: React.FC = () => {
           {/* G. Team Permissions Matrix */}
           {activeTab === 'permissions' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-extrabold text-zinc-950 pb-3 border-b border-zinc-200">
+              <h3 className="text-sm font-extrabold text-[#142B4A] pb-3 border-b border-zinc-200">
                 {t.settings.tabs.permissions}
               </h3>
 
-              <div className="overflow-x-auto border border-[#E3EAE5] rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto border border-[#D8E5F5] rounded-2xl overflow-hidden">
                 <table className="w-full text-xs text-start border-collapse">
                   <thead>
                     <tr className="bg-[#1E293B] text-white border-b-2 border-[#2563EB] font-bold whitespace-nowrap">
@@ -1253,9 +1253,9 @@ export const SettingsSection: React.FC = () => {
                   <tbody className="divide-y divide-[#E2E8F0]">
                     {employees.map((emp) => (
                       <tr key={emp.id} className="hover:bg-[#EFF6FF]">
-                        <td className="py-3 px-3.5 font-bold text-[#1F2937] whitespace-nowrap">
+                        <td className="py-3 px-3.5 font-bold text-[#1B3554] whitespace-nowrap">
                           <div>{localizePersonName(emp.name, language)}</div>
-                          <div className="text-[11px] text-[#64748B] font-medium">
+                          <div className="text-[11px] text-[#647B96] font-medium">
                             {t.employeeRoles[emp.role]}
                           </div>
                         </td>
@@ -1284,20 +1284,20 @@ export const SettingsSection: React.FC = () => {
           {/* H. Account & Security */}
           {activeTab === 'security' && (
             <div className="space-y-6">
-              <h3 className="text-sm font-extrabold text-[#1F2937] pb-3 border-b border-[#E3EAE5]">
+              <h3 className="text-sm font-extrabold text-[#1B3554] pb-3 border-b border-[#D8E5F5]">
                 {t.settings.tabs.security}
               </h3>
 
-              <div className="bg-[#F5F7F5] border border-[#E3EAE5] rounded-xl p-4 text-xs space-y-1">
-                <div className="font-bold text-[#1F2937]">{t.settings.securityForm.accountInfo}</div>
-                <div className="text-[#1F2937] font-semibold">
+              <div className="bg-[#F8FBFF] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] p-4 text-xs space-y-1">
+                <div className="font-bold text-[#1B3554]">{t.settings.securityForm.accountInfo}</div>
+                <div className="text-[#1B3554] font-semibold">
                   {localizePersonName(currentUser.name, language)} · {t.employeeRoles[currentUser.role]}
                 </div>
-                <div className="text-[#64748B] font-mono-num" dir="ltr">{currentUser.email}</div>
+                <div className="text-[#647B96] font-mono-num" dir="ltr">{currentUser.email}</div>
               </div>
 
               <form onSubmit={handlePasswordChange} className="space-y-3 max-w-md">
-                <div className="text-xs font-bold text-[#1F2937]">
+                <div className="text-xs font-bold text-[#1B3554]">
                   {t.settings.securityForm.changePassword}
                 </div>
                 <input
@@ -1305,21 +1305,21 @@ export const SettingsSection: React.FC = () => {
                   value={currentPw}
                   onChange={(e) => setCurrentPw(e.target.value)}
                   placeholder={t.settings.securityForm.currentPassword}
-                  className="w-full h-9 px-3 text-xs border border-[#E3EAE5] rounded-lg"
+                  className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                 />
                 <input
                   type="password"
                   value={newPw}
                   onChange={(e) => setNewPw(e.target.value)}
                   placeholder={t.settings.securityForm.newPassword}
-                  className="w-full h-9 px-3 text-xs border border-[#E3EAE5] rounded-lg"
+                  className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                 />
                 <input
                   type="password"
                   value={confirmPw}
                   onChange={(e) => setConfirmPw(e.target.value)}
                   placeholder={t.settings.securityForm.confirmPassword}
-                  className="w-full h-9 px-3 text-xs border border-[#E3EAE5] rounded-lg"
+                  className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg"
                 />
                 <button
                   type="submit"
@@ -1329,7 +1329,7 @@ export const SettingsSection: React.FC = () => {
                 </button>
               </form>
 
-              <label className="flex items-center gap-2.5 text-xs text-[#1F2937] font-semibold cursor-pointer pt-2 border-t border-[#E3EAE5]">
+              <label className="flex items-center gap-2.5 text-xs text-[#1B3554] font-semibold cursor-pointer pt-2 border-t border-[#D8E5F5]">
                 <input
                   type="checkbox"
                   checked={formState.two_factor_enabled}
@@ -1344,15 +1344,15 @@ export const SettingsSection: React.FC = () => {
               </label>
 
               <div className="space-y-2.5">
-                <div className="text-xs font-bold text-[#1F2937]">
+                <div className="text-xs font-bold text-[#1B3554]">
                   {t.settings.securityForm.activeSessions}
                 </div>
-                <div className="divide-y divide-[#E3EAE5] border border-[#E3EAE5] rounded-xl">
+                <div className="divide-y divide-[#E3EAE5] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE]">
                   {formState.active_sessions.map((sess) => (
                     <div key={sess.id} className="p-3.5 flex items-center justify-between gap-3 text-xs">
                       <div>
-                        <div className="font-semibold text-[#1F2937]">{sess.device}</div>
-                        <div className="text-[11px] text-[#64748B] font-medium">
+                        <div className="font-semibold text-[#1B3554]">{sess.device}</div>
+                        <div className="text-[11px] text-[#647B96] font-medium">
                           {sess.location} · {localizeRelativeTime(sess.last_active, language)}
                         </div>
                       </div>
@@ -1368,7 +1368,7 @@ export const SettingsSection: React.FC = () => {
                             setFormState({ ...formState, active_sessions: remaining });
                             updateSettings({ active_sessions: remaining });
                           }}
-                          className="px-2.5 py-1 rounded-lg border border-slate-200 text-[11px] text-rose-600 hover:bg-rose-50"
+                          className="px-2.5 py-1 rounded-lg border border-[#D8E5F5] text-[11px] text-rose-600 hover:bg-rose-50"
                         >
                           {t.settings.securityForm.terminateSession}
                         </button>
