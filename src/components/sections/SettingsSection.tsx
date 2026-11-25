@@ -58,6 +58,7 @@ export const SettingsSection: React.FC = () => {
   const [newPeriodStart, setNewPeriodStart] = useState('11:30');
   const [newPeriodEnd, setNewPeriodEnd] = useState('12:30');
   const [newPeriodReason, setNewPeriodReason] = useState('');
+  const [closureDate, setClosureDate] = useState('');
 
   useEffect(() => {
     setFormState(settings);
@@ -891,17 +892,69 @@ export const SettingsSection: React.FC = () => {
                   })}
                 </div>
 
-                <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-5">
-                  <label className="block text-sm font-extrabold text-[#1F2937] mb-1.5">
-                    {t.settings.hoursForm.holidays}
-                  </label>
-                  <input
-                    type="text"
-                    value={formState.holidays}
-                    onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
-                    className="w-full h-11 px-3.5 text-[13px] border border-[#CBD5E1] rounded-xl bg-white"
-                  />
-                  <p className="mt-2 text-xs leading-5 text-[#64748B]">استعمل هذا الحقل لتوضيح أيام العطل الرسمية أو الاستثنائية للفريق. أما إيقاف الحجوزات في يوم محدد أو فترة محددة، فاستعمل إدارة الفترات داخل اليوم المناسب.</p>
+                <div className="rounded-2xl border border-[#DCE5E1] bg-[#F8FAFC] p-4 sm:p-5 space-y-3">
+                  <div>
+                    <h4 className="text-sm font-extrabold text-[#1F2937]">إغلاق يوم كامل / عطلة استثنائية</h4>
+                    <p className="mt-1 text-xs leading-5 text-[#64748B]">اختار تاريخاً باش توقف جميع المواعيد فيه، بلا ما تبدل برنامج الأسبوع المعتاد. تقدر تزيد أكثر من تاريخ وتحيد أي واحد وقت ما بغيتي.</p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="date"
+                      value={closureDate}
+                      onChange={(e) => setClosureDate(e.target.value)}
+                      className="h-11 flex-1 px-3.5 text-sm border border-[#CBD5E1] rounded-xl bg-white"
+                    />
+                    <button
+                      type="button"
+                      disabled={!closureDate || (formState.blocked_dates ?? []).includes(closureDate)}
+                      onClick={() => {
+                        if (!closureDate || (formState.blocked_dates ?? []).includes(closureDate)) return;
+                        setFormState({
+                          ...formState,
+                          blocked_dates: [...(formState.blocked_dates ?? []), closureDate].sort(),
+                        });
+                        setClosureDate('');
+                      }}
+                      className="h-11 px-4 rounded-xl text-xs font-bold btn-primary disabled:opacity-40"
+                    >
+                      <span className="inline-flex items-center gap-2"><Plus className="h-3.5 w-3.5" /> إضافة يوم عطلة</span>
+                    </button>
+                  </div>
+                  {(formState.blocked_dates ?? []).length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {[...(formState.blocked_dates ?? [])].sort().map((date) => (
+                        <div key={date} className="inline-flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-800">
+                          <span dir="ltr" className="font-mono-num">{date}</span>
+                          <button
+                            type="button"
+                            aria-label={`إزالة عطلة ${date}`}
+                            onClick={() => setFormState({
+                              ...formState,
+                              blocked_dates: (formState.blocked_dates ?? []).filter((item) => item !== date),
+                            })}
+                            className="rounded-md p-1 hover:bg-rose-100"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="rounded-xl border border-dashed border-[#CBD5E1] bg-white px-3 py-3 text-xs text-[#64748B]">مازال ما ضفتي حتى يوم عطلة استثنائي.</p>
+                  )}
+                  <div className="pt-3 border-t border-[#E2E8F0]">
+                    <label className="block text-xs font-bold text-[#1F2937] mb-1.5">
+                      {t.settings.hoursForm.holidays} — ملاحظات للفريق
+                    </label>
+                    <input
+                      type="text"
+                      value={formState.holidays}
+                      onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
+                      placeholder="مثلاً: الأعياد الرسمية، عطلة سنوية..."
+                      className="w-full h-10 px-3.5 text-[13px] border border-[#CBD5E1] rounded-xl bg-white"
+                    />
+                    <p className="mt-1.5 text-[11px] leading-5 text-[#64748B]">الملاحظات للتذكير فقط؛ التواريخ المضافة فوق هي اللي كتمنع الحجز فعلياً.</p>
+                  </div>
                 </div>
 
                 <div className="flex justify-end pt-1">
