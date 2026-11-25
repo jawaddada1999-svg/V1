@@ -1274,16 +1274,20 @@ export const AppointmentsSection: React.FC = () => {
         </div>
       )}
 
-      {/* Redesigned Monthly Calendar View */}
+      {/* Monthly Calendar */}
       {viewTab === 'monthly' && (
-        <div className="bg-white border border-zinc-200 card-surface rounded-2xl p-4 sm:p-5 space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h3 className="text-sm sm:text-base font-extrabold text-zinc-950">{monthHeading}</h3>
-            <div className="flex items-center gap-1.5">
+        <section className="rounded-2xl border border-[#D8E5F5] bg-white shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 border-b border-[#E7EEF8] bg-gradient-to-r from-[#F8FBFF] to-white">
+            <div>
+              <h3 className="text-base font-extrabold text-[#142B4A]">{monthHeading}</h3>
+              <p className="mt-1 text-xs text-[#718096]">{t.appointments.subtitle}</p>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto">
               <button
                 type="button"
                 onClick={() => shiftCalendarMonth(-1)}
-                className="h-8 w-8 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 inline-flex items-center justify-center text-zinc-800"
+                aria-label={isRtl ? 'الشهر السابق' : 'Previous month'}
+                className="h-9 w-9 rounded-xl border border-[#D8E5F5] bg-white hover:bg-[#EFF6FF] text-[#24476F] inline-flex items-center justify-center transition-colors"
               >
                 {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </button>
@@ -1292,104 +1296,116 @@ export const AppointmentsSection: React.FC = () => {
                 onClick={() => {
                   setCalendarYear(todayYear);
                   setCalendarMonth(todayMonth - 1);
+                  setSelectedDay(todayIso);
                 }}
-                className="h-8 px-3 rounded-lg text-xs font-bold btn-secondary"
+                className="h-9 px-4 rounded-xl text-xs font-bold btn-secondary"
               >
                 {t.appointments.agenda.today}
               </button>
               <button
                 type="button"
                 onClick={() => shiftCalendarMonth(1)}
-                className="h-8 w-8 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 inline-flex items-center justify-center text-zinc-800"
+                aria-label={isRtl ? 'الشهر التالي' : 'Next month'}
+                className="h-9 w-9 rounded-xl border border-[#D8E5F5] bg-white hover:bg-[#EFF6FF] text-[#24476F] inline-flex items-center justify-center transition-colors"
               >
                 {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <div className="min-w-[640px] space-y-2">
-              {/* Aligned 7 Weekday Column Headers (Mon -> Sun) */}
-              <div className="grid grid-cols-7 gap-2">
-                {(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const).map((dayKey) => (
-                  <div
-                    key={dayKey}
-                    className="py-2 px-2 rounded-lg bg-[#1E293B] border border-[#1E293B] border-b-2 border-b-[#2563EB] text-center text-xs font-extrabold text-white"
+          <div className="p-2 sm:p-4">
+            <div className="grid grid-cols-7 gap-1.5 sm:gap-2 mb-2">
+              {(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const).map((dayKey) => (
+                <div
+                  key={dayKey}
+                  className="py-2 px-0.5 sm:px-2 rounded-lg bg-[#17365D] text-center text-[10px] sm:text-xs font-extrabold text-white"
+                >
+                  {t.days[dayKey]}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
+              {monthCells.map((cell) => {
+                const dayApts = filteredAppointments.filter((a) => a.date === cell.isoDate);
+                const dKey = getDayKeyFromIsoDate(cell.isoDate);
+                const dCfg = settings.working_days.find((d) => d.day_key === dKey);
+                const isToday = cell.isoDate === todayIso;
+                const isSelected = cell.isoDate === selectedDay;
+                const isDateClosed = settings.blocked_dates?.includes(cell.isoDate) ?? false;
+                const isWeeklyClosed = !dCfg?.enabled;
+                const isClosed = isDateClosed || isWeeklyClosed;
+
+                return (
+                  <button
+                    key={cell.isoDate}
+                    type="button"
+                    onClick={() => {
+                      setSelectedDay(cell.isoDate);
+                      setViewTab('daily');
+                    }}
+                    aria-label={`${cell.isoDate} — ${dayApts.length} appointments`}
+                    className={`min-w-0 min-h-[76px] sm:min-h-[116px] p-1.5 sm:p-2 rounded-lg sm:rounded-xl border text-start flex flex-col gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-[#3B82F6] ${
+                      !cell.inCurrentMonth
+                        ? 'border-[#EDF1F7] bg-[#FAFBFD] text-[#A0AEC0] opacity-70'
+                        : isSelected
+                          ? 'border-[#2563EB] bg-[#EFF6FF] ring-2 ring-[#2563EB]/15'
+                          : isToday
+                            ? 'border-[#60A5FA] bg-[#F4F8FF]'
+                            : isClosed
+                              ? 'border-rose-100 bg-rose-50/60 hover:bg-rose-50'
+                              : 'border-[#E5ECF5] bg-white hover:border-[#93BCEB] hover:bg-[#F8FBFF]'
+                    }`}
                   >
-                    {t.days[dayKey]}
-                  </div>
-                ))}
-              </div>
-
-              {/* Calendar Grid Cells */}
-              <div className="grid grid-cols-7 gap-2">
-                {monthCells.map((cell) => {
-                  const dayApts = filteredAppointments.filter((a) => a.date === cell.isoDate);
-                  const dKey = getDayKeyFromIsoDate(cell.isoDate);
-                  const dCfg = settings.working_days.find((d) => d.day_key === dKey);
-                  const isToday = cell.isoDate === todayIso;
-
-                  return (
-                    <button
-                      key={cell.isoDate}
-                      type="button"
-                      onClick={() => {
-                        setSelectedDay(cell.isoDate);
-                        setViewTab('daily');
-                      }}
-                      className={`min-h-[96px] p-2 rounded-xl border text-start flex flex-col justify-between transition-all ${
-                        isToday
-                          ? 'border-[#2563EB] bg-[#EFF6FF]/70 ring-2 ring-[#2563EB]/25'
-                          : !cell.inCurrentMonth
-                            ? 'border-[#E2E8F0]/60 bg-[#F8FAFC]/60 text-[#64748B] opacity-65'
-                            : (!dCfg?.enabled || isDateClosed)
-                              ? 'border-rose-200 bg-rose-50/50 text-rose-700 hover:bg-rose-50'
-                              : dayApts.length > 0
-                                ? 'border-[#E2E8F0] bg-white hover:border-[#2563EB]'
-                                : 'border-[#E2E8F0] bg-white hover:bg-[#EFF6FF]/40'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <span
-                          className={`text-xs font-extrabold font-mono-num px-1.5 py-0.5 rounded-md ${
-                            isToday ? 'bg-[#2563EB] text-white' : 'text-[#1F2937]'
-                          }`}
-                        >
-                          {cell.dayNum}
+                    <div className="w-full flex items-center justify-between gap-1">
+                      <span className={`inline-flex items-center justify-center min-w-6 h-6 px-1 rounded-lg text-[10px] sm:text-xs font-extrabold tabular-nums ${
+                        isToday ? 'bg-[#2563EB] text-white' : isClosed && cell.inCurrentMonth ? 'text-rose-600' : 'text-[#294766]'
+                      }`}>
+                        {cell.dayNum}
+                      </span>
+                      {dayApts.length > 0 && (
+                        <span className="shrink-0 rounded-full bg-[#DBEAFE] text-[#1D4ED8] px-1.5 py-0.5 text-[9px] sm:text-[10px] font-extrabold tabular-nums">
+                          {dayApts.length}
                         </span>
-                        {dayApts.length > 0 && (
-                          <span className="text-[10px] font-extrabold font-mono-num text-[#2563EB]">
-                            {dayApts.length}
-                          </span>
-                        )}
-                      </div>
-                      <div className="space-y-1 w-full mt-1">
-                        {dayApts.slice(0, 2).map((a) => {
-                          const lead = leads.find((l) => l.id === a.lead_id);
-                          return (
-                            <div
-                              key={a.id}
-                              className={`text-[10px] px-1.5 py-0.5 rounded border truncate font-semibold font-mono-num ${
-                                monthChipTone[a.status]
-                              }`}
-                            >
-                              {a.time} · {lead ? localizePersonName(lead.name, language).split(' ')[0] : ''}
-                            </div>
-                          );
-                        })}
-                        {dayApts.length > 2 && (
-                          <div className="text-[10px] text-[#C2410C] font-extrabold px-1">
-                            +{dayApts.length - 2}
+                      )}
+                    </div>
+
+                    <div className="w-full min-w-0 space-y-1">
+                      {dayApts.slice(0, 2).map((a) => {
+                        const lead = leads.find((l) => l.id === a.lead_id);
+                        return (
+                          <div
+                            key={a.id}
+                            className={`w-full min-w-0 text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-1 rounded-md border truncate font-semibold ${monthChipTone[a.status]}`}
+                            title={`${a.time} — ${lead ? localizePersonName(lead.name, language) : ''}`}
+                          >
+                            <span className="font-bold tabular-nums">{a.time}</span>
+                            <span className="hidden sm:inline"> · {lead ? localizePersonName(lead.name, language).split(' ')[0] : ''}</span>
                           </div>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                        );
+                      })}
+                      {dayApts.length > 2 && (
+                        <div className="text-[9px] sm:text-[10px] text-[#1D4ED8] font-extrabold px-1">
+                          +{dayApts.length - 2}
+                        </div>
+                      )}
+                      {isClosed && cell.inCurrentMonth && dayApts.length === 0 && (
+                        <div className="hidden sm:block text-[9px] text-rose-500 font-bold truncate">
+                          {isDateClosed ? (language === 'ar' ? 'عطلة' : language === 'fr' ? 'Fermé' : 'Closed') : (language === 'ar' ? 'مغلق' : language === 'fr' ? 'Fermé' : 'Closed')}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        </div>
+          <div className="px-4 pb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] sm:text-xs text-[#64748B]">
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-[#EFF6FF] border border-[#93C5FD]" />{t.appointments.agenda.today}</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-rose-50 border border-rose-200" />{language === 'ar' ? 'يوم مغلق' : language === 'fr' ? 'Jour fermé' : 'Closed day'}</span>
+            <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-[#DBEAFE] border border-[#BFDBFE]" />{language === 'ar' ? 'عدد المواعيد' : language === 'fr' ? 'Rendez-vous' : 'Appointments'}</span>
+          </div>
+        </section>
       )}
 
       <AppointmentFormModal
