@@ -62,7 +62,7 @@ const aptCardTone: Record<AppointmentStatus, string> = {
   confirmed: 'bg-[#EEF2FF] border-[#C7D2FE] border-s-4 border-s-[#4F46E5]',
   attended: 'bg-[#F0FDF4] border-[#BBF7D0] border-s-4 border-s-[#15803D]',
   no_show: 'bg-[#FFF1F2] border-[#FECDD3] border-s-4 border-s-[#E11D48]',
-  cancelled: 'bg-[#F8FAFC] border-[#E2E8F0] border-s-4 border-s-[#94A3B8] opacity-80',
+  cancelled: 'bg-[#F8FAFC] border-[#E7EEF8] border-s-4 border-s-[#94A3B8] opacity-80',
   rescheduled: 'bg-[#FFFBEB] border-[#FDE68A] border-s-4 border-s-[#D97706]',
 };
 
@@ -71,7 +71,7 @@ const monthChipTone: Record<AppointmentStatus, string> = {
   confirmed: 'bg-[#EEF2FF] text-[#3730A3] border-[#C7D2FE]',
   attended: 'bg-[#F0FDF4] text-[#166534] border-[#BBF7D0]',
   no_show: 'bg-[#FFF1F2] text-[#BE123C] border-[#FECDD3]',
-  cancelled: 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] line-through',
+  cancelled: 'bg-[#F8FAFC] text-[#647B96] border-[#E7EEF8] line-through',
   rescheduled: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
 };
 
@@ -276,8 +276,8 @@ export const AppointmentsSection: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-lg sm:text-[19px] font-bold text-[#1F2937]">{t.appointments.title}</h2>
-          <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.appointments.subtitle}</p>
+          <h2 className="text-lg sm:text-[19px] font-bold text-[#1B3554]">{t.appointments.title}</h2>
+          <p className="text-xs text-[#647B96] font-medium mt-0.5">{t.appointments.subtitle}</p>
         </div>
 
         <button
@@ -357,7 +357,7 @@ export const AppointmentsSection: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.app.search}
-              className="h-10 w-full xl:w-52 ps-9 pe-3 text-[13px] font-medium border border-[#DCE5E1] rounded-xl bg-[#FBFDFC] focus:outline-none focus:border-[#2563EB]"
+              className="h-10 w-full xl:w-52 ps-9 pe-3 text-[13px] font-medium border border-[#DCE5E1] rounded-xl bg-[#F8FBFF] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#DBEAFE]"
             />
           </div>
           {viewTab === 'table' && (
@@ -365,13 +365,13 @@ export const AppointmentsSection: React.FC = () => {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="h-9 px-3 text-xs border border-[#E3EAE5] rounded-xl font-mono-num"
+              className="h-9 px-3 text-xs border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] font-mono-num"
             />
           )}
           <select
             value={employeeFilter}
             onChange={(e) => setEmployeeFilter(e.target.value)}
-            className="h-9 px-3 text-xs font-semibold text-[#1F2937] border border-[#E3EAE5] rounded-xl bg-white"
+            className="h-9 px-3 text-xs font-semibold text-[#1B3554] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
           >
             <option value="all">{t.leads.filters.allEmployees}</option>
             {employees.map((e) => (
@@ -381,7 +381,7 @@ export const AppointmentsSection: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 px-3 text-xs font-semibold border border-slate-200 rounded-xl bg-white"
+            className="h-9 px-3 text-xs font-semibold border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
           >
             <option value="all">{t.leads.filters.allStatuses}</option>
             {(Object.keys(t.appointmentStatuses) as AppointmentStatus[]).map((st) => (
@@ -397,7 +397,7 @@ export const AppointmentsSection: React.FC = () => {
                 setEmployeeFilter('all');
                 setStatusFilter('all');
               }}
-              className="h-9 px-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:text-slate-950 hover:bg-slate-50"
+              className="h-9 px-3 rounded-xl border border-[#D8E5F5] text-xs font-bold text-[#647B96] hover:text-slate-950 hover:bg-[#F8FBFF]"
             >
               {t.app.reset}
             </button>
@@ -410,7 +410,7 @@ export const AppointmentsSection: React.FC = () => {
         filteredAppointments.length === 0 ? (
           <EmptyState icon={<CalendarClock className="h-6 w-6" />} title={t.app.noData} />
         ) : (
-          <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
+          <div className="bg-white border border-[#D8E5F5] card-surface rounded-2xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-start border-collapse">
                 <thead>
@@ -445,18 +445,18 @@ export const AppointmentsSection: React.FC = () => {
                         className={isToday ? 'bg-[#EFF6FF] hover:bg-[#DBEAFE]/75' : 'hover:bg-[#EFF6FF]'}
                       >
                         <td className="py-3.5 px-3.5 whitespace-nowrap">
-                          <span className="font-bold text-[#1F2937]">{t.days[dayKey]}</span>
+                          <span className="font-bold text-[#1B3554]">{t.days[dayKey]}</span>
                           {isToday && (
                             <span className="ms-1.5 px-1.5 py-0.5 rounded bg-[#2563EB] text-white text-[10px] font-bold">
                               {t.appointments.agenda.today}
                             </span>
                           )}
                         </td>
-                        <td className="py-3.5 px-3.5 font-mono-num font-semibold text-[#1F2937] whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 font-mono-num font-semibold text-[#1B3554] whitespace-nowrap">
                           {formatShortDate(apt.date, language)}
                         </td>
-                        <td className="py-3.5 px-3.5 font-mono-num font-extrabold text-[#1F2937] whitespace-nowrap">
-                          <span className="px-2 py-0.5 rounded-md bg-[#F5F7F5] border border-[#E3EAE5]">
+                        <td className="py-3.5 px-3.5 font-mono-num font-extrabold text-[#1B3554] whitespace-nowrap">
+                          <span className="px-2 py-0.5 rounded-md bg-[#F8FBFF] border border-[#D8E5F5]">
                             {apt.time}
                           </span>
                         </td>
@@ -465,7 +465,7 @@ export const AppointmentsSection: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => lead && openLeadProfile(lead.id)}
-                              className="font-bold text-[#1F2937] hover:underline text-start truncate"
+                              className="font-bold text-[#1B3554] hover:underline text-start truncate"
                             >
                               {lead ? localizePersonName(lead.name, language) : '—'}
                             </button>
@@ -494,22 +494,22 @@ export const AppointmentsSection: React.FC = () => {
                             </div>
                           )}
                         </td>
-                        <td className="py-3.5 px-3.5 whitespace-nowrap font-semibold text-[#1F2937]">
+                        <td className="py-3.5 px-3.5 whitespace-nowrap font-semibold text-[#1B3554]">
                           {emp ? localizePersonName(emp.name, language) : '—'}
                         </td>
                         <td className="py-3.5 px-3.5 max-w-[200px]">
-                          <div className="font-bold text-[#1F2937] truncate">
+                          <div className="font-bold text-[#1B3554] truncate">
                             {prop ? localizePropertyTitle(prop.title, language) : '—'}
                           </div>
-                          <div className="text-[11px] text-[#64748B]">
+                          <div className="text-[11px] text-[#647B96]">
                             {t.appointmentTypes[apt.type]}
                             {prop ? ` · ${prop.ref}` : ''}
                           </div>
                         </td>
-                        <td className="py-3.5 px-3.5 font-mono-num font-semibold text-[#1F2937] whitespace-nowrap">
+                        <td className="py-3.5 px-3.5 font-mono-num font-semibold text-[#1B3554] whitespace-nowrap">
                           {resolvedArea ? `${resolvedArea} ${t.app.sqm}` : '—'}
                         </td>
-                        <td className="py-3.5 px-3.5 whitespace-nowrap font-semibold text-[#1F2937]">
+                        <td className="py-3.5 px-3.5 whitespace-nowrap font-semibold text-[#1B3554]">
                           {resolvedCity ? localizeCity(resolvedCity, language) : '—'}
                         </td>
                         <td className="py-3.5 px-3.5 font-mono-num font-bold text-[#C2410C] whitespace-nowrap">
@@ -602,13 +602,13 @@ export const AppointmentsSection: React.FC = () => {
       {viewTab === 'daily' && (
         <div className="bg-white border border-[#DCE5E1] card-surface rounded-2xl overflow-hidden">
           {/* Top Agenda Controls */}
-          <div className="px-5 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3.5">
+          <div className="px-5 py-4 bg-[#F8FAFC] border-b border-[#E7EEF8] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3.5">
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => setSelectedDay((d) => shiftIsoDate(d, -1))}
-                  className="h-9 w-9 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937] transition-colors"
+                  className="h-9 w-9 rounded-xl border border-[#E7EEF8] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1B3554] transition-colors"
                 >
                   {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
                 </button>
@@ -618,7 +618,7 @@ export const AppointmentsSection: React.FC = () => {
                   className={`h-9 px-3.5 rounded-xl text-xs font-bold border transition-colors ${
                     selectedDay === todayIso
                       ? 'btn-primary border-transparent'
-                      : 'bg-white border-[#E2E8F0] text-[#1F2937] hover:bg-[#EFF6FF] hover:border-[#FDBA74]'
+                      : 'bg-white border-[#E7EEF8] text-[#1B3554] hover:bg-[#EFF6FF] hover:border-[#FDBA74]'
                   }`}
                 >
                   {t.appointments.agenda.today}
@@ -626,20 +626,20 @@ export const AppointmentsSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedDay((d) => shiftIsoDate(d, 1))}
-                  className="h-9 w-9 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937] transition-colors"
+                  className="h-9 w-9 rounded-xl border border-[#E7EEF8] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1B3554] transition-colors"
                 >
                   {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </button>
               </div>
 
               <div>
-                <h3 className="text-sm sm:text-base font-extrabold text-[#1F2937]">
+                <h3 className="text-sm sm:text-base font-extrabold text-[#1B3554]">
                   {t.days[selectedDayKey]} — {formatShortDate(selectedDay, language)}
                 </h3>
-                <div className="text-xs text-[#64748B] flex flex-wrap items-center gap-2 mt-1">
+                <div className="text-xs text-[#647B96] flex flex-wrap items-center gap-2 mt-1">
                   {selectedDayConfig?.enabled && !settings.blocked_dates?.includes(selectedDay) ? (
                     <>
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[#1E293B] font-semibold">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-[#E7EEF8] text-[#1E293B] font-semibold">
                         <Clock className="h-3 w-3 text-[#2563EB]" />
                         <span>{t.appointments.agenda.workingHoursLabel}:</span>
                         <span className="font-mono-num font-bold" dir="ltr">
@@ -683,7 +683,7 @@ export const AppointmentsSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedDay(nearestBookedDay)}
-                  className="h-8 px-3 rounded-lg bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors"
+                  className="h-8 px-3 rounded-xl bg-white border border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] text-[11px] font-bold inline-flex items-center gap-1.5 transition-colors"
                 >
                   <CalendarClock className="h-3.5 w-3.5" />
                   <span>{t.appointments.agenda.jumpToNearestApt}</span>
@@ -695,13 +695,13 @@ export const AppointmentsSection: React.FC = () => {
                 type="date"
                 value={selectedDay}
                 onChange={(e) => e.target.value && setSelectedDay(e.target.value)}
-                className="h-8 px-2.5 text-xs font-bold border border-[#CBD5E1] rounded-lg bg-white font-mono-num text-[#1F2937]"
+                className="h-8 px-2.5 text-xs font-bold border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white font-mono-num text-[#1B3554]"
               />
             </div>
           </div>
 
           {/* 7-Day Horizontal Quick Date Strip */}
-          <div className="px-4 py-3 bg-white border-b border-[#E2E8F0] overflow-x-auto">
+          <div className="px-4 py-3 bg-white border-b border-[#E7EEF8] overflow-x-auto">
             <div className="grid grid-cols-7 gap-2 min-w-[630px]">
               {agendaStripDays.map((dayStr) => {
                 const dKey = getDayKeyFromIsoDate(dayStr);
@@ -718,8 +718,8 @@ export const AppointmentsSection: React.FC = () => {
                       isSelected
                         ? 'bg-[#2563EB] text-white border-[#C2410C] shadow-sm'
                         : !dCfg?.enabled
-                          ? 'bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B] hover:bg-[#F1F5F9]'
-                          : 'bg-white border-[#E2E8F0] text-[#1F2937] hover:bg-[#EFF6FF] hover:border-[#FDBA74]'
+                          ? 'bg-[#F8FAFC] border-[#E7EEF8] text-[#647B96] hover:bg-[#F1F5F9]'
+                          : 'bg-white border-[#E7EEF8] text-[#1B3554] hover:bg-[#EFF6FF] hover:border-[#FDBA74]'
                     }`}
                   >
                     <div className="flex items-center justify-center gap-1">
@@ -740,7 +740,7 @@ export const AppointmentsSection: React.FC = () => {
                             ? 'bg-white/20 text-white'
                             : count > 0
                               ? 'bg-[#F0F9FF] text-[#0369A1] border border-[#BAE6FD]'
-                              : 'bg-[#F8FAFC] text-[#64748B]'
+                              : 'bg-[#F8FAFC] text-[#647B96]'
                         }`}
                       >
                         {count}
@@ -753,7 +753,7 @@ export const AppointmentsSection: React.FC = () => {
           </div>
 
           {/* Eye-Friendly Color Legend Bar */}
-          <div className="px-5 py-2.5 bg-[#F8FAFC]/70 border-b border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2 text-[11px]">
+          <div className="px-5 py-2.5 bg-[#F8FAFC]/70 border-b border-[#E7EEF8] flex flex-wrap items-center justify-between gap-2 text-[11px]">
             <div className="flex flex-wrap items-center gap-3 font-semibold text-[#475569]">
               <span className="font-bold text-[#1E293B]">{t.appointments.agenda.legendLabel}</span>
               <span className="inline-flex items-center gap-1.5">
@@ -778,7 +778,7 @@ export const AppointmentsSection: React.FC = () => {
               </span>
             </div>
             {selectedDayConfig?.enabled && selectedDayAppointments.length === 0 && (
-              <span className="text-[11px] font-medium text-[#64748B]">
+              <span className="text-[11px] font-medium text-[#647B96]">
                 {t.appointments.agenda.noAptsTodayHint}
               </span>
             )}
@@ -794,7 +794,7 @@ export const AppointmentsSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveSection('settings')}
-                className="h-8 px-3 rounded-lg bg-white border border-[#FECDD3] text-[#9F1239] text-xs font-bold inline-flex items-center gap-1.5 hover:bg-[#FFE4E6]"
+                className="h-8 px-3 rounded-xl bg-white border border-[#FECDD3] text-[#9F1239] text-xs font-bold inline-flex items-center gap-1.5 hover:bg-[#FFE4E6]"
               >
                 <Settings className="h-3.5 w-3.5" />
                 <span>{t.appointments.agenda.configureHoursBtn}</span>
@@ -832,7 +832,7 @@ export const AppointmentsSection: React.FC = () => {
                       ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E]'
                       : avail.status === 'blocked_date' || avail.status === 'blocked_recurring'
                         ? 'bg-[#FFF1F2] border-[#FECDD3] text-[#BE123C]'
-                        : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#94A3B8]';
+                        : 'bg-[#F8FAFC] border-[#E7EEF8] text-[#94A3B8]';
 
               return (
                 <React.Fragment key={hour}>
@@ -876,13 +876,13 @@ export const AppointmentsSection: React.FC = () => {
                               >
                                 <div className="space-y-1.5 min-w-0">
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-xs font-mono-num font-extrabold text-[#1F2937]">
+                                    <span className="px-2 py-0.5 rounded-md bg-white border border-[#E7EEF8] text-xs font-mono-num font-extrabold text-[#1B3554]">
                                       {apt.time}
                                     </span>
                                     <button
                                       type="button"
                                       onClick={() => lead && openLeadProfile(lead.id)}
-                                      className="text-xs sm:text-[13px] font-extrabold text-[#1F2937] hover:underline"
+                                      className="text-xs sm:text-[13px] font-extrabold text-[#1B3554] hover:underline"
                                     >
                                       {lead ? localizePersonName(lead.name, language) : '—'}
                                     </button>
@@ -927,7 +927,7 @@ export const AppointmentsSection: React.FC = () => {
                                     )}
                                   </div>
 
-                                  <div className="text-xs text-[#1F2937] font-bold truncate">
+                                  <div className="text-xs text-[#1B3554] font-bold truncate">
                                     {prop ? localizePropertyTitle(prop.title, language) : '—'}{' '}
                                     {prop ? `(${localizeCity(prop.city, language)})` : ''}
                                   </div>
@@ -963,7 +963,7 @@ export const AppointmentsSection: React.FC = () => {
                                     label={t.appointmentStatuses[apt.status]}
                                     appointmentStatus={apt.status}
                                   />
-                                  <div className="inline-flex items-center gap-1 bg-white border border-[#E2E8F0] rounded-xl p-1">
+                                  <div className="inline-flex items-center gap-1 bg-white border border-[#E7EEF8] rounded-xl p-1">
                                     {apt.status === 'scheduled' && (
                                       <button
                                         type="button"
@@ -1051,7 +1051,7 @@ export const AppointmentsSection: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleDisableHour(selectedDay, hour)}
-                              className="h-8 px-2.5 rounded-lg bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#BE123C] hover:border-[#FECDD3] hover:bg-[#FFF1F2] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
+                              className="h-8 px-2.5 rounded-xl bg-white border border-[#E7EEF8] text-[#647B96] hover:text-[#BE123C] hover:border-[#FECDD3] hover:bg-[#FFF1F2] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
                             >
                               <Ban className="h-3 w-3" />
                               <span>{t.appointments.agenda.disableHour}</span>
@@ -1067,7 +1067,7 @@ export const AppointmentsSection: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleEnableHour(selectedDay, hour, avail.status)}
-                            className="h-8 px-3 rounded-lg bg-white border border-[#FECDD3] text-[#9F1239] hover:bg-[#FFE4E6] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
+                            className="h-8 px-3 rounded-xl bg-white border border-[#FECDD3] text-[#9F1239] hover:bg-[#FFE4E6] text-[11px] font-bold inline-flex items-center gap-1 transition-colors"
                           >
                             <RotateCcw className="h-3 w-3" />
                             <span>{t.appointments.agenda.enableHour}</span>
@@ -1082,7 +1082,7 @@ export const AppointmentsSection: React.FC = () => {
                           </span>
                         </div>
                       ) : (
-                        <div className="px-3.5 py-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]/70 text-[11px] font-medium text-[#94A3B8]">
+                        <div className="px-3.5 py-2 rounded-xl bg-[#F8FAFC] border border-[#E7EEF8]/70 text-[11px] font-medium text-[#94A3B8]">
                           {avail.status === 'closed_day'
                             ? t.appointments.agenda.closedDayBanner
                             : t.appointments.agenda.outsideHours}
@@ -1100,12 +1100,12 @@ export const AppointmentsSection: React.FC = () => {
       {/* Redesigned Weekly Calendar View */}
       {viewTab === 'weekly' && (
         <div className="space-y-3">
-          <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="bg-white border border-[#E7EEF8] card-surface rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setWeekAnchor((d) => addDaysIso(d, -7))}
-                className="h-8 w-8 rounded-lg border border-[#E2E8F0] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937]"
+                className="h-8 w-8 rounded-lg border border-[#E7EEF8] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1B3554]"
               >
                 {isRtl ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
               </button>
@@ -1119,11 +1119,11 @@ export const AppointmentsSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setWeekAnchor((d) => addDaysIso(d, 7))}
-                className="h-8 w-8 rounded-lg border border-[#E2E8F0] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1F2937]"
+                className="h-8 w-8 rounded-lg border border-[#E7EEF8] bg-white hover:bg-[#EFF6FF] hover:border-[#FDBA74] inline-flex items-center justify-center text-[#1B3554]"
               >
                 {isRtl ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
               </button>
-              <span className="text-xs font-extrabold font-mono-num text-[#1F2937] ms-1">
+              <span className="text-xs font-extrabold font-mono-num text-[#1B3554] ms-1">
                 {formatShortDate(weekDays[0], language)} — {formatShortDate(weekDays[6], language)}
               </span>
             </div>
@@ -1147,7 +1147,7 @@ export const AppointmentsSection: React.FC = () => {
                         ? 'border-[#2563EB] ring-2 ring-[#2563EB]/20'
                         : isSelected
                         ? 'border-[#2563EB] ring-1 ring-[#2563EB]/20'
-                        : 'border-[#E2E8F0]'
+                        : 'border-[#E7EEF8]'
                   }`}
                 >
                   <div
@@ -1156,7 +1156,7 @@ export const AppointmentsSection: React.FC = () => {
                         ? 'bg-[#EFF6FF] border-[#FED7AA]'
                         : isSelected
                           ? 'bg-[#F0F9FF] border-[#BAE6FD]'
-                          : 'bg-[#F8FAFC] border-[#E2E8F0]'
+                          : 'bg-[#F8FAFC] border-[#E7EEF8]'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-1">
@@ -1168,7 +1168,7 @@ export const AppointmentsSection: React.FC = () => {
                         }}
                         className="text-start hover:underline"
                       >
-                        <div className="text-xs font-extrabold text-[#1F2937] flex items-center gap-1.5">
+                        <div className="text-xs font-extrabold text-[#1B3554] flex items-center gap-1.5">
                           <span>{t.days[dKey]}</span>
                           {isToday && (
                             <span className="px-1.5 py-0.5 rounded bg-[#2563EB] text-white text-[9px] font-bold">
@@ -1176,7 +1176,7 @@ export const AppointmentsSection: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] font-mono-num text-[#64748B] font-semibold">
+                        <div className="text-[11px] font-mono-num text-[#647B96] font-semibold">
                           {formatShortDate(day, language)}
                         </div>
                       </button>
@@ -1184,7 +1184,7 @@ export const AppointmentsSection: React.FC = () => {
                         className={`px-2 py-0.5 rounded-md text-[11px] font-extrabold tabular-nums ${
                           dayApts.length > 0
                             ? 'bg-[#2563EB] text-white'
-                            : 'bg-[#E2E8F0] text-[#64748B]'
+                            : 'bg-[#E2E8F0] text-[#647B96]'
                         }`}
                       >
                         {dayApts.length}
@@ -1220,10 +1220,10 @@ export const AppointmentsSection: React.FC = () => {
                             }}
                             className="w-full text-start"
                           >
-                            <div className="text-[11px] font-extrabold font-mono-num text-[#1F2937]">
+                            <div className="text-[11px] font-extrabold font-mono-num text-[#1B3554]">
                               {apt.time}
                             </div>
-                            <div className="text-xs font-bold text-[#1F2937] truncate">
+                            <div className="text-xs font-bold text-[#1B3554] truncate">
                               {lead ? localizePersonName(lead.name, language) : '—'}
                             </div>
                           </button>
@@ -1256,7 +1256,7 @@ export const AppointmentsSection: React.FC = () => {
                   </div>
 
                   {dCfg?.enabled && (
-                    <div className="p-2 border-t border-[#E2E8F0]">
+                    <div className="p-2 border-t border-[#E7EEF8]">
                       <button
                         type="button"
                         onClick={() => openBookingModal(day, '10:00')}
@@ -1400,7 +1400,7 @@ export const AppointmentsSection: React.FC = () => {
               })}
             </div>
           </div>
-          <div className="px-4 pb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] sm:text-xs text-[#64748B]">
+          <div className="px-4 pb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[10px] sm:text-xs text-[#647B96]">
             <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-[#EFF6FF] border border-[#93C5FD]" />{t.appointments.agenda.today}</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-rose-50 border border-rose-200" />{language === 'ar' ? 'يوم مغلق' : language === 'fr' ? 'Jour fermé' : 'Closed day'}</span>
             <span className="inline-flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-[#DBEAFE] border border-[#BFDBFE]" />{language === 'ar' ? 'عدد المواعيد' : language === 'fr' ? 'Rendez-vous' : 'Appointments'}</span>
@@ -1426,21 +1426,21 @@ export const AppointmentsSection: React.FC = () => {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-[#1F2937] mb-1">{t.appointments.form.date}</label>
+              <label className="block text-xs font-bold text-[#1B3554] mb-1">{t.appointments.form.date}</label>
               <input
                 type="date"
                 value={newDate}
                 onChange={(e) => setNewDate(e.target.value)}
-                className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg font-mono-num text-[#1F2937]"
+                className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg font-mono-num text-[#1B3554]"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#1F2937] mb-1">{t.appointments.form.time}</label>
+              <label className="block text-xs font-bold text-[#1B3554] mb-1">{t.appointments.form.time}</label>
               <input
                 type="time"
                 value={newTime}
                 onChange={(e) => setNewTime(e.target.value)}
-                className="w-full h-9 px-3 text-xs border border-slate-200 rounded-lg font-mono-num text-[#1F2937]"
+                className="w-full h-9 px-3 text-xs border border-[#D8E5F5] rounded-lg font-mono-num text-[#1B3554]"
               />
             </div>
           </div>
