@@ -96,7 +96,7 @@ export const SettingsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 settings-workspace">
       <div>
         <h2 className="text-lg sm:text-[19px] font-extrabold text-[#1F2937]">{t.settings.title}</h2>
         <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.settings.subtitle}</p>
@@ -104,7 +104,7 @@ export const SettingsSection: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Settings Sub-navigation */}
-        <div className="lg:col-span-3 bg-white border border-[#E3EAE5] card-surface rounded-2xl p-2.5 space-y-1">
+        <div className="lg:col-span-3 bg-white border border-[#DBEAFE] shadow-sm rounded-2xl p-2.5 space-y-1">
           {tabs.map(({ id, icon: Icon, label }) => {
             const isActive = activeTab === id;
             return (
@@ -124,7 +124,7 @@ export const SettingsSection: React.FC = () => {
         </div>
 
         {/* Settings Panel */}
-        <div className="lg:col-span-9 bg-white border border-[#E3EAE5] card-surface rounded-2xl p-5 sm:p-6">
+        <div className="lg:col-span-9 bg-white border border-[#DBEAFE] shadow-sm rounded-2xl p-5 sm:p-6">
           {/* A. Agency Info */}
           {activeTab === 'agency' && (
             <form onSubmit={handleSave} className="space-y-4">
@@ -334,7 +334,7 @@ export const SettingsSection: React.FC = () => {
                     }}
                     className="h-9 px-3.5 rounded-xl text-xs font-bold btn-outline inline-flex items-center gap-1.5"
                   >
-                    <Copy className="h-3.5 w-3.5 text-[#0284C7]" />
+                    <Copy className="h-3.5 w-3.5 text-[#2563EB]" />
                     <span>{t.settings.hoursForm.copyMonToAll}</span>
                   </button>
                 </div>
@@ -354,13 +354,13 @@ export const SettingsSection: React.FC = () => {
                       <span className="text-[11px] font-bold text-[#0369A1]">
                         {t.settings.hoursForm.weeklyHoursTotal}
                       </span>
-                      <span className="text-lg font-extrabold font-mono-num text-[#0284C7] mt-1">
+                      <span className="text-lg font-extrabold font-mono-num text-[#2563EB] mt-1">
                         {totalWeeklyHours} {t.settings.hoursForm.hoursUnit}
                       </span>
                     </div>
                   </div>
 
-                  <div className="lg:col-span-7 px-4 py-3 rounded-xl bg-[#FFF7ED]/70 border border-[#FED7AA] flex flex-col justify-center gap-2">
+                  <div className="lg:col-span-7 px-4 py-3 rounded-xl bg-[#EFF6FF]/70 border border-[#FED7AA] flex flex-col justify-center gap-2">
                     <div className="flex items-center gap-1.5 text-[11px] font-extrabold text-[#C2410C]">
                       <Sparkles className="h-3.5 w-3.5" />
                       <span>{t.settings.hoursForm.quickTemplatesLabel}</span>
@@ -369,7 +369,7 @@ export const SettingsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => applyPreset('standard')}
-                        className="h-8 px-3 rounded-lg bg-white border border-[#FDBA74] text-[#9A3412] hover:bg-[#FFEDD5] text-[11px] font-bold transition-colors"
+                        className="h-8 px-3 rounded-lg bg-white border border-[#FDBA74] text-[#9A3412] hover:bg-[#DBEAFE] text-[11px] font-bold transition-colors"
                       >
                         {t.settings.hoursForm.presetStandard}
                       </button>
@@ -426,7 +426,7 @@ export const SettingsSection: React.FC = () => {
                         className={`border rounded-2xl overflow-hidden transition-all shadow-[0_2px_10px_rgba(18,53,43,0.035)] ${
                           day.enabled
                             ? isExpanded
-                              ? 'border-[#EA580C]/60 bg-white shadow-sm'
+                              ? 'border-[#2563EB]/60 bg-white shadow-sm'
                               : 'border-[#E2E8F0] bg-white hover:border-[#CBD5E1]'
                             : 'border-[#E2E8F0] bg-[#F8FAFC]/85'
                         }`}
@@ -448,7 +448,7 @@ export const SettingsSection: React.FC = () => {
                                     if (nextEnabled) setExpandedDayKey(day.day_key);
                                   }}
                                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors ${
-                                    day.enabled ? 'bg-[#EA580C]' : 'bg-slate-300'
+                                    day.enabled ? 'bg-[#2563EB]' : 'bg-slate-300'
                                   }`}
                                 >
                                   <span
@@ -488,8 +488,8 @@ export const SettingsSection: React.FC = () => {
                                   }
                                   className={`xl:hidden h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-1.5 transition-colors ${
                                     isExpanded
-                                      ? 'bg-[#EA580C] text-white border-[#C2410C]'
-                                      : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#FFF7ED] hover:border-[#EA580C]'
+                                      ? 'bg-[#2563EB] text-white border-[#C2410C]'
+                                      : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
                                   }`}
                                 >
                                   <span>
@@ -639,8 +639,8 @@ export const SettingsSection: React.FC = () => {
                                 }
                                 className={`hidden xl:inline-flex h-9 px-3.5 rounded-xl text-xs font-bold border items-center gap-1.5 shrink-0 transition-colors ${
                                   isExpanded
-                                    ? 'bg-[#EA580C] text-white border-[#C2410C]'
-                                    : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#FFF7ED] hover:border-[#EA580C]'
+                                    ? 'bg-[#2563EB] text-white border-[#C2410C]'
+                                    : 'bg-white text-[#1F2937] border-[#E2E8F0] hover:bg-[#EFF6FF] hover:border-[#2563EB]'
                                 }`}
                               >
                                 <span>
@@ -676,7 +676,7 @@ export const SettingsSection: React.FC = () => {
                                   const avail = getSlotAvailability(day, slot);
                                   const barTone =
                                     avail.status === 'available'
-                                      ? 'bg-[#0284C7]'
+                                      ? 'bg-[#2563EB]'
                                       : avail.status === 'break'
                                         ? 'bg-[#F59E0B]'
                                         : avail.status === 'blocked_recurring'
@@ -717,7 +717,7 @@ export const SettingsSection: React.FC = () => {
                                 </span>
                                 <div className="flex flex-wrap items-center gap-3 text-[11px] font-semibold text-[#475569]">
                                   <span className="inline-flex items-center gap-1.5">
-                                    <span className="h-2.5 w-2.5 rounded-full bg-[#0284C7]" />
+                                    <span className="h-2.5 w-2.5 rounded-full bg-[#2563EB]" />
                                     {t.settings.hoursForm.slotOpen}
                                   </span>
                                   <span className="inline-flex items-center gap-1.5">
@@ -747,7 +747,7 @@ export const SettingsSection: React.FC = () => {
                                           ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E] cursor-not-allowed'
                                           : isBlocked
                                             ? 'bg-[#FFF1F2] border-[#FECDD3] text-[#BE123C] line-through hover:bg-[#FFE4E6]'
-                                            : 'bg-white border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] hover:border-[#0284C7] shadow-2xs'
+                                            : 'bg-white border-[#BAE6FD] text-[#0369A1] hover:bg-[#F0F9FF] hover:border-[#2563EB] shadow-2xs'
                                       }`}
                                     >
                                       {isBreakSlot ? (
@@ -755,7 +755,7 @@ export const SettingsSection: React.FC = () => {
                                       ) : isBlocked ? (
                                         <Ban className="h-3.5 w-3.5 text-[#E11D48] shrink-0" />
                                       ) : (
-                                        <Check className="h-3.5 w-3.5 text-[#0284C7] shrink-0" />
+                                        <Check className="h-3.5 w-3.5 text-[#2563EB] shrink-0" />
                                       )}
                                       <span>{slot}</span>
                                     </button>
@@ -1061,7 +1061,7 @@ export const SettingsSection: React.FC = () => {
                       onChange={(e) =>
                         setFormState({ ...formState, auto_confirm_appointments: e.target.checked })
                       }
-                      className="h-4 w-4 accent-[#EA580C]"
+                      className="h-4 w-4 accent-[#2563EB]"
                     />
                     <span>{t.settings.appointmentsForm.autoConfirm}</span>
                   </label>
@@ -1073,7 +1073,7 @@ export const SettingsSection: React.FC = () => {
                       onChange={(e) =>
                         setFormState({ ...formState, send_visit_reminders: e.target.checked })
                       }
-                      className="h-4 w-4 accent-[#EA580C]"
+                      className="h-4 w-4 accent-[#2563EB]"
                     />
                     <span>{t.settings.appointmentsForm.visitReminders}</span>
                   </label>
@@ -1118,7 +1118,7 @@ export const SettingsSection: React.FC = () => {
                       type="checkbox"
                       checked={formState[key]}
                       onChange={(e) => setFormState({ ...formState, [key]: e.target.checked })}
-                      className="h-4 w-4 accent-[#16966A]"
+                      className="h-4 w-4 accent-[#2563EB]"
                     />
                   </label>
                 ))}
@@ -1241,7 +1241,7 @@ export const SettingsSection: React.FC = () => {
               <div className="overflow-x-auto border border-[#E3EAE5] rounded-2xl overflow-hidden">
                 <table className="w-full text-xs text-start border-collapse">
                   <thead>
-                    <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
+                    <tr className="bg-[#1E293B] text-white border-b-2 border-[#2563EB] font-bold whitespace-nowrap">
                       <th className="py-3 px-3.5 text-start">{t.reports.teamSection.employee}</th>
                       {(Object.keys(t.team.permissionsLabels) as (keyof EmployeePermissions)[]).map((pk) => (
                         <th key={pk} className="py-3 px-2.5 text-center whitespace-nowrap">
@@ -1252,7 +1252,7 @@ export const SettingsSection: React.FC = () => {
                   </thead>
                   <tbody className="divide-y divide-[#E2E8F0]">
                     {employees.map((emp) => (
-                      <tr key={emp.id} className="hover:bg-[#FFF7ED]">
+                      <tr key={emp.id} className="hover:bg-[#EFF6FF]">
                         <td className="py-3 px-3.5 font-bold text-[#1F2937] whitespace-nowrap">
                           <div>{localizePersonName(emp.name, language)}</div>
                           <div className="text-[11px] text-[#64748B] font-medium">
@@ -1269,7 +1269,7 @@ export const SettingsSection: React.FC = () => {
                                   permissions: { ...emp.permissions, [pk]: !emp.permissions[pk] },
                                 })
                               }
-                              className="h-4 w-4 accent-[#16966A]"
+                              className="h-4 w-4 accent-[#2563EB]"
                             />
                           </td>
                         ))}
@@ -1338,7 +1338,7 @@ export const SettingsSection: React.FC = () => {
                     setFormState({ ...formState, two_factor_enabled: val });
                     updateSettings({ two_factor_enabled: val });
                   }}
-                  className="h-4 w-4 accent-[#16966A]"
+                  className="h-4 w-4 accent-[#2563EB]"
                 />
                 <span>{t.settings.securityForm.twoFactor}</span>
               </label>
