@@ -272,7 +272,7 @@ export const AppointmentsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 appointments-workspace">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
@@ -325,8 +325,8 @@ export const AppointmentsSection: React.FC = () => {
       </div>
 
       {/* View Switcher & Filters */}
-      <div className="bg-white border border-zinc-200 card-surface rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex flex-wrap p-1 bg-zinc-100 border border-zinc-200 rounded-xl gap-1">
+      <div className="bg-white border border-[#DCE5E1] card-surface rounded-2xl p-4 sm:p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 w-full xl:w-auto p-1.5 bg-[#F1F5F3] border border-[#E1E9E5] rounded-2xl gap-1.5">
           {(
             [
               { id: 'daily', icon: Clock, label: t.appointments.views.daily },
@@ -339,7 +339,7 @@ export const AppointmentsSection: React.FC = () => {
               key={id}
               type="button"
               onClick={() => setViewTab(id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold inline-flex items-center gap-1.5 transition-all whitespace-nowrap ${
+              className={`min-h-10 px-3 py-2 rounded-xl text-xs sm:text-[13px] font-bold inline-flex items-center justify-center gap-2 transition-all whitespace-nowrap ${
                 viewTab === id ? 'btn-primary' : 'text-zinc-900 hover:bg-white'
               }`}
             >
@@ -349,15 +349,15 @@ export const AppointmentsSection: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
+        <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
+          <div className="relative flex-1 min-w-[180px] xl:flex-none">
             <Search className="h-3.5 w-3.5 text-zinc-400 absolute top-1/2 -translate-y-1/2 start-2.5" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.app.search}
-              className="h-9 w-44 sm:w-52 ps-8 pe-3 text-xs font-medium border border-[#E2E8F0] rounded-xl bg-white focus:outline-none focus:border-[#EA580C]"
+              className="h-10 w-full xl:w-52 ps-9 pe-3 text-[13px] font-medium border border-[#DCE5E1] rounded-xl bg-[#FBFDFC] focus:outline-none focus:border-[#EA580C]"
             />
           </div>
           {viewTab === 'table' && (
@@ -600,7 +600,7 @@ export const AppointmentsSection: React.FC = () => {
 
       {/* Daily Hourly Agenda View */}
       {viewTab === 'daily' && (
-        <div className="bg-white border border-[#E2E8F0] card-surface rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[#DCE5E1] card-surface rounded-2xl overflow-hidden">
           {/* Top Agenda Controls */}
           <div className="px-5 py-4 bg-[#F8FAFC] border-b border-[#E2E8F0] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3.5">
             <div className="flex flex-wrap items-center gap-3">
