@@ -637,7 +637,7 @@ export const AppointmentsSection: React.FC = () => {
                   {t.days[selectedDayKey]} — {formatShortDate(selectedDay, language)}
                 </h3>
                 <div className="text-xs text-[#64748B] flex flex-wrap items-center gap-2 mt-1">
-                  {selectedDayConfig?.enabled ? (
+                  {selectedDayConfig?.enabled && !settings.blocked_dates?.includes(selectedDay) ? (
                     <>
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white border border-[#E2E8F0] text-[#1E293B] font-semibold">
                         <Clock className="h-3 w-3 text-[#0284C7]" />
@@ -1136,13 +1136,16 @@ export const AppointmentsSection: React.FC = () => {
               const dCfg = settings.working_days.find((d) => d.day_key === dKey);
               const isToday = day === todayIso;
               const isSelected = day === selectedDay;
+              const isDateClosed = settings.blocked_dates?.includes(day) ?? false;
               return (
                 <div
                   key={day}
                   className={`bg-white border card-surface rounded-2xl overflow-hidden flex flex-col min-h-[260px] ${
-                    isToday
-                      ? 'border-[#EA580C] ring-2 ring-[#EA580C]/20'
-                      : isSelected
+                    isDateClosed
+                      ? 'border-rose-200 bg-rose-50/50'
+                      : isToday
+                        ? 'border-[#EA580C] ring-2 ring-[#EA580C]/20'
+                        : isSelected
                         ? 'border-[#0284C7] ring-1 ring-[#0284C7]/20'
                         : 'border-[#E2E8F0]'
                   }`}
@@ -1339,8 +1342,8 @@ export const AppointmentsSection: React.FC = () => {
                           ? 'border-[#EA580C] bg-[#FFF7ED]/70 ring-2 ring-[#EA580C]/25'
                           : !cell.inCurrentMonth
                             ? 'border-[#E2E8F0]/60 bg-[#F8FAFC]/60 text-[#64748B] opacity-65'
-                            : !dCfg?.enabled
-                              ? 'border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:bg-[#E2E8F0]/50'
+                            : (!dCfg?.enabled || isDateClosed)
+                              ? 'border-rose-200 bg-rose-50/50 text-rose-700 hover:bg-rose-50'
                               : dayApts.length > 0
                                 ? 'border-[#E2E8F0] bg-white hover:border-[#EA580C]'
                                 : 'border-[#E2E8F0] bg-white hover:bg-[#FFF7ED]/40'
