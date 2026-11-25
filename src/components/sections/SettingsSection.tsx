@@ -301,14 +301,14 @@ export const SettingsSection: React.FC = () => {
             };
 
             return (
-              <div className="space-y-5">
+              <div className="space-y-6 working-hours-workspace">
                 {/* Header */}
-                <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#E2E8F0]">
                   <div>
                     <h3 className="text-sm sm:text-base font-extrabold text-[#1F2937]">
                       {t.settings.tabs.hours}
                     </h3>
-                    <p className="text-xs text-[#64748B] mt-0.5">{t.settings.hoursForm.hourlySlotsHint}</p>
+                    <p className="text-[13px] leading-6 text-[#64748B] mt-1 max-w-2xl">{t.settings.hoursForm.hourlySlotsHint}</p>
                   </div>
                   <button
                     type="button"
@@ -391,7 +391,7 @@ export const SettingsSection: React.FC = () => {
                 </div>
 
                 {/* Per-day Clear Structured Cards */}
-                <div className="space-y-3">
+                <div className="space-y-3.5">
                   {formState.working_days.map((day, idx) => {
                     const daySlots = day.enabled ? generateDayWorkingHours(day.open, day.close) : [];
                     const hasBreak = Boolean(day.break_start && day.break_end);
@@ -422,7 +422,7 @@ export const SettingsSection: React.FC = () => {
                     return (
                       <div
                         key={day.day_key}
-                        className={`border rounded-2xl overflow-hidden transition-all ${
+                        className={`border rounded-2xl overflow-hidden transition-all shadow-[0_2px_10px_rgba(18,53,43,0.035)] ${
                           day.enabled
                             ? isExpanded
                               ? 'border-[#EA580C]/60 bg-white shadow-sm'
@@ -431,7 +431,7 @@ export const SettingsSection: React.FC = () => {
                         }`}
                       >
                         {/* Main Day Row */}
-                        <div className="p-4 space-y-3">
+                        <div className="p-4 sm:p-5 space-y-4">
                           <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5">
                             {/* Day Name & Switch */}
                             <div className="flex items-center justify-between sm:justify-start gap-3 min-w-[205px]">
@@ -460,7 +460,7 @@ export const SettingsSection: React.FC = () => {
                                 </button>
 
                                 <div>
-                                  <div className="text-sm font-extrabold text-[#1F2937]">
+                                  <div className="text-[15px] font-extrabold text-[#1F2937]">
                                     {t.days[day.day_key]}
                                   </div>
                                   <span
@@ -730,7 +730,7 @@ export const SettingsSection: React.FC = () => {
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
+                              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-2.5">
                                 {daySlots.map((slot) => {
                                   const avail = getSlotAvailability(day, slot);
                                   const isBreakSlot = avail.status === 'break';
@@ -741,7 +741,7 @@ export const SettingsSection: React.FC = () => {
                                       type="button"
                                       disabled={isBreakSlot}
                                       onClick={() => toggleDaySlot(slot)}
-                                      className={`h-9 px-2.5 rounded-xl text-xs font-mono-num font-bold border inline-flex items-center justify-center gap-1.5 transition-all ${
+                                      className={`min-h-10 px-3 rounded-xl text-[13px] font-mono-num font-bold border inline-flex items-center justify-center gap-2 transition-all ${
                                         isBreakSlot
                                           ? 'bg-[#FFFBEB] border-[#FDE68A] text-[#92400E] cursor-not-allowed'
                                           : isBlocked
@@ -891,16 +891,17 @@ export const SettingsSection: React.FC = () => {
                   })}
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-[#1F2937] mb-1.5">
+                <div className="rounded-2xl border border-[#E2E8F0] bg-[#F8FAFC] p-4 sm:p-5">
+                  <label className="block text-sm font-extrabold text-[#1F2937] mb-1.5">
                     {t.settings.hoursForm.holidays}
                   </label>
                   <input
                     type="text"
                     value={formState.holidays}
                     onChange={(e) => setFormState({ ...formState, holidays: e.target.value })}
-                    className="w-full h-10 px-3.5 text-xs border border-[#CBD5E1] rounded-xl bg-white"
+                    className="w-full h-11 px-3.5 text-[13px] border border-[#CBD5E1] rounded-xl bg-white"
                   />
+                  <p className="mt-2 text-xs leading-5 text-[#64748B]">استعمل هذا الحقل لتوضيح أيام العطل الرسمية أو الاستثنائية للفريق. أما إيقاف الحجوزات في يوم محدد أو فترة محددة، فاستعمل إدارة الفترات داخل اليوم المناسب.</p>
                 </div>
 
                 <div className="flex justify-end pt-1">
