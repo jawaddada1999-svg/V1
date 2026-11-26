@@ -184,8 +184,15 @@ export const LeadsSection: React.FC = () => {
   };
 
   const toggleSelectAll = () => {
-    if (selectedIds.length === pagedLeads.length) setSelectedIds([]);
-    else setSelectedIds(pagedLeads.map((l) => l.id));
+    const pageIds = pagedLeads.map((l) => l.id);
+    const allPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+
+    // Select/deselect only the visible page; keep selections made on other pages.
+    setSelectedIds((current) =>
+      allPageSelected
+        ? current.filter((id) => !pageIds.includes(id))
+        : Array.from(new Set([...current, ...pageIds]))
+    );
   };
 
   const toggleSelectOne = (id: string) => {
