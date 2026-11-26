@@ -1386,9 +1386,13 @@ export const PropertyFormModal: React.FC<{
                   type="number"
                   min={0}
                   value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                  className={`${INPUT_CLASS} font-mono-num`}
+                  onChange={(e) => {
+                    setArea(e.target.value);
+                    if (errors.area) setErrors((prev) => ({ ...prev, area: '' }));
+                  }}
+                  className={`${INPUT_CLASS} font-mono-num ${errors.area ? 'border-rose-500 bg-rose-50/40' : ''}`}
                 />
+                {errors.area && <p className="mt-1 text-[11px] font-semibold text-rose-600">{errors.area}</p>}
               </div>
 
               <div>
@@ -1396,10 +1400,15 @@ export const PropertyFormModal: React.FC<{
                 <input
                   type="number"
                   min={0}
+                  step={1}
                   value={bedrooms}
-                  onChange={(e) => setBedrooms(e.target.value)}
-                  className={`${INPUT_CLASS} font-mono-num`}
+                  onChange={(e) => {
+                    setBedrooms(e.target.value);
+                    if (errors.bedrooms) setErrors((prev) => ({ ...prev, bedrooms: '' }));
+                  }}
+                  className={`${INPUT_CLASS} font-mono-num ${errors.bedrooms ? 'border-rose-500 bg-rose-50/40' : ''}`}
                 />
+                {errors.bedrooms && <p className="mt-1 text-[11px] font-semibold text-rose-600">{errors.bedrooms}</p>}
               </div>
 
               <div>
@@ -1407,10 +1416,15 @@ export const PropertyFormModal: React.FC<{
                 <input
                   type="number"
                   min={0}
+                  step={1}
                   value={bathrooms}
-                  onChange={(e) => setBathrooms(e.target.value)}
-                  className={`${INPUT_CLASS} font-mono-num`}
+                  onChange={(e) => {
+                    setBathrooms(e.target.value);
+                    if (errors.bathrooms) setErrors((prev) => ({ ...prev, bathrooms: '' }));
+                  }}
+                  className={`${INPUT_CLASS} font-mono-num ${errors.bathrooms ? 'border-rose-500 bg-rose-50/40' : ''}`}
                 />
+                {errors.bathrooms && <p className="mt-1 text-[11px] font-semibold text-rose-600">{errors.bathrooms}</p>}
               </div>
 
               <div className="sm:col-span-3">
