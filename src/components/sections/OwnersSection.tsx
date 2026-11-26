@@ -141,8 +141,8 @@ const ownersForSale = owners.filter((owner) => {
         </button>
       </div>
 
-      {/* 5 Harmonious KPI Cards (Removed portfolioValue, Added ownersForSale & ownersForRent) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* Owner overview KPI cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title={t.owners.stats.totalOwners}
           value={formatNumber(stats.totalOwners, language)}
