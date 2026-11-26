@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import {
-  Briefcase,\n  Download,
+  Briefcase,
+  Download,
   Building2,
   Edit3,
   Eye,
