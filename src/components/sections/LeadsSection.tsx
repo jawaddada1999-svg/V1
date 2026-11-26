@@ -30,6 +30,7 @@ import {
 import { formatMAD, formatShortDate } from '../../i18n/translations';
 import { Lead, LeadClassification, LeadSource, LeadStatus } from '../../types/domain';
 import { buildTelHref, buildWhatsAppHref } from '../../utils/contactLinks';
+import { addDaysIso, getTodayIso } from '../../utils/dateUtils';
 
 import {
   computeLeadScore,
@@ -1091,7 +1092,7 @@ export const LeadsSection: React.FC = () => {
                   type="button"
                   onClick={() => {
                     updateLead(activeLead.id, {
-                      next_followup: followupInput || activeLead.next_followup || '2026-11-22',
+                      next_followup: followupInput || activeLead.next_followup || addDaysIso(getTodayIso(), 1),
                     });
                   }}
                   className="h-9 px-4 text-xs font-bold rounded-xl btn-primary"
@@ -1115,10 +1116,13 @@ export const LeadsSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    addLeadNote(activeLead.id, noteInput);
+                    const note = noteInput.trim();
+                    if (!note) return;
+                    addLeadNote(activeLead.id, note);
                     setNoteInput('');
                   }}
-                  className="h-9 px-4 text-xs font-bold rounded-xl btn-primary shrink-0"
+                  disabled={!noteInput.trim()}
+                  className="h-9 px-4 text-xs font-bold rounded-xl btn-primary shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t.leads.profile.addNoteBtn}
                 </button>
