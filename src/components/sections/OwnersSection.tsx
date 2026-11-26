@@ -256,7 +256,33 @@ const ownersForSale = owners.filter((owner) => {
         />
       ) : (
         <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="md:hidden divide-y divide-[#E2E8F0]">
+            {filteredOwners.map((owner) => {
+              const ownedProps = getOwnerProperties(owner);
+              const localizedName = localizePersonName(owner.name, language);
+              return (
+                <article key={owner.id} className="p-3.5 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Avatar name={localizedName} size="sm" />
+                    <div className="min-w-0 flex-1">
+                      <button type="button" onClick={() => setSelectedOwnerId(owner.id)} className="font-bold text-sm text-[#1F2937] text-start">{localizedName}</button>
+                      <p className="text-xs text-slate-500 mt-0.5">{localizeCity(owner.city, language)} · {t.ownerTypes[owner.owner_type]}</p>
+                      <p className="text-xs font-semibold text-slate-700 mt-1" dir="ltr">{owner.phone}</p>
+                    </div>
+                    <span className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-slate-100 border border-slate-200 px-2 py-1 text-xs font-bold text-slate-800"><Building2 className="h-3 w-3" /> {ownedProps.length}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-500">{language === "ar" ? "العقارات المرتبطة" : language === "fr" ? "Biens associés" : "Linked properties"}</span>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => setSelectedOwnerId(owner.id)} className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 inline-flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" /> {t.owners.profile.title}</button>
+                      <button type="button" onClick={() => { setEditingOwner(owner); setOwnerModalOpen(true); }} className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 inline-flex items-center gap-1.5"><Edit3 className="h-3.5 w-3.5" /> {t.app.edit}</button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-xs text-start border-collapse">
               <thead>
                 <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
