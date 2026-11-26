@@ -1645,7 +1645,7 @@ export const OwnerFormModal: React.FC<{
   onClose: () => void;
   editingOwner?: PropertyOwner | null;
 }> = ({ open, onClose, editingOwner }) => {
-  const { t, language, addOwner, updateOwner, pushToast } = useAgency();
+  const { t, language, owners, addOwner, updateOwner, pushToast } = useAgency();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('+212 6');
@@ -1689,6 +1689,27 @@ export const OwnerFormModal: React.FC<{
     e.preventDefault();
     if (!name.trim() || !phone.trim()) {
       pushToast({ type: 'warning', title: t.app.requiredField });
+      return;
+    }
+
+    const normalizedPhone = phone.replace(/\D/g, '');
+    const normalizedEmail = email.trim().toLowerCase();
+    if (normalizedPhone.length < 8 || Number(commissionRate) < 0 || Number(commissionRate) > 100 || !Number.isFinite(Number(commissionRate))) {
+      pushToast({ type: 'warning', title: language === 'ar' ? 'تحقق من رقم الهاتف ونسبة العمولة' : language === 'fr' ? 'Vérifiez le téléphone et le taux de commission' : 'Check phone number and commission rate' });
+      return;
+    }
+    const duplicateOwner = owners.find((owner) => {
+      if (editingOwner && owner.id === editingOwner.id) return false;
+      const existingPhone = owner.phone.replace(/\D/g, '');
+      const existingEmail = owner.email.trim().toLowerCase();
+      return (normalizedPhone && existingPhone === normalizedPhone) || (normalizedEmail && existingEmail === normalizedEmail);
+    });
+    if (duplicateOwner) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar' ? 'هاد المالك مسجل من قبل' : language === 'fr' ? 'Ce propriétaire existe déjà' : 'This owner already exists',
+        description: language === 'ar' ? 'راجع رقم الهاتف أو البريد الإلكتروني قبل الإضافة.' : language === 'fr' ? 'Vérifiez le téléphone ou l’e-mail avant l’ajout.' : 'Check the phone number or email before adding another owner.',
+      });
       return;
     }
 
