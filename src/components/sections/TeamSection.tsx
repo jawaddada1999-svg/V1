@@ -123,8 +123,42 @@ export const TeamSection: React.FC = () => {
 
   const handleSaveEmployee = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) {
+    if (!name.trim() || !email.trim() || !phone.trim()) {
       pushToast({ type: 'warning', title: t.app.requiredField });
+      return;
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone.replace(/\\D/g, '');
+    const duplicateEmployee = employees.find((employee) => {
+      if (employee.id === editingEmp?.id) return false;
+      const sameEmail = employee.email.trim().toLowerCase() === normalizedEmail;
+      const samePhone = employee.phone.replace(/\\D/g, '') === normalizedPhone;
+      return sameEmail || (normalizedPhone.length >= 8 && samePhone);
+    });
+    if (duplicateEmployee) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar'
+          ? 'البريد الإلكتروني أو رقم الهاتف مسجل لموظف آخر'
+          : language === 'fr'
+            ? 'Cet e-mail ou numéro est déjà utilisé par un autre membre'
+            : 'This email or phone number is already used by another team member',
+      });
+      return;
+    }
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar' ? 'تحقق من صحة البريد الإلكتروني' : language === 'fr' ? 'Vérifiez l’adresse e-mail' : 'Enter a valid email address',
+      });
+      return;
+    }
+    if (normalizedPhone.length < 8) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar' ? 'رقم الهاتف غير صحيح' : language === 'fr' ? 'Numéro de téléphone invalide' : 'Enter a valid phone number',
+      });
       return;
     }
 
