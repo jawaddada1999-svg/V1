@@ -192,6 +192,14 @@ export const AppointmentsSection: React.FC = () => {
     [filteredAppointments, selectedDay]
   );
 
+  const dailyStatusCounts = useMemo(() => ({
+    total: selectedDayAppointments.filter((a) => a.status !== 'cancelled').length,
+    confirmed: selectedDayAppointments.filter((a) => a.status === 'confirmed').length,
+    scheduled: selectedDayAppointments.filter((a) => a.status === 'scheduled' || a.status === 'rescheduled').length,
+    attended: selectedDayAppointments.filter((a) => a.status === 'attended').length,
+    noShow: selectedDayAppointments.filter((a) => a.status === 'no_show').length,
+  }), [selectedDayAppointments]);
+
   const dailySummary = useMemo(() => {
     let openSlots = 0;
     let blockedSlots = 0;
@@ -720,7 +728,7 @@ export const AppointmentsSection: React.FC = () => {
               {agendaStripDays.map((dayStr) => {
                 const dKey = getDayKeyFromIsoDate(dayStr);
                 const dCfg = settings.working_days.find((d) => d.day_key === dKey);
-                const count = filteredAppointments.filter((a) => a.date === dayStr).length;
+                const count = filteredAppointments.filter((a) => a.date === dayStr && a.status !== 'cancelled').length;
                 const isSelected = dayStr === selectedDay;
                 const isTodayCell = dayStr === todayIso;
                 return (
@@ -763,6 +771,32 @@ export const AppointmentsSection: React.FC = () => {
                   </button>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Selected-day appointment summary */}
+          <div className="px-4 sm:px-5 py-3 bg-[#F8FBFF] border-b border-[#E7EEF8]">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <div className="rounded-xl border border-[#D8E5F5] bg-white px-3 py-2.5">
+                <div className="text-[10px] font-bold text-[#647B96]">{language === 'ar' ? 'مواعيد هذا اليوم' : language === 'fr' ? 'Rendez-vous du jour' : 'Appointments today'}</div>
+                <div className="mt-1 text-xl font-extrabold text-[#17365D] tabular-nums">{dailyStatusCounts.total}</div>
+              </div>
+              <div className="rounded-xl border border-[#C7D2FE] bg-[#EEF2FF] px-3 py-2.5">
+                <div className="text-[10px] font-bold text-[#3730A3]">{t.appointmentStatuses.confirmed}</div>
+                <div className="mt-1 text-xl font-extrabold text-[#312E81] tabular-nums">{dailyStatusCounts.confirmed}</div>
+              </div>
+              <div className="rounded-xl border border-[#BAE6FD] bg-[#F0F9FF] px-3 py-2.5">
+                <div className="text-[10px] font-bold text-[#0369A1]">{t.appointmentStatuses.scheduled}</div>
+                <div className="mt-1 text-xl font-extrabold text-[#075985] tabular-nums">{dailyStatusCounts.scheduled}</div>
+              </div>
+              <div className="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] px-3 py-2.5">
+                <div className="text-[10px] font-bold text-[#166534]">{t.appointmentStatuses.attended}</div>
+                <div className="mt-1 text-xl font-extrabold text-[#166534] tabular-nums">{dailyStatusCounts.attended}</div>
+              </div>
+              <div className="rounded-xl border border-[#FECDD3] bg-[#FFF1F2] px-3 py-2.5">
+                <div className="text-[10px] font-bold text-[#BE123C]">{t.appointmentStatuses.no_show}</div>
+                <div className="mt-1 text-xl font-extrabold text-[#BE123C] tabular-nums">{dailyStatusCounts.noShow}</div>
+              </div>
             </div>
           </div>
 
