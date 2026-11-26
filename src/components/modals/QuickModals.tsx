@@ -1713,6 +1713,24 @@ export const OwnerFormModal: React.FC<{
       return;
     }
 
+    const normalizedPhone = phone.replace(/\D/g, '');
+    const normalizedEmail = email.trim().toLowerCase();
+    const commission = Number(commissionRate);
+    if (normalizedPhone.length < 8 || !Number.isFinite(commission) || commission < 0 || commission > 100) {
+      pushToast({ type: 'warning', title: language === 'ar' ? 'تحقق من رقم الهاتف ونسبة العمولة' : language === 'fr' ? 'Vérifiez le téléphone et le taux de commission' : 'Check phone number and commission rate' });
+      return;
+    }
+    const duplicateOwner = owners.find((owner) => {
+      if (editingOwner && owner.id === editingOwner.id) return false;
+      const existingPhone = owner.phone.replace(/\D/g, '');
+      const existingEmail = owner.email.trim().toLowerCase();
+      return (normalizedPhone && existingPhone === normalizedPhone) || (normalizedEmail && existingEmail === normalizedEmail);
+    });
+    if (duplicateOwner) {
+      pushToast({ type: 'warning', title: language === 'ar' ? 'هاد المالك مسجل من قبل' : language === 'fr' ? 'Ce propriétaire existe déjà' : 'This owner already exists' });
+      return;
+    }
+
     const payload = {
       name: name.trim(),
       phone: phone.trim(),
