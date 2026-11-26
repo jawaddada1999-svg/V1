@@ -129,11 +129,11 @@ export const TeamSection: React.FC = () => {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-    const normalizedPhone = phone.replace(/\\D/g, '');
+    const normalizedPhone = phone.replace(/\D/g, '');
     const duplicateEmployee = employees.find((employee) => {
       if (employee.id === editingEmp?.id) return false;
       const sameEmail = employee.email.trim().toLowerCase() === normalizedEmail;
-      const samePhone = employee.phone.replace(/\\D/g, '') === normalizedPhone;
+      const samePhone = employee.phone.replace(/\D/g, '') === normalizedPhone;
       return sameEmail || (normalizedPhone.length >= 8 && samePhone);
     });
     if (duplicateEmployee) {
@@ -147,7 +147,7 @@ export const TeamSection: React.FC = () => {
       });
       return;
     }
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail)) {
+    if (!/^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(normalizedEmail)) {
       pushToast({
         type: 'warning',
         title: language === 'ar' ? 'تحقق من صحة البريد الإلكتروني' : language === 'fr' ? 'Vérifiez l’adresse e-mail' : 'Enter a valid email address',
