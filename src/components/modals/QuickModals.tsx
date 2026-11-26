@@ -269,11 +269,11 @@ export const LeadFormModal: React.FC<{
       return;
     }
 
-    const normalizedPhone = phone.replace(/\\D/g, '');
+    const normalizedPhone = phone.replace(/\D/g, '');
     const normalizedEmail = email.trim().toLowerCase();
     const duplicateLead = leads.find((lead) => {
       if (editingLead && lead.id === editingLead.id) return false;
-      const existingPhone = lead.phone.replace(/\\D/g, '');
+      const existingPhone = lead.phone.replace(/\D/g, '');
       const existingEmail = lead.email.trim().toLowerCase();
       return normalizedPhone && existingPhone === normalizedPhone ||
         normalizedEmail && existingEmail === normalizedEmail;
