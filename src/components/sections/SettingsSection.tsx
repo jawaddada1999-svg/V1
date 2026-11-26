@@ -89,10 +89,15 @@ export const SettingsSection: React.FC = () => {
       pushToast({ type: 'warning', title: t.settings.securityForm.passwordMismatch });
       return;
     }
-    setCurrentPw('');
-    setNewPw('');
-    setConfirmPw('');
-    pushToast({ type: 'success', title: t.settings.securityForm.passwordUpdated });
+    // This dashboard is a frontend demo: no real authentication/password update is connected.
+    pushToast({
+      type: 'info',
+      title: language === 'ar'
+        ? 'تغيير كلمة المرور غير متاح في النسخة التجريبية'
+        : language === 'fr'
+          ? 'Le changement de mot de passe n’est pas disponible dans la démo'
+          : 'Password changes are not available in this demo',
+    });
   };
 
   return (
