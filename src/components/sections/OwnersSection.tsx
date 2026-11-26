@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
-  Briefcase,
+  Briefcase,\n  Download,
   Building2,
   Edit3,
   Eye,
@@ -119,6 +119,25 @@ const ownersForSale = owners.filter((owner) => {
     [owners, selectedOwnerId]
   );
 
+  const exportOwners = () => {
+    const escapeCell = (value: unknown) =>
+      String(value ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch] as string));
+    const rows = filteredOwners.map((owner) => [
+      owner.name, owner.phone, owner.email, owner.city, t.ownerTypes[owner.owner_type],
+      owner.owner_intent ?? '', getOwnerProperties(owner).length, owner.commission_rate,
+      owner.preferred_contact, owner.national_id,
+    ]);
+    const headers = language === 'ar'
+      ? ['الاسم', 'الهاتف', 'البريد الإلكتروني', 'المدينة', 'نوع المالك', 'النية', 'العقارات', 'العمولة %', 'طريقة التواصل', 'رقم التعريف']
+      : language === 'fr'
+        ? ['Nom', 'Téléphone', 'E-mail', 'Ville', 'Type', 'Intention', 'Biens', 'Commission %', 'Contact', 'Identifiant']
+        : ['Name', 'Phone', 'Email', 'City', 'Owner type', 'Intent', 'Properties', 'Commission %', 'Contact', 'ID'];
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>IBONDA — Owners</title><style>body{font-family:Arial,sans-serif;padding:24px;color:#17211d}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #d8e0dc;padding:8px;text-align:start}th{background:#edf3ef}</style></head><body><h2>IBONDA — ${escapeCell(t.owners.title)}</h2><table><thead><tr>${headers.map((h) => `<th>${escapeCell(h)}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${row.map((v) => `<td>${escapeCell(v)}</td>`).join('')}</tr>`).join('')}</tbody></table><script>window.onload=()=>window.print()<\\/script></body></html>`);
+    printWindow.document.close();
+  };
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -128,17 +147,23 @@ const ownersForSale = owners.filter((owner) => {
           <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.owners.subtitle}</p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            setEditingOwner(null);
-            setOwnerModalOpen(true);
-          }}
-          className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 self-start sm:self-auto btn-primary"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          <span>{t.owners.addOwner}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={exportOwners} className="h-9 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary">
+            <Download className="h-3.5 w-3.5" />
+            <span>{t.app.exportPdf}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingOwner(null);
+              setOwnerModalOpen(true);
+            }}
+            className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 self-start sm:self-auto btn-primary"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>{t.owners.addOwner}</span>
+          </button>
+        </div>
       </div>
 
       {/* Owner overview KPI cards */}
