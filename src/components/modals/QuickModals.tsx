@@ -1694,7 +1694,7 @@ export const OwnerFormModal: React.FC<{
 
     const normalizedPhone = phone.replace(/\D/g, '');
     const normalizedEmail = email.trim().toLowerCase();
-    if (normalizedPhone.length < 8 || Number(commissionRate) < 0 || Number(commissionRate) > 100 || !Number.isFinite(Number(commissionRate))) {
+    if (normalizedPhone.length < 8 || !Number.isFinite(Number(commissionRate)) || Number(commissionRate) < 0 || Number(commissionRate) > 100) {
       pushToast({ type: 'warning', title: language === 'ar' ? 'تحقق من رقم الهاتف ونسبة العمولة' : language === 'fr' ? 'Vérifiez le téléphone et le taux de commission' : 'Check phone number and commission rate' });
       return;
     }
@@ -1710,24 +1710,6 @@ export const OwnerFormModal: React.FC<{
         title: language === 'ar' ? 'هاد المالك مسجل من قبل' : language === 'fr' ? 'Ce propriétaire existe déjà' : 'This owner already exists',
         description: language === 'ar' ? 'راجع رقم الهاتف أو البريد الإلكتروني قبل الإضافة.' : language === 'fr' ? 'Vérifiez le téléphone ou l’e-mail avant l’ajout.' : 'Check the phone number or email before adding another owner.',
       });
-      return;
-    }
-
-    const normalizedPhone = phone.replace(/\D/g, '');
-    const normalizedEmail = email.trim().toLowerCase();
-    const commission = Number(commissionRate);
-    if (normalizedPhone.length < 8 || !Number.isFinite(commission) || commission < 0 || commission > 100) {
-      pushToast({ type: 'warning', title: language === 'ar' ? 'تحقق من رقم الهاتف ونسبة العمولة' : language === 'fr' ? 'Vérifiez le téléphone et le taux de commission' : 'Check phone number and commission rate' });
-      return;
-    }
-    const duplicateOwner = owners.find((owner) => {
-      if (editingOwner && owner.id === editingOwner.id) return false;
-      const existingPhone = owner.phone.replace(/\D/g, '');
-      const existingEmail = owner.email.trim().toLowerCase();
-      return (normalizedPhone && existingPhone === normalizedPhone) || (normalizedEmail && existingEmail === normalizedEmail);
-    });
-    if (duplicateOwner) {
-      pushToast({ type: 'warning', title: language === 'ar' ? 'هاد المالك مسجل من قبل' : language === 'fr' ? 'Ce propriétaire existe déjà' : 'This owner already exists' });
       return;
     }
 
