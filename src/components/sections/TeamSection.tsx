@@ -147,7 +147,7 @@ export const TeamSection: React.FC = () => {
       });
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\\.[^\s@]+$/.test(normalizedEmail)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
       pushToast({
         type: 'warning',
         title: language === 'ar' ? 'تحقق من صحة البريد الإلكتروني' : language === 'fr' ? 'Vérifiez l’adresse e-mail' : 'Enter a valid email address',
