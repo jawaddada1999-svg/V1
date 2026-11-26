@@ -1084,7 +1084,7 @@ export const LeadsSection: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="date"
-                  value={followupInput || activeLead.next_followup || '2026-11-22'}
+                  value={followupInput || activeLead.next_followup || addDaysIso(getTodayIso(), 1)}
                   onChange={(e) => setFollowupInput(e.target.value)}
                   className="h-9 px-3 text-xs border border-slate-200 rounded-lg font-mono-num text-[#1F2937]"
                 />
