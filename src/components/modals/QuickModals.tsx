@@ -97,7 +97,7 @@ export const LeadFormModal: React.FC<{
   onClose: () => void;
   editingLead?: Lead | null;
 }> = ({ open, onClose, editingLead }) => {
-  const { t, language, employees, properties, addLead, updateLead, pushToast } = useAgency();
+  const { t, language, employees, properties, leads, addLead, updateLead, pushToast } = useAgency();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('+212 6');
@@ -266,6 +266,24 @@ export const LeadFormModal: React.FC<{
     e.preventDefault();
     if (!validate()) {
       pushToast({ type: 'warning', title: t.app.requiredField });
+      return;
+    }
+
+    const normalizedPhone = phone.replace(/\\D/g, '');
+    const normalizedEmail = email.trim().toLowerCase();
+    const duplicateLead = leads.find((lead) => {
+      if (editingLead && lead.id === editingLead.id) return false;
+      const existingPhone = lead.phone.replace(/\\D/g, '');
+      const existingEmail = lead.email.trim().toLowerCase();
+      return normalizedPhone && existingPhone === normalizedPhone ||
+        normalizedEmail && existingEmail === normalizedEmail;
+    });
+    if (duplicateLead) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar' ? 'هاد العميل مسجل من قبل' : language === 'fr' ? 'Ce client existe déjà' : 'This lead already exists',
+        description: language === 'ar' ? 'راجع رقم الهاتف أو البريد الإلكتروني قبل إضافة عميل جديد.' : language === 'fr' ? 'Vérifiez le téléphone ou l’e-mail avant d’ajouter un nouveau client.' : 'Check the phone number or email before adding another lead.',
+      });
       return;
     }
 
