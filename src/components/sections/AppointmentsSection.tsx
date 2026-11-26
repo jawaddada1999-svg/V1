@@ -294,26 +294,26 @@ export const AppointmentsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 appointments-workspace">
+    <div className="space-y-7 appointments-workspace">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-lg sm:text-[19px] font-bold text-[#1B3554]">{t.appointments.title}</h2>
-          <p className="text-xs text-[#647B96] font-medium mt-0.5">{t.appointments.subtitle}</p>
+          <h2 className="text-[22px] sm:text-2xl font-extrabold tracking-tight text-[#17365D] leading-tight">{t.appointments.title}</h2>
+          <p className="text-[13px] sm:text-sm text-[#647B96] font-medium mt-1 leading-relaxed">{t.appointments.subtitle}</p>
         </div>
 
         <button
           type="button"
           onClick={() => openBookingModal(selectedDay, '11:00')}
-          className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 self-start sm:self-auto btn-primary"
+          className="h-11 px-5 rounded-xl text-[13px] font-bold inline-flex items-center justify-center gap-2 self-stretch sm:self-auto btn-primary shadow-sm hover:shadow-md transition-shadow"
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Plus className="h-4 w-4" />
           <span>{t.appointments.newAppointment}</span>
         </button>
       </div>
 
       {/* Harmonious Attendance Statistics Strip */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <KpiCard
           title={t.appointments.stats.total}
           value={stats.total}
@@ -347,7 +347,7 @@ export const AppointmentsSection: React.FC = () => {
       </div>
 
       {/* View Switcher & Filters */}
-      <div className="bg-white border border-[#DBEAFE] shadow-sm rounded-2xl p-4 sm:p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+      <div className="bg-white border border-[#D8E5F5] shadow-sm rounded-2xl p-3.5 sm:p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 sm:gap-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 w-full xl:w-auto p-1.5 bg-[#EFF6FF] border border-[#DBEAFE] rounded-2xl gap-1.5">
           {(
             [
@@ -371,15 +371,16 @@ export const AppointmentsSection: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
-          <div className="relative flex-1 min-w-[180px] xl:flex-none">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 w-full xl:w-auto">
+          <div className="relative col-span-2 sm:col-span-1 flex-1 min-w-0 sm:min-w-[180px] xl:flex-none">
             <Search className="h-3.5 w-3.5 text-zinc-400 absolute top-1/2 -translate-y-1/2 start-2.5" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t.app.search}
-              className="h-10 w-full xl:w-52 ps-9 pe-3 text-[13px] font-medium border border-[#DCE5E1] rounded-xl bg-[#F8FBFF] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#DBEAFE]"
+              aria-label={t.app.search}
+              className="h-11 w-full xl:w-52 ps-9 pe-3 text-[13px] font-medium border border-[#D8E5F5] rounded-xl bg-[#F8FBFF] focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#DBEAFE]"
             />
           </div>
           {viewTab === 'table' && (
@@ -387,13 +388,15 @@ export const AppointmentsSection: React.FC = () => {
               type="date"
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}
-              className="h-9 px-3 text-xs border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] font-mono-num"
+              aria-label={t.appointments.columns.date}
+              className="h-10 w-full sm:w-auto px-3 text-xs border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] font-mono-num"
             />
           )}
           <select
             value={employeeFilter}
             onChange={(e) => setEmployeeFilter(e.target.value)}
-            className="h-9 px-3 text-xs font-semibold text-[#1B3554] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
+            aria-label={t.leads.filters.allEmployees}
+            className="h-10 w-full sm:w-auto min-w-0 px-3 text-xs font-semibold text-[#1B3554] border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
           >
             <option value="all">{t.leads.filters.allEmployees}</option>
             {employees.map((e) => (
@@ -403,7 +406,8 @@ export const AppointmentsSection: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 px-3 text-xs font-semibold border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
+            aria-label={t.leads.filters.allStatuses}
+            className="h-10 w-full sm:w-auto min-w-0 px-3 text-xs font-semibold border border-[#D8E5F5] rounded-xl focus:outline-none focus:border-[#60A5FA] focus:ring-2 focus:ring-[#DBEAFE] bg-white"
           >
             <option value="all">{t.leads.filters.allStatuses}</option>
             {(Object.keys(t.appointmentStatuses) as AppointmentStatus[]).map((st) => (
@@ -419,7 +423,7 @@ export const AppointmentsSection: React.FC = () => {
                 setEmployeeFilter('all');
                 setStatusFilter('all');
               }}
-              className="h-9 px-3 rounded-xl border border-[#D8E5F5] text-xs font-bold text-[#647B96] hover:text-slate-950 hover:bg-[#F8FBFF]"
+              className="col-span-2 sm:col-span-1 h-10 px-3 rounded-xl border border-[#D8E5F5] text-xs font-bold text-[#647B96] hover:text-slate-950 hover:bg-[#F8FBFF]"
             >
               {t.app.reset}
             </button>
