@@ -728,10 +728,13 @@ export const PropertiesSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    addPropertyNote(activeProperty.id, noteInput);
+                    const note = noteInput.trim();
+                    if (!note) return;
+                    addPropertyNote(activeProperty.id, note);
                     setNoteInput('');
                   }}
-                  className="h-9 px-4 text-xs font-bold rounded-xl btn-primary"
+                  disabled={!noteInput.trim()}
+                  className="h-9 px-4 text-xs font-bold rounded-xl btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t.app.add}
                 </button>
