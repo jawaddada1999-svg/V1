@@ -496,7 +496,7 @@ export const LeadsSection: React.FC = () => {
                   <th className="py-3.5 px-3 w-9">
                     <input
                       type="checkbox"
-                      checked={pagedLeads.length > 0 && selectedIds.length === pagedLeads.length}
+                      checked={pagedLeads.length > 0 && pagedLeads.every((lead) => selectedIds.includes(lead.id))}
                       onChange={toggleSelectAll}
                       aria-label="Select all"
                     />
