@@ -198,10 +198,18 @@ export const AppointmentsSection: React.FC = () => {
     let bookedSlots = 0;
 
     hourlyRange.forEach((hour) => {
-      const hourPrefix = hour.slice(0, 2);
-      const hasApt = selectedDayAppointments.some(
-        (a) => a.time.slice(0, 2) === hourPrefix && a.status !== 'cancelled'
-      );
+      const [hourValue, minuteValue] = hour.split(':').map(Number);
+      const hourStart = hourValue * 60 + minuteValue;
+      const hourEnd = hourStart + 60;
+      const hasApt = selectedDayAppointments.some((appointment) => {
+        if (appointment.status === 'cancelled') return false;
+        const [startHour, startMinute] = appointment.time.split(':').map(Number);
+        const appointmentStart = startHour * 60 + startMinute;
+        const appointmentEnd = appointmentStart + (
+          appointment.duration_minutes ?? settings.appointment_duration_minutes ?? 20
+        );
+        return hourStart < appointmentEnd && hourEnd > appointmentStart;
+      });
       if (hasApt) {
         bookedSlots += 1;
         return;
