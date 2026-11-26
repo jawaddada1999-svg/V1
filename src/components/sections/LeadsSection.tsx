@@ -82,6 +82,8 @@ export const LeadsSection: React.FC = () => {
   const [cityFilter, setCityFilter] = useState<string>('all');
   const [classFilter, setClassFilter] = useState<string>('all');
   const [scoreFilter, setScoreFilter] = useState<string>('all');
+  const [overdueOnly, setOverdueOnly] = useState(false);
+  const todayIso = getTodayIso();
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortAsc, setSortAsc] = useState(false);
   const [page, setPage] = useState(1);
@@ -118,6 +120,7 @@ export const LeadsSection: React.FC = () => {
         if (cityFilter !== 'all' && l.city !== cityFilter) return false;
         if (classFilter !== 'all' && l.classification !== classFilter) return false;
         if (scoreFilter !== 'all' && leadScoresMap[l.id]?.tier !== scoreFilter) return false;
+        if (overdueOnly && (!l.next_followup || l.next_followup >= todayIso || ['closed_won', 'closed_lost', 'not_interested'].includes(l.status))) return false;
         if (q) {
           const prop = properties.find((p) => p.id === l.interested_property_id);
           if (
@@ -157,6 +160,8 @@ export const LeadsSection: React.FC = () => {
     cityFilter,
     classFilter,
     scoreFilter,
+    overdueOnly,
+    todayIso,
     leadScoresMap,
     sortField,
     sortAsc,
@@ -412,6 +417,19 @@ export const LeadsSection: React.FC = () => {
             <option key={emp.id} value={emp.id}>{localizePersonName(emp.name, language)}</option>
           ))}
         </select>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={() => { setOverdueOnly((value) => !value); setPage(1); }}
+          aria-pressed={overdueOnly}
+          className={`h-9 px-3 rounded-xl text-xs font-bold border inline-flex items-center gap-2 transition-colors ${overdueOnly ? 'bg-rose-50 border-rose-300 text-rose-800' : 'bg-white border-[#E3EAE5] text-[#1F2937] hover:bg-[#F5F7F5]'}`}
+        >
+          <span className={`h-2 w-2 rounded-full ${overdueOnly ? 'bg-rose-600' : 'bg-rose-300'}`} />
+          {language === 'ar' ? 'المتابعات المتأخرة فقط' : language === 'fr' ? 'Suivis en retard uniquement' : 'Overdue follow-ups only'}
+          <span className="font-mono-num">{leads.filter((lead) => lead.next_followup && lead.next_followup < todayIso && !['closed_won', 'closed_lost', 'not_interested'].includes(lead.status)).length}</span>
+        </button>
       </div>
 
       {/* Bulk Actions Bar */}
