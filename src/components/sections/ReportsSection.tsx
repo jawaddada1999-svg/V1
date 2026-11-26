@@ -125,7 +125,7 @@ export const ReportsSection: React.FC = () => {
 
   const [activeTab, setActiveTab] = useState<ReportTab>('leads');
   const [timePeriod, setTimePeriod] = useState<GlobalTimePeriod>('all');
-  const [customFrom, setCustomFrom] = useState('2026-09-01');
+  const [customFrom, setCustomFrom] = useState(() => addDaysIso(getTodayIso(), -29));
   const [customTo, setCustomTo] = useState(getTodayIso());
 
   const [editingEmployeeId, setEditingEmployeeId] = useState<string | null>(null);
