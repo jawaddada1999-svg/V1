@@ -20,7 +20,7 @@ import {
   localizePropertyTitle,
 } from '../../i18n/localizeData';
 import { formatMAD, formatNumber } from '../../i18n/translations';
-import { getDateRangeBounds, getTodayIso, isIsoDateInRange } from '../../utils/dateUtils';
+import { addDaysIso, getDateRangeBounds, getTodayIso, isIsoDateInRange } from '../../utils/dateUtils';
 import { computeLeadScore } from '../../utils/leadScoring';
 import {
   ConversionFunnelChart,
@@ -45,7 +45,7 @@ export const OverviewSection: React.FC = () => {
 
   const todayIso = getTodayIso();
   const [datePreset, setDatePreset] = useState<DatePreset>('last30');
-  const [customFrom, setCustomFrom] = useState('2026-10-23');
+  const [customFrom, setCustomFrom] = useState(() => addDaysIso(todayIso, -29));
   const [customTo, setCustomTo] = useState(todayIso);
 
   const bounds = useMemo(
