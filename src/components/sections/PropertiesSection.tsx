@@ -421,7 +421,39 @@ export const PropertiesSection: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="md:hidden divide-y divide-[#E2E8F0]">
+            {filteredProperties.map((prop) => {
+              const emp = employees.find((e) => e.id === prop.assigned_employee_id);
+              return (
+                <article key={prop.id} className="p-3.5 space-y-3">
+                  <div className="flex gap-3">
+                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0">
+                      <SafeImage src={prop.images[0]} alt={prop.title} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                        <span className="text-[10px] font-bold text-slate-600">{t.properties.refPrefix}: {prop.ref}</span>
+                        <StatusLabel label={t.propertyStatuses[prop.status]} propertyStatus={prop.status} />
+                      </div>
+                      <button type="button" onClick={() => { setActiveImageIdx(0); setSelectedPropertyId(prop.id); }} className="font-bold text-sm text-slate-900 text-start line-clamp-2">{localizePropertyTitle(prop.title, language)}</button>
+                      <p className="text-[11px] text-slate-500 mt-1">{localizeCity(prop.city, language)} · {t.propertyTypes[prop.type]}</p>
+                      <p className="text-sm font-extrabold text-slate-900 mt-1">{formatMAD(prop.price, language)}{prop.transaction_type === "rent" ? ` ${t.app.perMonth}` : ""}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600">
+                    <span>{prop.area} {t.app.sqm} · {prop.bedrooms} {language === "ar" ? "غرف" : language === "fr" ? "ch." : "beds"}</span>
+                    <span>{emp?.name || "—"}</span>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 pt-1">
+                    <button type="button" onClick={() => { setActiveImageIdx(0); setSelectedPropertyId(prop.id); }} className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 inline-flex items-center gap-1.5"><Eye className="h-3.5 w-3.5" /> {t.properties.details.title}</button>
+                    <button type="button" onClick={() => { setEditingProperty(prop); setPropModalOpen(true); }} className="h-8 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 inline-flex items-center gap-1.5"><Edit3 className="h-3.5 w-3.5" /> {t.app.edit}</button>
+                    <button type="button" onClick={() => setDeleteTargetId(prop.id)} className="h-8 w-8 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 inline-flex items-center justify-center" title={t.app.delete}><Trash2 className="h-3.5 w-3.5" /></button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-xs text-start border-collapse">
               <thead>
                 <tr className="bg-[#1E293B] text-white border-b-2 border-[#EA580C] font-bold whitespace-nowrap">
