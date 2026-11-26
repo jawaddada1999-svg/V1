@@ -616,6 +616,59 @@ export const AppointmentsSection: React.FC = () => {
                 </tbody>
               </table>
             </div>
+            <div className="md:hidden divide-y divide-[#E7EEF8]">
+              {filteredAppointments.map((apt) => {
+                const lead = leads.find((l) => l.id === apt.lead_id);
+                const prop = properties.find((p) => p.id === apt.property_id);
+                const emp = employees.find((e) => e.id === apt.employee_id);
+                const dayKey = getDayKeyFromIsoDate(apt.date);
+                return (
+                  <article key={apt.id} className="p-3.5 space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="px-2.5 py-1 rounded-lg bg-[#EFF6FF] border border-[#BFDBFE] text-[#1D4ED8] text-sm font-extrabold font-mono-num" dir="ltr">{apt.time}</span>
+                          <span className="text-[11px] font-semibold text-[#647B96]">{t.days[dayKey]} · {formatShortDate(apt.date, language)}</span>
+                        </div>
+                        <button type="button" onClick={() => lead && openLeadProfile(lead.id)} className="mt-2 block text-start text-sm font-extrabold text-[#1B3554] hover:underline">
+                          {lead ? localizePersonName(lead.name, language) : '—'}
+                        </button>
+                        {lead?.phone && (
+                          <a href={buildTelHref(lead.phone)} className="mt-0.5 inline-flex text-xs font-mono-num font-semibold text-[#0369A1]" dir="ltr">{lead.phone}</a>
+                        )}
+                      </div>
+                      <StatusLabel label={t.appointmentStatuses[apt.status]} appointmentStatus={apt.status} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-[#F8FBFF] border border-[#E7EEF8] p-3 text-xs">
+                      <div className="min-w-0"><div className="text-[10px] text-[#94A3B8] font-bold mb-0.5">{t.appointments.columns.employee}</div><div className="font-semibold text-[#334155] truncate">{emp ? localizePersonName(emp.name, language) : '—'}</div></div>
+                      <div className="min-w-0"><div className="text-[10px] text-[#94A3B8] font-bold mb-0.5">{t.appointments.columns.property}</div><div className="font-semibold text-[#334155] truncate">{prop ? localizePropertyTitle(prop.title, language) : '—'}</div></div>
+                      <div><div className="text-[10px] text-[#94A3B8] font-bold mb-0.5">{t.appointments.columns.city}</div><div className="font-semibold text-[#334155]">{prop ? localizeCity(prop.city, language) : lead?.city ? localizeCity(lead.city, language) : '—'}</div></div>
+                      <div><div className="text-[10px] text-[#94A3B8] font-bold mb-0.5">{t.appointments.columns.budget}</div><div className="font-bold text-[#C2410C]">{(lead?.budget ?? prop?.price ?? 0) > 0 ? formatMAD(lead?.budget ?? prop?.price ?? 0, language) : '—'}</div></div>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex items-center gap-1.5">
+                        {lead?.phone && (
+                          <>
+                            <a href={buildTelHref(lead.phone)} aria-label={t.appointments.agenda.directCall} className="h-9 w-9 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 inline-flex items-center justify-center"><Phone className="h-4 w-4" /></a>
+                            <a href={buildWhatsAppHref(lead.phone)} target="_blank" rel="noopener noreferrer" aria-label={t.appointments.agenda.directWhatsapp} className="h-9 w-9 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 inline-flex items-center justify-center"><MessageCircle className="h-4 w-4" /></a>
+                          </>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {apt.status === 'scheduled' && <button type="button" onClick={() => updateAppointment(apt.id, { status: 'confirmed' })} title={t.appointments.quickActions.confirm} className="h-9 w-9 rounded-lg text-sky-700 hover:bg-sky-50 inline-flex items-center justify-center"><Check className="h-4 w-4" /></button>}
+                        {(apt.status === 'scheduled' || apt.status === 'confirmed') && <>
+                          <button type="button" onClick={() => updateAppointment(apt.id, { status: 'attended' })} title={t.appointments.quickActions.markAttended} className="h-9 w-9 rounded-lg text-emerald-700 hover:bg-emerald-50 inline-flex items-center justify-center"><UserCheck className="h-4 w-4" /></button>
+                          <button type="button" onClick={() => updateAppointment(apt.id, { status: 'no_show' })} title={t.appointments.quickActions.markNoShow} className="h-9 w-9 rounded-lg text-rose-600 hover:bg-rose-50 inline-flex items-center justify-center"><UserX className="h-4 w-4" /></button>
+                        </>}
+                        <button type="button" onClick={() => { setRescheduleTarget(apt); setNewDate(apt.date); setNewTime(apt.time); }} title={t.appointments.quickActions.reschedule} className="h-9 w-9 rounded-lg text-slate-600 hover:bg-slate-100 inline-flex items-center justify-center"><CalendarClock className="h-4 w-4" /></button>
+                        <button type="button" onClick={() => { setEditingApt(apt); setAptModalOpen(true); }} title={t.app.edit} className="h-9 w-9 rounded-lg text-slate-600 hover:bg-slate-100 inline-flex items-center justify-center"><Edit3 className="h-4 w-4" /></button>
+                        {apt.status !== 'cancelled' && <button type="button" onClick={() => setCancelTargetId(apt.id)} title={t.appointments.quickActions.cancel} className="h-9 w-9 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 inline-flex items-center justify-center"><X className="h-4 w-4" /></button>}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         )
       )}
@@ -1472,7 +1525,7 @@ export const AppointmentsSection: React.FC = () => {
         size="md"
       >
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-[#1B3554] mb-1">{t.appointments.form.date}</label>
               <input
@@ -1503,13 +1556,32 @@ export const AppointmentsSection: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                if (rescheduleTarget) {
-                  updateAppointment(rescheduleTarget.id, {
-                    date: newDate,
-                    time: newTime,
-                    status: 'rescheduled',
-                  });
+                if (!rescheduleTarget || !newDate || !newTime) {
+                  pushToast({ type: 'error', title: language === 'ar' ? 'يرجى تحديد التاريخ والوقت.' : language === 'fr' ? 'Veuillez choisir une date et une heure.' : 'Please choose a date and time.' });
+                  return;
                 }
+                const [startHour, startMinute] = newTime.split(':').map(Number);
+                const start = startHour * 60 + startMinute;
+                const duration = rescheduleTarget.duration_minutes ?? settings.appointment_duration_minutes ?? 20;
+                const end = start + duration;
+                const hasConflict = appointments.some((other) => {
+                  if (other.id === rescheduleTarget.id || other.status === 'cancelled') return false;
+                  if (other.date !== newDate || other.employee_id !== rescheduleTarget.employee_id) return false;
+                  const [otherHour, otherMinute] = other.time.split(':').map(Number);
+                  const otherStart = otherHour * 60 + otherMinute;
+                  const otherEnd = otherStart + (other.duration_minutes ?? settings.appointment_duration_minutes ?? 20);
+                  return start < otherEnd && end > otherStart;
+                });
+                if (hasConflict) {
+                  pushToast({ type: 'error', title: language === 'ar' ? 'هذا الموظف لديه موعد آخر في نفس التوقيت.' : language === 'fr' ? 'Cet employé a déjà un rendez-vous à cette heure.' : 'This employee already has an appointment at that time.' });
+                  return;
+                }
+                updateAppointment(rescheduleTarget.id, {
+                  date: newDate,
+                  time: newTime,
+                  status: 'rescheduled',
+                });
+                pushToast({ type: 'success', title: language === 'ar' ? 'تم تغيير موعد الزيارة بنجاح.' : language === 'fr' ? 'Rendez-vous reprogrammé avec succès.' : 'Appointment rescheduled successfully.' });
                 setRescheduleTarget(null);
               }}
               className="px-4 py-2 text-xs font-bold rounded-xl btn-primary"
