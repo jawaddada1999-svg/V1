@@ -1968,6 +1968,30 @@ export const AppointmentFormModal: React.FC<{
 
   const selectedLead = leads.find((l) => l.id === leadId);
 
+  const toMinutes = (value: string) => {
+    const [hours, minutes] = value.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const hasSlotConflict = (slot: string) => {
+    const slotStart = toMinutes(slot);
+    const slotEnd = slotStart + durationMinutes;
+    return appointments.some((appointment) => {
+      if (
+        appointment.id === editingAppointment?.id ||
+        appointment.date !== date ||
+        appointment.employee_id !== employeeId ||
+        appointment.status === 'cancelled'
+      ) return false;
+
+      const appointmentStart = toMinutes(appointment.time);
+      const appointmentEnd = appointmentStart + (
+        appointment.duration_minutes ?? settings.appointment_duration_minutes ?? 20
+      );
+      return slotStart < appointmentEnd && slotEnd > appointmentStart;
+    });
+  };
+
   return (
     <Modal
       open={open}
@@ -2138,20 +2162,22 @@ export const AppointmentFormModal: React.FC<{
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {quickSlots.map((slot) => {
-                  const isBusy = appointments.some(
-                    (a) =>
-                      a.date === date &&
-                      a.time.startsWith(slot.slice(0, 2)) &&
-                      a.status !== 'cancelled' &&
-                      a.id !== editingAppointment?.id
-                  );
-                  const selected = time.startsWith(slot.slice(0, 2));
+                  const isBusy = hasSlotConflict(slot);
+                  const selected = time === slot;
                   return (
                     <button
                       key={slot}
                       type="button"
+                      disabled={isBusy}
                       onClick={() => setTime(slot)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-mono-num font-bold border transition-all ${
+                      title={isBusy
+                        ? language === 'ar'
+                          ? 'هذا التوقيت غير متاح لهذا المستشار'
+                          : language === 'fr'
+                            ? 'Ce créneau est indisponible pour ce conseiller'
+                            : 'This time slot is unavailable for this advisor'
+                        : undefined}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-mono-num font-bold border transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                         selected
                           ? 'bg-[#EA580C] text-white border-[#C2410C] shadow-xs'
                           : isBusy
