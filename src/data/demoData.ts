@@ -1128,6 +1128,16 @@ export const initialLeads: Lead[] = [
   },
 ];
 
+function demoAppointmentDate(offsetDays: number): string {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + offsetDays);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export const initialAppointments: Appointment[] = [
   {
     id: 'apt_1',
@@ -1135,7 +1145,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_1',
     property_id: 'prop_1',
     employee_id: 'emp_2',
-    date: '2026-11-19',
+    date: demoAppointmentDate(-7),
     time: '15:30',
     type: 'in_person_visit',
     status: 'confirmed',
@@ -1148,7 +1158,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_10',
     property_id: 'prop_3',
     employee_id: 'emp_2',
-    date: '2026-11-20',
+    date: demoAppointmentDate(1),
     time: '10:30',
     type: 'in_person_visit',
     status: 'scheduled',
@@ -1161,7 +1171,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_4',
     property_id: 'prop_5',
     employee_id: 'emp_3',
-    date: '2026-11-21',
+    date: demoAppointmentDate(2),
     time: '11:00',
     type: 'virtual_tour',
     status: 'scheduled',
@@ -1174,7 +1184,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_2',
     property_id: 'prop_2',
     employee_id: 'emp_3',
-    date: '2026-11-17',
+    date: demoAppointmentDate(-9),
     time: '16:00',
     type: 'in_person_visit',
     status: 'attended',
@@ -1187,7 +1197,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_3',
     property_id: 'prop_3',
     employee_id: 'emp_2',
-    date: '2026-11-18',
+    date: demoAppointmentDate(-8),
     time: '16:00',
     type: 'in_person_visit',
     status: 'attended',
@@ -1200,7 +1210,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_6',
     property_id: 'prop_7',
     employee_id: 'emp_4',
-    date: '2026-11-16',
+    date: demoAppointmentDate(-10),
     time: '11:30',
     type: 'in_person_visit',
     status: 'no_show',
@@ -1226,7 +1236,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_7',
     property_id: 'prop_2',
     employee_id: 'emp_3',
-    date: '2026-11-23',
+    date: demoAppointmentDate(3),
     time: '10:00',
     type: 'office_meeting',
     status: 'confirmed',
@@ -1239,7 +1249,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_8',
     property_id: 'prop_8',
     employee_id: 'emp_3',
-    date: '2026-11-09',
+    date: demoAppointmentDate(-17),
     time: '11:30',
     type: 'in_person_visit',
     status: 'attended',
@@ -1252,7 +1262,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_11',
     property_id: 'prop_5',
     employee_id: 'emp_3',
-    date: '2026-11-22',
+    date: demoAppointmentDate(4),
     time: '10:30',
     type: 'in_person_visit',
     status: 'confirmed',
@@ -1278,7 +1288,7 @@ export const initialAppointments: Appointment[] = [
     lead_id: 'lead_15',
     property_id: 'prop_2',
     employee_id: 'emp_2',
-    date: '2026-10-19',
+    date: demoAppointmentDate(-38),
     time: '16:30',
     type: 'contract_signing',
     status: 'attended',
