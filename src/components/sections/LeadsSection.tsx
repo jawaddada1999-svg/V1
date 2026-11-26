@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowUpDown,
   BedDouble,
@@ -162,6 +162,12 @@ export const LeadsSection: React.FC = () => {
   ]);
 
   const totalPages = Math.max(1, Math.ceil(filteredLeads.length / pageSize));
+
+  // Keep pagination valid when search terms or filters reduce the result count.
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
   const pagedLeads = filteredLeads.slice((page - 1) * pageSize, page * pageSize);
 
   const activeLead = useMemo(
