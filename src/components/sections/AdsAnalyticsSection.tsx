@@ -14,7 +14,7 @@ import { useAgency } from '../../context/AgencyContext';
 import { localizeCampaignName } from '../../i18n/localizeData';
 import { formatMAD, formatNumber } from '../../i18n/translations';
 import { AdPlatform } from '../../types/domain';
-import { getDateRangeBounds, getTodayIso, GlobalTimePeriod } from '../../utils/dateUtils';
+import { addDaysIso, getDateRangeBounds, getTodayIso, GlobalTimePeriod } from '../../utils/dateUtils';
 import {
   AreaTrendChart,
   BarComparisonChart,
@@ -53,7 +53,7 @@ export const AdsAnalyticsSection: React.FC = () => {
   const getCampaignStatus = (campaign: AdCampaign) => campaignStatusOverrides[campaign.id] ?? campaign.status;
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [dateRange, setDateRange] = useState<GlobalTimePeriod>('all');
-  const [customFrom, setCustomFrom] = useState('2026-10-01');
+  const [customFrom, setCustomFrom] = useState(() => addDaysIso(getTodayIso(), -29));
   const [customTo, setCustomTo] = useState(getTodayIso());
 
   const bounds = useMemo(
