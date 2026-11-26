@@ -1901,6 +1901,43 @@ export const AppointmentFormModal: React.FC<{
       return;
     }
 
+    // Prevent overlapping appointments for the same advisor.
+    const toMinutes = (value: string) => {
+      const [hours, minutes] = value.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+    const requestedStart = toMinutes(time);
+    const requestedEnd = requestedStart + durationMinutes;
+    const hasEmployeeConflict = appointments.some((appointment) => {
+      if (
+        appointment.id === editingAppointment?.id ||
+        appointment.date !== date ||
+        appointment.employee_id !== employeeId ||
+        appointment.status === 'cancelled'
+      ) return false;
+
+      const existingStart = toMinutes(appointment.time);
+      const existingEnd = existingStart + (appointment.duration_minutes ?? settings.appointment_duration_minutes ?? 20);
+      return requestedStart < existingEnd && requestedEnd > existingStart;
+    });
+
+    if (hasEmployeeConflict) {
+      pushToast({
+        type: 'warning',
+        title: language === 'ar'
+          ? 'هذا المستشار لديه موعد آخر في نفس التوقيت'
+          : language === 'fr'
+            ? 'Ce conseiller a déjà un rendez-vous sur ce créneau'
+            : 'This advisor already has an appointment during this time',
+        description: language === 'ar'
+          ? 'اختر توقيتاً آخر أو مستشاراً مختلفاً.'
+          : language === 'fr'
+            ? 'Choisissez un autre horaire ou un autre conseiller.'
+            : 'Choose another time or a different advisor.',
+      });
+      return;
+    }
+
     const payload = {
       lead_id: leadId,
       property_id: propertyId,
