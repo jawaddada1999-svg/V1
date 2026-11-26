@@ -495,10 +495,13 @@ export const ConversationsSection: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      addLeadNote(relatedLead.id, quickNote);
+                      const note = quickNote.trim();
+                      if (!note) return;
+                      addLeadNote(relatedLead.id, note);
                       setQuickNote('');
                     }}
-                    className="h-9 px-3 text-xs font-bold rounded-xl btn-primary"
+                    disabled={!quickNote.trim()}
+                    className="h-9 px-3 text-xs font-bold rounded-xl btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {t.app.add}
                   </button>
