@@ -975,7 +975,7 @@ export const PropertyFormModal: React.FC<{
   onClose: () => void;
   editingProperty?: Property | null;
 }> = ({ open, onClose, editingProperty }) => {
-  const { t, language, employees, owners, addProperty, updateProperty, pushToast } = useAgency();
+  const { t, language, employees, owners, properties, addProperty, updateProperty, pushToast } = useAgency();
 
   const [title, setTitle] = useState('');
   const [ref, setRef] = useState('');
@@ -1102,9 +1102,41 @@ export const PropertyFormModal: React.FC<{
   const validate = () => {
     const nextErrors: Record<string, string> = {};
     if (!title.trim()) nextErrors.title = t.leads.form.validationRequired;
-    if (!ref.trim()) nextErrors.ref = t.leads.form.validationRequired;
+    if (!ref.trim()) {
+      nextErrors.ref = t.leads.form.validationRequired;
+    } else if (properties.some((property) =>
+      property.ref.trim().toLocaleLowerCase() === ref.trim().toLocaleLowerCase() &&
+      property.id !== editingProperty?.id
+    )) {
+      nextErrors.ref = language === 'ar'
+        ? 'هذا الرمز مستعمل من قبل، اختر رمزاً آخر'
+        : language === 'fr'
+          ? 'Cette référence existe déjà. Choisissez-en une autre'
+          : 'This reference is already in use. Choose another one';
+    }
     if (!ownerId) nextErrors.ownerId = t.leads.form.validationRequired;
-    if (!price || Number(price) <= 0) nextErrors.price = t.leads.form.validationBudget;
+    if (!price || !Number.isFinite(Number(price)) || Number(price) <= 0) nextErrors.price = t.leads.form.validationBudget;
+    if (!area || !Number.isFinite(Number(area)) || Number(area) <= 0) {
+      nextErrors.area = language === 'ar'
+        ? 'أدخل مساحة صحيحة أكبر من صفر'
+        : language === 'fr'
+          ? 'Saisissez une superficie valide supérieure à zéro'
+          : 'Enter a valid area greater than zero';
+    }
+    if (Number(bedrooms) < 0 || !Number.isInteger(Number(bedrooms))) {
+      nextErrors.bedrooms = language === 'ar'
+        ? 'أدخل عدداً صحيحاً غير سالب'
+        : language === 'fr'
+          ? 'Saisissez un nombre entier positif ou nul'
+          : 'Enter a non-negative whole number';
+    }
+    if (Number(bathrooms) < 0 || !Number.isInteger(Number(bathrooms))) {
+      nextErrors.bathrooms = language === 'ar'
+        ? 'أدخل عدداً صحيحاً غير سالب'
+        : language === 'fr'
+          ? 'Saisissez un nombre entier positif ou nul'
+          : 'Enter a non-negative whole number';
+    }
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
