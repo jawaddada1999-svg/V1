@@ -146,11 +146,17 @@ export const AppointmentsSection: React.FC = () => {
 
   const stats = useMemo(() => {
     const total = appointments.length;
-    const upcoming = appointments.filter((a) => a.status === 'scheduled' || a.status === 'confirmed').length;
+    // Only count appointments scheduled for today or a future date as upcoming.
+    // Historical appointments that were never marked attended/no-show must not inflate this KPI.
+    const upcoming = appointments.filter(
+      (a) =>
+        (a.status === 'scheduled' || a.status === 'confirmed') &&
+        a.date >= todayIso
+    ).length;
     const attended = appointments.filter((a) => a.status === 'attended').length;
     const noShow = appointments.filter((a) => a.status === 'no_show').length;
     return { total, upcoming, completed: attended + noShow, attended, noShow };
-  }, [appointments]);
+  }, [appointments, todayIso]);
 
   const weekDays = useMemo(() => getWeekDatesFrom(weekAnchor), [weekAnchor]);
 
