@@ -563,7 +563,7 @@ export const PipelineSection: React.FC = () => {
               onDragLeave={() => setDragOverStage(null)}
               onDrop={() => handleDrop(status)}
               data-pipeline-stage={status}
-              className={`rounded-xl sm:rounded-2xl border overflow-hidden card-surface transition-all flex flex-col snap-start ${
+              className={`h-[min(680px,calc(100vh-230px))] min-h-[360px] rounded-xl sm:rounded-2xl border overflow-hidden card-surface transition-all flex flex-col snap-start ${
                 isOver
                   ? 'bg-[#ECFDF5]/80 border-[#16966A] ring-2 ring-[#16966A]/25'
                   : stStyle.column
@@ -573,7 +573,7 @@ export const PipelineSection: React.FC = () => {
               <div className={`h-1 w-full ${stStyle.topBar}`} />
 
               {/* Harmonious Stage Header with Crisp Black Title */}
-              <div className={`px-2.5 sm:px-3 py-2.5 border-b ${stStyle.headerBg}`}>
+              <div className={`sticky top-0 z-20 shrink-0 px-2.5 sm:px-3 py-2.5 border-b shadow-[0_2px_4px_rgba(15,23,42,0.04)] ${stStyle.headerBg}`}>
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`h-2 w-2 rounded-full shrink-0 ${stStyle.dot}`} />
@@ -594,7 +594,7 @@ export const PipelineSection: React.FC = () => {
               </div>
 
               {/* Stage Clients List */}
-              <div className="p-2 sm:p-2.5 space-y-2 max-h-[540px] overflow-y-auto">
+              <div className="flex-1 min-h-0 p-2 sm:p-2.5 space-y-1.5 overflow-y-auto overscroll-contain">
                 {stageLeads.length === 0 ? (
                   <div className="py-8 px-3 rounded-xl border border-dashed border-zinc-300 bg-white text-center text-xs font-medium text-zinc-500">
                     {t.pipeline.emptyStage}
@@ -624,30 +624,33 @@ export const PipelineSection: React.FC = () => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2 space-y-2 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
+                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2 space-y-1.5 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
                       >
-                        {/* Client Name, Phone & Budget */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
+                        {/* Compact client summary */}
+                        <div className="min-w-0 space-y-1">
+                          <div className="flex items-center justify-between gap-1.5">
                             <button
                               type="button"
                               onClick={() => openLeadProfile(lead.id)}
-                              className="font-display text-[13px] font-extrabold text-[#1F2937] hover:text-[#16966A] hover:underline text-start block truncate"
+                              className="min-w-0 font-display text-[12px] font-extrabold text-[#1F2937] hover:text-[#16966A] hover:underline text-start truncate"
                             >
                               {localizePersonName(lead.name, language)}
                             </button>
-                            <div className="flex items-center gap-1 text-[11px] font-mono-num text-zinc-600 mt-0.5" dir="ltr">
-                              <Phone className="h-3 w-3 text-zinc-500 shrink-0" />
-                              <span>{lead.phone}</span>
-                            </div>
+                            <span className="shrink-0 text-[10px] font-extrabold font-mono-num text-[#1F2937]">
+                              {formatMAD(lead.budget, language)}
+                            </span>
                           </div>
-                          <span className="px-2 py-1 rounded-lg bg-zinc-100 border border-zinc-200 text-[11px] font-extrabold font-mono-num text-[#1F2937] shrink-0">
-                            {formatMAD(lead.budget, language)}
-                          </span>
+                          <div className="flex items-center justify-between gap-1 text-[10px] text-zinc-600">
+                            <span className="inline-flex items-center gap-1 min-w-0 font-mono-num" dir="ltr">
+                              <Phone className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{lead.phone}</span>
+                            </span>
+                            <span className="shrink-0 font-semibold">{t.transactionTypes[lead.transaction_type]}</span>
+                          </div>
                         </div>
 
-                        {/* Badges Row */}
-                        <div className="flex flex-wrap items-center gap-1.5">
+                        {/* Compact classification and lead score */}
+                        <div className="flex flex-wrap items-center gap-1">
                           <ClassificationBadge
                             classification={lead.classification}
                             label={t.leadClassifications[lead.classification]}
@@ -669,102 +672,77 @@ export const PipelineSection: React.FC = () => {
                             label={t.contactMethods[lead.contact_method]}
                             phone={lead.phone}
                           />
-                          <span
-                            className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${
-                              isSale
-                                ? 'bg-sky-50 text-sky-900 border-sky-200'
-                                : lead.transaction_type === 'sell'
-                                  ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-                                  : lead.transaction_type === 'rent_out'
-                                    ? 'bg-teal-50 text-teal-900 border-teal-200'
-                                    : 'bg-orange-50 text-orange-900 border-orange-200'
-                            }`}
-                          >
-                            {lead.transaction_type === 'sale' ? (language === 'ar' ? 'شراء' : language === 'fr' ? 'Acquisition' : 'Buy') : t.transactionTypes[lead.transaction_type]}
-                          </span>
                         </div>
 
-                        {/* Property & Location / Payment Summary */}
-                        <div className="bg-zinc-50 border border-zinc-200/80 rounded-lg px-2.5 py-2 space-y-1 text-[11px]">
+                        {/* Property, location and payment in a compact block */}
+                        <div className="rounded-md bg-zinc-50 border border-zinc-200/80 px-2 py-1.5 space-y-1 text-[10px]">
                           {prop && (
-                            <div className="flex items-center gap-1.5 font-bold text-[#1F2937] truncate">
-                              <Building2 className="h-3.5 w-3.5 text-zinc-700 shrink-0" />
+                            <div className="flex items-center gap-1 font-bold text-[#1F2937] min-w-0">
+                              <Building2 className="h-3 w-3 text-zinc-600 shrink-0" />
                               <span className="truncate">{localizePropertyTitle(prop.title, language)}</span>
                             </div>
                           )}
-                          <div className="flex items-center justify-between gap-2 text-zinc-700">
-                            <span className="inline-flex items-center gap-1 truncate font-semibold text-[#1F2937]">
-                              <MapPin className="h-3 w-3 text-zinc-500 shrink-0" />
-                              {localizeCity(lead.city, language)}
+                          <div className="flex items-center justify-between gap-1 text-zinc-700">
+                            <span className="inline-flex items-center gap-1 min-w-0 font-semibold">
+                              <MapPin className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{localizeCity(lead.city, language)}</span>
                             </span>
-                            <span className="inline-flex items-center gap-1 font-semibold text-[#1F2937] shrink-0">
-                              {lead.payment_method === 'cash' ? (
-                                <Wallet className="h-3 w-3 text-emerald-700" />
-                              ) : (
-                                <CreditCard className="h-3 w-3 text-indigo-700" />
-                              )}
+                            <span className="inline-flex items-center gap-1 shrink-0 font-semibold">
+                              {lead.payment_method === 'cash' ? <Wallet className="h-3 w-3 text-emerald-700" /> : <CreditCard className="h-3 w-3 text-indigo-700" />}
                               {t.paymentMethods[lead.payment_method]}
                             </span>
                           </div>
                         </div>
 
-                        {/* Advisor & Follow-up Date */}
-                        <div className="flex items-center justify-between text-[11px] text-zinc-600">
+                        {/* Assigned advisor and next follow-up */}
+                        <div className="flex items-center justify-between gap-1 text-[10px] text-zinc-600">
                           <span className="font-bold text-[#1F2937] truncate">
                             {emp ? localizePersonName(emp.name, language) : '—'}
                           </span>
-                          <span className="font-mono-num text-zinc-600">
+                          <span className="font-mono-num shrink-0">
                             {lead.next_followup
                               ? formatShortDate(lead.next_followup, language)
                               : formatShortDate(lead.last_interaction, language)}
                           </span>
                         </div>
 
-                        {/* Stage Move & Decorated Action Buttons */}
-                        <div className="pt-2 border-t border-zinc-100 flex items-center justify-between gap-1.5">
+                        {/* Compact actions: status, note, visit and client profile */}
+                        <div className="pt-1.5 border-t border-zinc-100 space-y-1.5">
                           <select
                             value={lead.status}
-                            onChange={(e) =>
-                              updateLead(lead.id, { status: e.target.value as LeadStatus })
-                            }
+                            onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
                             aria-label={t.pipeline.moveToStage}
-                            className="h-8 px-2 text-[11px] font-bold border border-zinc-200 rounded-lg bg-zinc-50 text-zinc-950 max-w-[135px] focus:outline-none focus:border-zinc-900"
+                            className="w-full h-7 px-1.5 text-[10px] font-bold border border-zinc-200 rounded-md bg-zinc-50 text-zinc-950 focus:outline-none focus:border-zinc-900"
                           >
                             {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
                               <option key={st} value={st}>{t.leadStatuses[st]}</option>
                             ))}
                           </select>
-
                           <div className="flex items-center gap-1">
                             <button
                               type="button"
-                              onClick={() => {
-                                setNoteTargetLead(lead);
-                                setQuickNoteText('');
-                              }}
+                              onClick={() => { setNoteTargetLead(lead); setQuickNoteText(''); }}
                               title={t.pipeline.quickNote}
-                              className="h-8 w-8 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 inline-flex items-center justify-center transition-colors"
+                              className="h-7 flex-1 rounded-md bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 inline-flex items-center justify-center transition-colors"
                             >
-                              <MessageSquarePlus className="h-3.5 w-3.5" />
+                              <MessageSquarePlus className="h-3 w-3" />
                             </button>
                             <button
                               type="button"
-                              onClick={() => {
-                                setPreselectedLeadForApt(lead.id);
-                                setQuickModal('appointment');
-                              }}
+                              onClick={() => { setPreselectedLeadForApt(lead.id); setQuickModal('appointment'); }}
                               title={t.pipeline.bookVisit}
-                              className="h-8 w-8 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] text-[#16966A] hover:bg-[#D1FAE5] inline-flex items-center justify-center transition-colors"
+                              className="h-7 flex-1 rounded-md bg-[#ECFDF5] border border-[#A7F3D0] text-[#16966A] hover:bg-[#D1FAE5] inline-flex items-center justify-center transition-colors"
                             >
-                              <CalendarPlus className="h-3.5 w-3.5" />
+                              <CalendarPlus className="h-3 w-3" />
                             </button>
                             <button
                               type="button"
                               onClick={() => openLeadProfile(lead.id)}
                               title={t.pipeline.openProfile}
-                              className="h-8 w-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-950 hover:bg-zinc-200 inline-flex items-center justify-center transition-colors"
+                              className="h-7 flex-[1.5] rounded-md bg-zinc-900 border border-zinc-900 text-white hover:bg-zinc-700 inline-flex items-center justify-center gap-1 text-[10px] font-bold transition-colors"
                             >
-                              <Eye className="h-3.5 w-3.5" />
+                              <Eye className="h-3 w-3" />
+                              <span>{t.pipeline.openProfile}</span>
                             </button>
                           </div>
                         </div>
