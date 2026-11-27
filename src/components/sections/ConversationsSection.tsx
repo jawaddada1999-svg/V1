@@ -63,13 +63,19 @@ export const ConversationsSection: React.FC = () => {
 
   const filteredConversations = useMemo(() => {
     const q = search.trim();
-    return conversations.filter((c) => {
-      if (channelFilter !== 'all' && c.channel !== channelFilter) return false;
-      if (employeeFilter !== 'all' && c.assigned_employee_id !== employeeFilter) return false;
-      if (unreadOnly && c.unread_count === 0) return false;
-      if (q && !matchesLocalizedQuery(q, language, [c.customer_name, c.last_message])) return false;
-      return true;
-    });
+    return conversations
+      .filter((c) => {
+        if (channelFilter !== 'all' && c.channel !== channelFilter) return false;
+        if (employeeFilter !== 'all' && c.assigned_employee_id !== employeeFilter) return false;
+        if (unreadOnly && c.unread_count === 0) return false;
+        if (q && !matchesLocalizedQuery(q, language, [c.customer_name, c.last_message])) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const timeA = Date.parse(a.last_message_time) || 0;
+        const timeB = Date.parse(b.last_message_time) || 0;
+        return timeB - timeA;
+      });
   }, [conversations, language, search, channelFilter, employeeFilter, unreadOnly]);
 
   const totalUnread = useMemo(
@@ -152,14 +158,14 @@ export const ConversationsSection: React.FC = () => {
       </div>
 
       {/* 3-Pane Messaging Workspace */}
-      <div className="bg-white border border-[#E3EAE5] card-surface rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+      <div className="bg-white border border-[#CBD5E1] card-surface rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
         {/* Left / Start: Conversation List */}
         <div
-          className={`lg:col-span-4 border-b lg:border-b-0 lg:border-e border-[#E3EAE5] flex-col ${
+          className={`lg:col-span-4 border-b lg:border-b-0 lg:border-e border-emerald-200 bg-emerald-50/60 flex-col ${
             mobilePane === 'list' ? 'flex' : 'hidden lg:flex'
           }`}
         >
-          <div className="p-3.5 border-b border-[#E3EAE5] bg-[#F5F7F5]/70 space-y-2.5">
+          <div className="p-3.5 border-b border-emerald-200 bg-emerald-100/70 space-y-2.5">
             <div className="relative">
               <Search className="h-4 w-4 text-[#64748B] absolute top-1/2 -translate-y-1/2 start-3" />
               <input
@@ -207,7 +213,7 @@ export const ConversationsSection: React.FC = () => {
             </label>
           </div>
 
-          <div className="divide-y divide-[#E3EAE5] overflow-y-auto flex-1 max-h-[540px]">
+          <div className="divide-y divide-emerald-100 overflow-y-auto flex-1 max-h-[540px] bg-white/70">
             {filteredConversations.length === 0 ? (
               <div className="p-8 text-center text-xs text-[#64748B]">{t.app.noData}</div>
             ) : (
@@ -278,7 +284,7 @@ export const ConversationsSection: React.FC = () => {
 
         {/* Center: Message Thread */}
         <div
-          className={`lg:col-span-5 border-b lg:border-b-0 lg:border-e border-indigo-200 flex-col bg-indigo-50/40 shadow-inner ${
+          className={`lg:col-span-5 border-b lg:border-b-0 lg:border-e border-violet-200 flex-col bg-violet-50/70 shadow-inner ${
             mobilePane === 'chat' ? 'flex' : 'hidden lg:flex'
           }`}
         >
@@ -291,7 +297,7 @@ export const ConversationsSection: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="px-4 py-3.5 bg-white border-b border-slate-200 flex items-center justify-between gap-2">
+              <div className="px-4 py-3.5 bg-violet-100/80 border-b border-violet-200 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-3 min-w-0">
                   <Avatar
                     name={localizePersonName(activeConversation.customer_name, language)}
@@ -332,7 +338,7 @@ export const ConversationsSection: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex-1 p-4 space-y-3.5 overflow-y-auto max-h-[470px]">
+              <div className="flex-1 p-4 space-y-3.5 overflow-y-auto max-h-[470px] bg-violet-50/50">
                 {activeConversation.messages.map((msg) => {
                   const isAgent = msg.sender === 'agent';
                   return (
@@ -358,7 +364,7 @@ export const ConversationsSection: React.FC = () => {
                 })}
               </div>
 
-              <form onSubmit={handleSend} className="p-3.5 bg-white border-t border-[#E3EAE5] flex gap-2">
+              <form onSubmit={handleSend} className="p-3.5 bg-violet-100/70 border-t border-violet-200 flex gap-2">
                 <input
                   type="text"
                   value={replyText}
@@ -380,13 +386,13 @@ export const ConversationsSection: React.FC = () => {
 
         {/* Right / End: Customer Context Panel */}
         <div
-          className={`lg:col-span-3 p-4 space-y-4 bg-white ${
+          className={`lg:col-span-3 p-4 space-y-4 bg-amber-50/70 ${
             mobilePane === 'context' ? 'block' : 'hidden lg:block'
           }`}
         >
           {relatedLead ? (
             <>
-              <div className="flex items-center justify-between border-b border-[#E3EAE5] pb-3">
+              <div className="flex items-center justify-between border-b border-amber-200 pb-3">
                 <h3 className="text-xs font-extrabold text-[#1F2937]">{t.conversations.customerPanel}</h3>
                 <button
                   type="button"
@@ -398,7 +404,7 @@ export const ConversationsSection: React.FC = () => {
                 </button>
               </div>
 
-              <div className="bg-[#F5F7F5] border border-[#E3EAE5] rounded-xl p-3 space-y-1.5 text-xs">
+              <div className="bg-amber-100/70 border border-amber-200 rounded-xl p-3 space-y-1.5 text-xs">
                 <div className="font-extrabold text-[#1F2937] text-sm">
                   {localizePersonName(relatedLead.name, language)}
                 </div>
@@ -453,7 +459,7 @@ export const ConversationsSection: React.FC = () => {
               </div>
 
               {relatedProperty && (
-                <div className="border border-[#E3EAE5] rounded-xl p-3 bg-[#F5F7F5]/70 space-y-1">
+                <div className="border border-amber-200 rounded-xl p-3 bg-amber-100/50 space-y-1">
                   <div className="text-[11px] font-semibold text-[#64748B]">
                     {t.conversations.interestedProperty}
                   </div>
