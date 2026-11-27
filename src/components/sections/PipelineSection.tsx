@@ -9,6 +9,7 @@ import {
   MapPin,
   MessageSquarePlus,
   Phone,
+  Plus,
   Search,
   SlidersHorizontal,
   Sparkles,
@@ -528,7 +529,7 @@ export const PipelineSection: React.FC = () => {
       </div>
 
       {/* All Stages Visible Grid with Clients Listed Directly Underneath Each Status */}
-      <div className="w-full overflow-x-auto pb-3 overscroll-x-contain snap-x snap-mandatory"><div className="grid grid-flow-col auto-cols-[190px] sm:auto-cols-[220px] xl:auto-cols-[240px] gap-2.5 sm:gap-3 items-start w-max">
+      <div className="w-full overflow-x-auto pb-3 overscroll-x-contain snap-x snap-mandatory"><div className="grid grid-flow-col auto-cols-[165px] sm:auto-cols-[185px] xl:auto-cols-[205px] gap-2 sm:gap-2.5 items-start w-max">
         {PIPELINE_STAGES.map(({ status, key }) => {
           const stageLeads = filteredLeads
             .filter((l) =>
@@ -561,6 +562,7 @@ export const PipelineSection: React.FC = () => {
               }}
               onDragLeave={() => setDragOverStage(null)}
               onDrop={() => handleDrop(status)}
+              data-pipeline-stage={status}
               className={`rounded-xl sm:rounded-2xl border overflow-hidden card-surface transition-all flex flex-col snap-start ${
                 isOver
                   ? 'bg-[#ECFDF5]/80 border-[#16966A] ring-2 ring-[#16966A]/25'
@@ -611,7 +613,18 @@ export const PipelineSection: React.FC = () => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2.5 space-y-2 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
+                        onTouchStart={() => setDraggedLeadId(lead.id)}
+                        onTouchEnd={(e) => {
+                          const touch = e.changedTouches[0];
+                          const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+                          const targetStage = targetElement?.closest('[data-pipeline-stage]')?.getAttribute('data-pipeline-stage') as LeadStatus | null;
+                          if (targetStage && targetStage !== lead.status) {
+                            updateLead(lead.id, { status: targetStage });
+                          }
+                          setDraggedLeadId(null);
+                          setDragOverStage(null);
+                        }}
+                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2 space-y-2 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
                       >
                         {/* Client Name, Phone & Budget */}
                         <div className="flex items-start justify-between gap-2">
@@ -760,6 +773,14 @@ export const PipelineSection: React.FC = () => {
                   })
                 )}
               </div>
+              <button
+                type="button"
+                onClick={() => setQuickModal('lead')}
+                className="mx-2 mb-2.5 mt-1 h-8 rounded-lg border border-dashed border-zinc-400 bg-white/80 text-[11px] font-bold text-zinc-700 hover:bg-white hover:border-zinc-600 inline-flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                {t.leads.addLead}
+              </button>
             </div>
           );
         })}
