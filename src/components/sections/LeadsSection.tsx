@@ -448,7 +448,7 @@ export const LeadsSection: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={() => handleExport(filteredLeads)
+            onClick={() => handleExport(filteredLeads)}
             className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary"
           >
             <Download className="h-3.5 w-3.5" />
