@@ -138,7 +138,10 @@ export const PipelineSection: React.FC = () => {
     openLeadProfile,
     setPreselectedLeadForApt,
     setQuickModal,
+    currentUser,
   } = useAgency();
+
+  const isAgencyManager = currentUser.role === 'agency_manager';
 
   const todayIso = getTodayIso();
   const [pipelineTab, setPipelineTab] = useState<PipelineTab>('all');
@@ -295,6 +298,11 @@ export const PipelineSection: React.FC = () => {
   }, [filteredLeads]);
 
   const handleDrop = (stageStatus: LeadStatus) => {
+    if (!isAgencyManager) {
+      setDraggedLeadId(null);
+      setDragOverStage(null);
+      return;
+    }
     if (draggedLeadId) {
       const target = leads.find((l) => l.id === draggedLeadId);
       if (target && target.status !== stageStatus) {
@@ -557,11 +565,12 @@ export const PipelineSection: React.FC = () => {
             <div
               key={status}
               onDragOver={(e) => {
+                if (!isAgencyManager) return;
                 e.preventDefault();
                 setDragOverStage(status);
               }}
               onDragLeave={() => setDragOverStage(null)}
-              onDrop={() => handleDrop(status)}
+              onDrop={() => isAgencyManager && handleDrop(status)}
               data-pipeline-stage={status}
               className={`h-[min(680px,calc(100vh-230px))] min-h-[360px] rounded-xl sm:rounded-2xl border overflow-hidden card-surface transition-all flex flex-col snap-start ${
                 isOver
@@ -608,14 +617,15 @@ export const PipelineSection: React.FC = () => {
                     return (
                       <div
                         key={lead.id}
-                        draggable
-                        onDragStart={() => setDraggedLeadId(lead.id)}
+                        draggable={isAgencyManager}
+                        onDragStart={() => isAgencyManager && setDraggedLeadId(lead.id)}
                         onDragEnd={() => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        onTouchStart={() => setDraggedLeadId(lead.id)}
+                        onTouchStart={() => isAgencyManager && setDraggedLeadId(lead.id)}
                         onTouchEnd={(e) => {
+                          if (!isAgencyManager) return;
                           const touch = e.changedTouches[0];
                           const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
                           const targetStage = targetElement?.closest('[data-pipeline-stage]')?.getAttribute('data-pipeline-stage') as LeadStatus | null;
@@ -646,7 +656,10 @@ export const PipelineSection: React.FC = () => {
                         <div className="flex items-center gap-1.5 pt-1.5 border-t border-zinc-200">
                           <select
                             value={lead.status}
-                            onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
+                            disabled={!isAgencyManager}
+                            onChange={(e) => {
+                              if (isAgencyManager) updateLead(lead.id, { status: e.target.value as LeadStatus });
+                            }}
                             aria-label={t.pipeline.moveToStage}
                             title={t.leadStatuses[lead.status]}
                             className={`min-w-0 flex-1 h-7 px-1 text-[9px] leading-none font-bold border rounded-md focus:outline-none focus:ring-1 focus:ring-black/20 ${leadStageStyle.badge} border-transparent`}
@@ -710,6 +723,7 @@ export const PipelineSection: React.FC = () => {
             <button
               type="button"
               onClick={() => {
+                if (!isAgencyManager) return;
                 if (noteTargetLead && quickNoteText.trim()) {
                   addLeadNote(noteTargetLead.id, quickNoteText);
                 }
