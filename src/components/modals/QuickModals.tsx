@@ -98,7 +98,6 @@ export const LeadFormModal: React.FC<{
   editingLead?: Lead | null;
 }> = ({ open, onClose, editingLead }) => {
   const { t, language, employees, properties, leads, addLead, updateLead, pushToast, currentUser } = useAgency();
-  const isAgencyManager = currentUser.role === 'agency_manager';
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('+212 6');
@@ -190,7 +189,7 @@ export const LeadFormModal: React.FC<{
       setCity('الدار البيضاء');
       setDistrict('');
       setInterestedPropertyId('');
-      setAssignedEmployeeId(isAgencyManager ? (employees[1]?.id ?? currentUser.id) : currentUser.id);
+      setAssignedEmployeeId(currentUser.id);
       setStatus('new');
       setPreferences('');
       setPropertyCondition('good');
@@ -202,7 +201,7 @@ export const LeadFormModal: React.FC<{
       setMoveInDate('');
       setPurchaseTiming('within_3_months');
     }
-  }, [editingLead, open, employees, currentUser.id, isAgencyManager]);
+  }, [editingLead, open, employees, currentUser.id]);
 
   const isOwnerIntent = transactionType === 'sell' || transactionType === 'rent_out';
   const isRentIntent = transactionType === 'rent' || transactionType === 'rent_out';
@@ -305,7 +304,7 @@ export const LeadFormModal: React.FC<{
       city: city.trim() || 'الدار البيضاء',
       district: district.trim(),
       interested_property_id: isOwnerIntent ? null : interestedPropertyId || null,
-      assigned_employee_id: isAgencyManager ? assignedEmployeeId : (editingLead?.assigned_employee_id ?? currentUser.id),
+      assigned_employee_id: assignedEmployeeId,
       next_followup: editingLead?.next_followup ?? null,
       status,
       preferences: preferences.trim(),
@@ -912,23 +911,17 @@ export const LeadFormModal: React.FC<{
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className={LABEL_CLASS}>{t.leads.form.assignedEmployee}</label>
-              {isAgencyManager ? (
-                <select
-                  value={assignedEmployeeId}
-                  onChange={(e) => setAssignedEmployeeId(e.target.value)}
-                  className={SELECT_CLASS}
-                >
-                  {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {localizePersonName(emp.name, language)}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <div className={`${SELECT_CLASS} flex items-center bg-slate-50 text-slate-600`}>
-                  {localizePersonName(employees.find((emp) => emp.id === (editingLead?.assigned_employee_id ?? currentUser.id))?.name ?? currentUser.name, language)}
-                </div>
-              )}
+              <select
+                value={assignedEmployeeId}
+                onChange={(e) => setAssignedEmployeeId(e.target.value)}
+                className={SELECT_CLASS}
+              >
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {localizePersonName(emp.name, language)}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className={LABEL_CLASS}>{t.leads.form.status}</label>
