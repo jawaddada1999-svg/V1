@@ -444,28 +444,19 @@ export const ConversationsSection: React.FC = () => {
                 <label className="block text-xs font-bold text-[#1F2937] mb-1.5">
                   {t.conversations.assignedEmployee}
                 </label>
-                {currentUser.role === 'agency_manager' ? (
-                  <select
-                    value={relatedLead.assigned_employee_id}
-                    onChange={(e) =>
-                      updateLead(relatedLead.id, { assigned_employee_id: e.target.value })
-                    }
-                    className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-[#E3EAE5] rounded-xl bg-white"
-                  >
-                    {employees.map((e) => (
-                      <option key={e.id} value={e.id}>
-                        {localizePersonName(e.name, language)}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="w-full min-h-9 px-3 py-2 text-xs font-semibold text-[#1F2937] border border-[#E3EAE5] rounded-xl bg-slate-50">
-                    {localizePersonName(
-                      employees.find((e) => e.id === relatedLead.assigned_employee_id)?.name ?? '',
-                      language
-                    )}
-                  </div>
-                )}
+                <select
+                  value={relatedLead.assigned_employee_id}
+                  onChange={(e) =>
+                    updateLead(relatedLead.id, { assigned_employee_id: e.target.value })
+                  }
+                  className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-[#E3EAE5] rounded-xl bg-white"
+                >
+                  {employees.map((e) => (
+                    <option key={e.id} value={e.id}>
+                      {localizePersonName(e.name, language)}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {relatedProperty && (
