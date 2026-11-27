@@ -2043,6 +2043,10 @@ export const AppointmentFormModal: React.FC<{
     onClose();
   };
 
+  const toMinutes = (value: string) => {
+    const [hours, minutes] = value.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
   const dayKey = getDayKeyFromIsoDate(date);
   const dayConfig = settings.working_days.find((d) => d.day_key === dayKey);
   const quickSlots = dayConfig?.enabled
@@ -2069,11 +2073,6 @@ export const AppointmentFormModal: React.FC<{
     : [];
 
   const selectedLead = leads.find((l) => l.id === leadId);
-
-  const toMinutes = (value: string) => {
-    const [hours, minutes] = value.split(':').map(Number);
-    return hours * 60 + minutes;
-  };
 
   const hasSlotConflict = (slot: string) => {
     const slotStart = toMinutes(slot);
