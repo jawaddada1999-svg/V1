@@ -67,7 +67,7 @@ const PIPELINE_STAGES: {
 
 const stageStyles = {
   new: {
-    column: 'bg-[#F0F9FF] border-[#BAE6FD]',
+    column: 'bg-[#E0F2FE] border-[#BAE6FD]',
     headerBg: 'bg-[#E0F2FE] border-[#BAE6FD]',
     topBar: 'bg-[#0EA5E9]',
     dot: 'bg-[#0EA5E9]',
@@ -75,7 +75,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#0EA5E9]/60',
   },
   visit_scheduled: {
-    column: 'bg-[#F0FDF7] border-[#A7F3D0]',
+    column: 'bg-[#D1FAE5] border-[#A7F3D0]',
     headerBg: 'bg-[#ECFDF5] border-[#A7F3D0]',
     topBar: 'bg-[#16966A]',
     dot: 'bg-[#16966A]',
@@ -83,7 +83,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#16966A]/60',
   },
   visited: {
-    column: 'bg-[#F2FBFB] border-[#B4E0DE]',
+    column: 'bg-[#E1F5F4] border-[#B4E0DE]',
     headerBg: 'bg-[#E1F5F4] border-[#B4E0DE]',
     topBar: 'bg-[#117A57]',
     dot: 'bg-[#117A57]',
@@ -91,7 +91,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#117A57]/60',
   },
   no_show: {
-    column: 'bg-[#FEF2F2] border-[#FECACA]',
+    column: 'bg-[#FEE2E2] border-[#FECACA]',
     headerBg: 'bg-[#FEE2E2] border-[#FECACA]',
     topBar: 'bg-[#EF4444]',
     dot: 'bg-[#EF4444]',
@@ -99,7 +99,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#EF4444]/60',
   },
   follow_up: {
-    column: 'bg-[#FFFBEB] border-[#FDE68A]',
+    column: 'bg-[#FEF3C7] border-[#FDE68A]',
     headerBg: 'bg-[#FEF3C7]/85 border-[#FDE68A]',
     topBar: 'bg-[#F59E0B]',
     dot: 'bg-[#F59E0B]',
@@ -115,7 +115,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#10B981]/60',
   },
   closed_lost: {
-    column: 'bg-[#F5F7F5] border-[#E3EAE5]',
+    column: 'bg-[#EDF1EE] border-[#E3EAE5]',
     headerBg: 'bg-[#EDF1EE] border-[#E3EAE5]',
     topBar: 'bg-[#64748B]',
     dot: 'bg-[#64748B]',
@@ -603,6 +603,7 @@ export const PipelineSection: React.FC = () => {
                   stageLeads.map((lead) => {
                     const prop = properties.find((p) => p.id === lead.interested_property_id);
                     const emp = employees.find((e) => e.id === lead.assigned_employee_id);
+                    const leadStageStyle = stageStyles[(lead.status === 'not_interested' ? 'closed_lost' : lead.status) as keyof typeof stageStyles] ?? stageStyles.new;
                     const isSale = lead.transaction_type === 'sale';
                     return (
                       <div
@@ -624,16 +625,16 @@ export const PipelineSection: React.FC = () => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        className={`bg-white border-2 border-zinc-300 rounded-xl p-2.5 space-y-2 cursor-grab active:cursor-grabbing shadow-sm transition-all hover:shadow-md hover:border-zinc-400 ${stStyle.cardHover}`}
+                        className="bg-white border-2 border-black rounded-xl p-2.5 space-y-2 cursor-grab active:cursor-grabbing shadow-sm transition-all hover:shadow-md hover:shadow-zinc-400/30"
                       >
                         <div className="min-w-0 space-y-1">
                           <div className="font-display text-[12px] font-extrabold text-[#1F2937] truncate">
                             {localizePersonName(lead.name, language)}
                           </div>
-                          <div className="flex items-center gap-1.5 text-[11px] text-zinc-700 min-w-0" dir="ltr">
-                            <Phone className="h-3 w-3 shrink-0 text-zinc-500" />
+                          <a href={`tel:${lead.phone.replace(/[^\d+]/g, '')}`} className="flex items-center gap-1.5 text-[11px] text-blue-700 hover:text-blue-900 hover:underline min-w-0 w-fit" dir="ltr" aria-label={`${t.leads.columns.phone}: ${lead.phone}`}>
+                            <Phone className="h-3 w-3 shrink-0" />
                             <span className="truncate font-mono-num">{lead.phone}</span>
-                          </div>
+                          </a>
                           <div className="flex items-center gap-1.5 text-[10px] text-zinc-600 min-w-0">
                             <UserCheck className="h-3 w-3 shrink-0 text-zinc-500" />
                             <span className="truncate font-semibold">
@@ -647,7 +648,7 @@ export const PipelineSection: React.FC = () => {
                             value={lead.status}
                             onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
                             aria-label={t.pipeline.moveToStage}
-                            className="min-w-0 flex-1 h-7 px-1.5 text-[10px] font-bold border border-zinc-300 rounded-md bg-zinc-50 text-zinc-900 focus:outline-none focus:border-zinc-900"
+                            className={`min-w-0 flex-1 h-7 px-1.5 text-[10px] font-extrabold border rounded-md focus:outline-none focus:ring-1 focus:ring-black/20 ${leadStageStyle.badge} border-transparent`}
                           >
                             {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
                               <option key={st} value={st}>{t.leadStatuses[st]}</option>
