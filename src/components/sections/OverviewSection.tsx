@@ -177,7 +177,7 @@ export const OverviewSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="overview-command-center relative overflow-hidden rounded-[28px] border border-[#DCE7E1] bg-gradient-to-br from-white via-[#F9FCFA] to-[#FFF4EB] shadow-[0_18px_50px_-25px_rgba(18,53,43,0.25)] p-4 sm:p-5 mb-4"><div className="absolute -top-12 -end-12 h-40 w-40 rounded-full bg-orange-200/20 blur-3xl pointer-events-none" /><div className="relative flex items-center gap-2 text-xs font-extrabold tracking-wide text-[#1B4335] mb-1"><span className="h-2 w-2 rounded-full bg-[#EA580C]" /> IBONDA · BUSINESS OVERVIEW</div><p className="relative text-[11px] sm:text-sm text-[#64748B] font-medium">متابعة أداء الوكالة، العملاء، العقارات والمواعيد في مساحة واحدة.</p></div>
+
   {/* Main Executive KPI Cards (12 Cards including distinct 4 lead categories) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <KpiCard
