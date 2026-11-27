@@ -1331,6 +1331,11 @@ export const AppointmentsSection: React.FC = () => {
                             <div className="text-xs font-bold text-[#1B3554] truncate">
                               {lead ? localizePersonName(lead.name, language) : '—'}
                             </div>
+                            <div className="text-[10px] font-semibold text-[#475569] mt-1">
+                              <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {apt.duration_minutes ?? settings.appointment_duration_minutes ?? 20} {language === 'ar' ? 'دقيقة' : 'min'}</span>
+                              <span className="mx-1.5">·</span>
+                              <span>{employees.find(e => e.id === apt.employee_id) ? localizePersonName(employees.find(e => e.id === apt.employee_id)!.name, language) : (language === 'ar' ? 'غير محدد' : 'Unassigned')}</span>
+                            </div>
                           </button>
                           {lead && (
                             <div className="flex items-center justify-between gap-1 mt-1">
