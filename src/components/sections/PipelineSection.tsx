@@ -528,7 +528,7 @@ export const PipelineSection: React.FC = () => {
       </div>
 
       {/* All Stages Visible Grid with Clients Listed Directly Underneath Each Status */}
-      <div className="w-full overflow-x-auto pb-3 overscroll-x-contain"><div className="grid grid-flow-col auto-cols-[minmax(280px,320px)] gap-4 items-start w-max">
+      <div className="w-full overflow-x-auto pb-3 overscroll-x-contain snap-x snap-mandatory"><div className="grid grid-flow-col auto-cols-[190px] sm:auto-cols-[220px] xl:auto-cols-[240px] gap-2.5 sm:gap-3 items-start w-max">
         {PIPELINE_STAGES.map(({ status, key }) => {
           const stageLeads = filteredLeads
             .filter((l) =>
@@ -561,7 +561,7 @@ export const PipelineSection: React.FC = () => {
               }}
               onDragLeave={() => setDragOverStage(null)}
               onDrop={() => handleDrop(status)}
-              className={`rounded-2xl border overflow-hidden card-surface transition-all flex flex-col ${
+              className={`rounded-xl sm:rounded-2xl border overflow-hidden card-surface transition-all flex flex-col snap-start ${
                 isOver
                   ? 'bg-[#ECFDF5]/80 border-[#16966A] ring-2 ring-[#16966A]/25'
                   : stStyle.column
@@ -571,7 +571,7 @@ export const PipelineSection: React.FC = () => {
               <div className={`h-1 w-full ${stStyle.topBar}`} />
 
               {/* Harmonious Stage Header with Crisp Black Title */}
-              <div className={`px-4 py-3 border-b ${stStyle.headerBg}`}>
+              <div className={`px-2.5 sm:px-3 py-2.5 border-b ${stStyle.headerBg}`}>
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`h-2 w-2 rounded-full shrink-0 ${stStyle.dot}`} />
@@ -592,7 +592,7 @@ export const PipelineSection: React.FC = () => {
               </div>
 
               {/* Stage Clients List */}
-              <div className="p-3 space-y-3 max-h-[540px] overflow-y-auto">
+              <div className="p-2 sm:p-2.5 space-y-2 max-h-[540px] overflow-y-auto">
                 {stageLeads.length === 0 ? (
                   <div className="py-8 px-3 rounded-xl border border-dashed border-zinc-300 bg-white text-center text-xs font-medium text-zinc-500">
                     {t.pipeline.emptyStage}
@@ -611,7 +611,7 @@ export const PipelineSection: React.FC = () => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        className={`bg-white border border-zinc-200 rounded-xl p-3.5 space-y-2.5 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
+                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2.5 space-y-2 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
                       >
                         {/* Client Name, Phone & Budget */}
                         <div className="flex items-start justify-between gap-2">
