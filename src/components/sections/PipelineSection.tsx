@@ -648,7 +648,8 @@ export const PipelineSection: React.FC = () => {
                             value={lead.status}
                             onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
                             aria-label={t.pipeline.moveToStage}
-                            className={`min-w-0 flex-1 h-7 px-1.5 text-[10px] font-extrabold border rounded-md focus:outline-none focus:ring-1 focus:ring-black/20 ${leadStageStyle.badge} border-transparent`}
+                            title={t.leadStatuses[lead.status]}
+                            className={`min-w-0 flex-1 h-7 px-1 text-[9px] leading-none font-bold border rounded-md focus:outline-none focus:ring-1 focus:ring-black/20 ${leadStageStyle.badge} border-transparent`}
                           >
                             {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
                               <option key={st} value={st}>{t.leadStatuses[st]}</option>
