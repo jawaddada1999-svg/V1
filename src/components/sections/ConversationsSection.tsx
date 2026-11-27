@@ -41,7 +41,6 @@ export const ConversationsSection: React.FC = () => {
     leads,
     properties,
     employees,
-    currentUser,
     selectedConversationId,
     setSelectedConversationId,
     sendConversationMessage,
