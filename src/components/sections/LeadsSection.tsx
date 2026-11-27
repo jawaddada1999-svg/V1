@@ -350,7 +350,7 @@ export const LeadsSection: React.FC = () => {
           const phone = row.phone ?? '';
           const normalizedPhone = normalizePhoneForComparison(phone);
           const email = (row.email ?? '').toLowerCase();
-          if (!name || normalizedPhone.length < 8 || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) { skipped += 1; return; }
+          if (!name || normalizedPhone.length < 8 || !row.budget || Number(row.budget) <= 0 || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) { skipped += 1; return; }
           if (existingPhones.has(normalizedPhone) || (email && existingEmails.has(email))) { skipped += 1; return; }
           const sourceValues: LeadSource[] = ['facebook_ads', 'instagram_ads', 'google_ads', 'whatsapp', 'website', 'referral', 'walk_in'];
           const statusValues: LeadStatus[] = ['new', 'visit_scheduled', 'visited', 'no_show', 'follow_up', 'closed_won', 'not_interested', 'closed_lost'];
