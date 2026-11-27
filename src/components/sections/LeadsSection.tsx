@@ -90,7 +90,6 @@ export const LeadsSection: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
-  const isAgencyManager = currentUser.role === 'agency_manager';
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
@@ -441,8 +440,7 @@ export const LeadsSection: React.FC = () => {
             {t.app.selectedCount}: <span className="font-bold tabular-nums">{selectedIds.length}</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {isAgencyManager && (
-              <select
+            <select
                 defaultValue=""
                 onChange={(e) => {
                   if (e.target.value) handleBulkAssign(e.target.value);
@@ -456,8 +454,7 @@ export const LeadsSection: React.FC = () => {
                     {localizePersonName(emp.name, language)}
                   </option>
                 ))}
-              </select>
-            )}
+            </select>
 
             <select
               defaultValue=""
@@ -866,23 +863,17 @@ export const LeadsSection: React.FC = () => {
                 <label className="block text-[11px] font-bold text-zinc-700 mb-1">
                   {t.leads.profile.assignedEmployee}
                 </label>
-                {isAgencyManager ? (
-                  <select
-                    value={activeLead.assigned_employee_id}
-                    onChange={(e) => updateLead(activeLead.id, { assigned_employee_id: e.target.value })}
-                    className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-slate-200 rounded-lg bg-white"
-                  >
-                    {employees.map((emp) => (
-                      <option key={emp.id} value={emp.id}>
-                        {localizePersonName(emp.name, language)}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <div className="w-full h-9 px-3 flex items-center text-xs font-semibold text-[#475569] border border-slate-200 rounded-lg bg-slate-50">
-                    {localizePersonName(employees.find((emp) => emp.id === activeLead.assigned_employee_id)?.name ?? '—', language)}
-                  </div>
-                )}
+                <select
+                  value={activeLead.assigned_employee_id}
+                  onChange={(e) => updateLead(activeLead.id, { assigned_employee_id: e.target.value })}
+                  className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-slate-200 rounded-lg bg-white"
+                >
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>
+                      {localizePersonName(emp.name, language)}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
