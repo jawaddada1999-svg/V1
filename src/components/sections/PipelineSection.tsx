@@ -594,7 +594,7 @@ export const PipelineSection: React.FC = () => {
               </div>
 
               {/* Stage Clients List */}
-              <div className="flex-1 min-h-0 p-2 sm:p-2.5 space-y-1.5 overflow-y-auto overscroll-contain">
+              <div className="flex-1 min-h-0 p-2 sm:p-2.5 space-y-2.5 overflow-y-auto overscroll-contain">
                 {stageLeads.length === 0 ? (
                   <div className="py-8 px-3 rounded-xl border border-dashed border-zinc-300 bg-white text-center text-xs font-medium text-zinc-500">
                     {t.pipeline.emptyStage}
@@ -624,127 +624,44 @@ export const PipelineSection: React.FC = () => {
                           setDraggedLeadId(null);
                           setDragOverStage(null);
                         }}
-                        className={`bg-white border border-zinc-200 rounded-lg sm:rounded-xl p-2 space-y-1.5 cursor-grab active:cursor-grabbing shadow-2xs transition-all hover:shadow-md ${stStyle.cardHover}`}
+                        className={`bg-white border-2 border-zinc-300 rounded-xl p-2.5 space-y-2 cursor-grab active:cursor-grabbing shadow-sm transition-all hover:shadow-md hover:border-zinc-400 ${stStyle.cardHover}`}
                       >
-                        {/* Compact client summary */}
                         <div className="min-w-0 space-y-1">
-                          <div className="flex items-center justify-between gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => openLeadProfile(lead.id)}
-                              className="min-w-0 font-display text-[12px] font-extrabold text-[#1F2937] hover:text-[#16966A] hover:underline text-start truncate"
-                            >
-                              {localizePersonName(lead.name, language)}
-                            </button>
-                            <span className="shrink-0 text-[10px] font-extrabold font-mono-num text-[#1F2937]">
-                              {formatMAD(lead.budget, language)}
-                            </span>
+                          <div className="font-display text-[12px] font-extrabold text-[#1F2937] truncate">
+                            {localizePersonName(lead.name, language)}
                           </div>
-                          <div className="flex items-center justify-between gap-1 text-[10px] text-zinc-600">
-                            <span className="inline-flex items-center gap-1 min-w-0 font-mono-num" dir="ltr">
-                              <Phone className="h-3 w-3 shrink-0" />
-                              <span className="truncate">{lead.phone}</span>
-                            </span>
-                            <span className="shrink-0 font-semibold">{t.transactionTypes[lead.transaction_type]}</span>
+                          <div className="flex items-center gap-1.5 text-[11px] text-zinc-700 min-w-0" dir="ltr">
+                            <Phone className="h-3 w-3 shrink-0 text-zinc-500" />
+                            <span className="truncate font-mono-num">{lead.phone}</span>
                           </div>
-                        </div>
-
-                        {/* Compact classification and lead score */}
-                        <div className="flex flex-wrap items-center gap-1">
-                          <ClassificationBadge
-                            classification={lead.classification}
-                            label={t.leadClassifications[lead.classification]}
-                          />
-                          {(() => {
-                            const scoreInfo = leadScoresMap[lead.id];
-                            if (!scoreInfo) return null;
-                            return (
-                              <LeadScoreBadge
-                                score={scoreInfo.score}
-                                tier={scoreInfo.tier}
-                                tierLabel={t.leads.scoring.tiers[scoreInfo.tier]}
-                                compact
-                              />
-                            );
-                          })()}
-                          <ContactMethodBadge
-                            method={lead.contact_method}
-                            label={t.contactMethods[lead.contact_method]}
-                            phone={lead.phone}
-                          />
-                        </div>
-
-                        {/* Property, location and payment in a compact block */}
-                        <div className="rounded-md bg-zinc-50 border border-zinc-200/80 px-2 py-1.5 space-y-1 text-[10px]">
-                          {prop && (
-                            <div className="flex items-center gap-1 font-bold text-[#1F2937] min-w-0">
-                              <Building2 className="h-3 w-3 text-zinc-600 shrink-0" />
-                              <span className="truncate">{localizePropertyTitle(prop.title, language)}</span>
-                            </div>
-                          )}
-                          <div className="flex items-center justify-between gap-1 text-zinc-700">
-                            <span className="inline-flex items-center gap-1 min-w-0 font-semibold">
-                              <MapPin className="h-3 w-3 shrink-0" />
-                              <span className="truncate">{localizeCity(lead.city, language)}</span>
-                            </span>
-                            <span className="inline-flex items-center gap-1 shrink-0 font-semibold">
-                              {lead.payment_method === 'cash' ? <Wallet className="h-3 w-3 text-emerald-700" /> : <CreditCard className="h-3 w-3 text-indigo-700" />}
-                              {t.paymentMethods[lead.payment_method]}
+                          <div className="flex items-center gap-1.5 text-[10px] text-zinc-600 min-w-0">
+                            <UserCheck className="h-3 w-3 shrink-0 text-zinc-500" />
+                            <span className="truncate font-semibold">
+                              {emp ? localizePersonName(emp.name, language) : '—'}
                             </span>
                           </div>
                         </div>
 
-                        {/* Assigned advisor and next follow-up */}
-                        <div className="flex items-center justify-between gap-1 text-[10px] text-zinc-600">
-                          <span className="font-bold text-[#1F2937] truncate">
-                            {emp ? localizePersonName(emp.name, language) : '—'}
-                          </span>
-                          <span className="font-mono-num shrink-0">
-                            {lead.next_followup
-                              ? formatShortDate(lead.next_followup, language)
-                              : formatShortDate(lead.last_interaction, language)}
-                          </span>
-                        </div>
-
-                        {/* Compact actions: status, note, visit and client profile */}
-                        <div className="pt-1.5 border-t border-zinc-100 space-y-1.5">
+                        <div className="flex items-center gap-1.5 pt-1.5 border-t border-zinc-200">
                           <select
                             value={lead.status}
                             onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
                             aria-label={t.pipeline.moveToStage}
-                            className="w-full h-7 px-1.5 text-[10px] font-bold border border-zinc-200 rounded-md bg-zinc-50 text-zinc-950 focus:outline-none focus:border-zinc-900"
+                            className="min-w-0 flex-1 h-7 px-1.5 text-[10px] font-bold border border-zinc-300 rounded-md bg-zinc-50 text-zinc-900 focus:outline-none focus:border-zinc-900"
                           >
                             {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
                               <option key={st} value={st}>{t.leadStatuses[st]}</option>
                             ))}
                           </select>
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => { setNoteTargetLead(lead); setQuickNoteText(''); }}
-                              title={t.pipeline.quickNote}
-                              className="h-7 flex-1 rounded-md bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 inline-flex items-center justify-center transition-colors"
-                            >
-                              <MessageSquarePlus className="h-3 w-3" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setPreselectedLeadForApt(lead.id); setQuickModal('appointment'); }}
-                              title={t.pipeline.bookVisit}
-                              className="h-7 flex-1 rounded-md bg-[#ECFDF5] border border-[#A7F3D0] text-[#16966A] hover:bg-[#D1FAE5] inline-flex items-center justify-center transition-colors"
-                            >
-                              <CalendarPlus className="h-3 w-3" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => openLeadProfile(lead.id)}
-                              title={t.pipeline.openProfile}
-                              className="h-7 flex-[1.5] rounded-md bg-zinc-900 border border-zinc-900 text-white hover:bg-zinc-700 inline-flex items-center justify-center gap-1 text-[10px] font-bold transition-colors"
-                            >
-                              <Eye className="h-3 w-3" />
-                              <span>{t.pipeline.openProfile}</span>
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            onClick={() => openLeadProfile(lead.id)}
+                            title={t.pipeline.openProfile}
+                            aria-label={t.pipeline.openProfile}
+                            className="h-7 w-8 shrink-0 rounded-md bg-zinc-900 border border-zinc-900 text-white hover:bg-zinc-700 inline-flex items-center justify-center transition-colors"
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
                         </div>
                       </div>
                     );
@@ -754,7 +671,7 @@ export const PipelineSection: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setQuickModal('lead')}
-                className="mx-2 mb-2.5 mt-1 h-8 rounded-lg border border-dashed border-zinc-400 bg-white/80 text-[11px] font-bold text-zinc-700 hover:bg-white hover:border-zinc-600 inline-flex items-center justify-center gap-1.5 transition-colors"
+                className="mx-2 mb-2.5 mt-1 h-9 rounded-lg border border-[#047857] bg-[#059669] text-[11px] font-extrabold text-white shadow-sm hover:bg-[#047857] hover:shadow-md inline-flex items-center justify-center gap-1.5 transition-all"
               >
                 <Plus className="h-3.5 w-3.5" />
                 {t.leads.addLead}
