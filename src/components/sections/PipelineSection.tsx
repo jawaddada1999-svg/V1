@@ -75,7 +75,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#0EA5E9]/60',
   },
   visit_scheduled: {
-    column: 'bg-[#D1FAE5] border-[#A7F3D0]',
+    column: 'bg-[#ECFDF5] border-[#A7F3D0]',
     headerBg: 'bg-[#ECFDF5] border-[#A7F3D0]',
     topBar: 'bg-[#16966A]',
     dot: 'bg-[#16966A]',
@@ -107,7 +107,7 @@ const stageStyles = {
     cardHover: 'hover:border-[#F59E0B]/60',
   },
   closed_won: {
-    column: 'bg-[#ECFDF5] border-[#A7F3D0]',
+    column: 'bg-[#D1FAE5] border-[#A7F3D0]',
     headerBg: 'bg-[#D1FAE5] border-[#A7F3D0]',
     topBar: 'bg-[#10B981]',
     dot: 'bg-[#10B981]',
