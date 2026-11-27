@@ -329,7 +329,7 @@ export const LeadsSection: React.FC = () => {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const parsed = parseCsv(String(reader.result ?? '').replace(/^\\uFEFF/, ''));
+        const parsed = parseCsv(String(reader.result ?? '').replace(/^\uFEFF/, ''));
         if (parsed.length < 2) {
           pushToast({ type: 'warning', title: language === 'ar' ? 'الملف فارغ أو لا يحتوي على بيانات' : 'The file is empty or has no data rows' });
           return;
