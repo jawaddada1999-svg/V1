@@ -459,7 +459,7 @@ export const LeadsSection: React.FC = () => {
               </select>
             )}
 
-            <select
+            {isAgencyManager && <select
               defaultValue=""
               onChange={(e) => {
                 if (e.target.value) handleBulkStatus(e.target.value as LeadStatus);
@@ -471,7 +471,7 @@ export const LeadsSection: React.FC = () => {
               {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
                 <option key={st} value={st} className="text-slate-900">{t.leadStatuses[st]}</option>
               ))}
-            </select>
+            </select>}
 
             <button
               type="button"
@@ -749,7 +749,7 @@ export const LeadsSection: React.FC = () => {
                           >
                             <Eye className="h-3.5 w-3.5" />
                           </button>
-                          <button
+                          {isAgencyManager && <button
                             type="button"
                             onClick={() => {
                               setEditingLead(lead);
@@ -759,15 +759,15 @@ export const LeadsSection: React.FC = () => {
                             title={t.app.edit}
                           >
                             <Edit3 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
+                          </button>}
+                          {isAgencyManager && <button
                             type="button"
                             onClick={() => setDeleteTargetId(lead.id)}
                             className="h-7 w-7 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 inline-flex items-center justify-center transition-colors"
                             title={t.app.delete}
                           >
                             <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                          </button>}
                         </div>
                       </td>
                     </tr>
@@ -852,8 +852,9 @@ export const LeadsSection: React.FC = () => {
                 </label>
                 <select
                   value={activeLead.status}
-                  onChange={(e) =>
-                    updateLead(activeLead.id, { status: e.target.value as LeadStatus })
+                  disabled={!isAgencyManager}
+                  onChange={(e) => {
+                    if (isAgencyManager) updateLead(activeLead.id, { status: e.target.value as LeadStatus });
                   }
                   className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-slate-200 rounded-lg bg-white"
                 >
@@ -1110,11 +1111,12 @@ export const LeadsSection: React.FC = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <input
                   type="date"
+                  disabled={!isAgencyManager}
                   value={followupInput || activeLead.next_followup || addDaysIso(getTodayIso(), 1)}
-                  onChange={(e) => setFollowupInput(e.target.value)}
+                  onChange={(e) => isAgencyManager && setFollowupInput(e.target.value)}
                   className="h-9 px-3 text-xs border border-slate-200 rounded-lg font-mono-num text-[#1F2937]"
                 />
-                <button
+                {isAgencyManager && <button
                   type="button"
                   onClick={() => {
                     updateLead(activeLead.id, {
@@ -1124,7 +1126,7 @@ export const LeadsSection: React.FC = () => {
                   className="h-9 px-4 text-xs font-bold rounded-xl btn-primary"
                 >
                   {t.leads.profile.saveFollowup}
-                </button>
+                </button>}
               </div>
             </div>
 
@@ -1134,12 +1136,13 @@ export const LeadsSection: React.FC = () => {
               <div className="flex gap-2">
                 <input
                   type="text"
+                  disabled={!isAgencyManager}
                   value={noteInput}
-                  onChange={(e) => setNoteInput(e.target.value)}
+                  onChange={(e) => isAgencyManager && setNoteInput(e.target.value)}
                   placeholder={t.leads.profile.addNotePlaceholder}
                   className="flex-1 h-9 px-3 text-xs border border-slate-200 rounded-lg text-[#1F2937]"
                 />
-                <button
+                {isAgencyManager && <button
                   type="button"
                   onClick={() => {
                     const note = noteInput.trim();
@@ -1151,7 +1154,7 @@ export const LeadsSection: React.FC = () => {
                   className="h-9 px-4 text-xs font-bold rounded-xl btn-primary shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {t.leads.profile.addNoteBtn}
-                </button>
+                </button>}
               </div>
               <div className="space-y-2">
                 {activeLead.notes.map((n) => (
