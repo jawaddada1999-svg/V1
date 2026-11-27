@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowUpDown,
   BedDouble,
   CalendarPlus,
   CreditCard,
   Download,
+  Upload,
   Edit3,
   Eye,
   Maximize2,
@@ -53,6 +54,52 @@ import {
 type SortField = 'name' | 'budget' | 'score' | 'created_at' | 'last_interaction';
 type TxTab = 'all' | 'sale' | 'rent' | 'sell' | 'rent_out';
 
+const CSV_COLUMNS = [
+  'name', 'phone', 'email', 'source', 'contact_method', 'transaction_type',
+  'property_type', 'budget', 'city', 'district', 'status', 'classification',
+  'assigned_employee_id', 'interested_property_id', 'bedrooms', 'desired_area',
+  'payment_method', 'delivery_status', 'next_followup', 'preferences',
+] as const;
+
+const parseCsv = (input: string): string[][] => {
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let quoted = false;
+  for (let i = 0; i < input.length; i += 1) {
+    const char = input[i];
+    if (char === '"') {
+      if (quoted && input[i + 1] === '"') { cell += '"'; i += 1; }
+      else quoted = !quoted;
+    } else if (char === ',' && !quoted) {
+      row.push(cell); cell = '';
+    } else if ((char === '\n' || char === '\r') && !quoted) {
+      if (char === '\r' && input[i + 1] === '\n') i += 1;
+      row.push(cell); cell = '';
+      if (row.some((value) => value.trim())) rows.push(row);
+      row = [];
+    } else {
+      cell += char;
+    }
+  }
+  row.push(cell);
+  if (row.some((value) => value.trim())) rows.push(row);
+  return rows;
+};
+
+const csvEscape = (value: unknown) => {
+  const text = String(value ?? '');
+  return /[",\r\n]/.test(text) ? '"' + text.replace(/"/g, '""') + '"' : text;
+};
+
+const normalizePhoneForComparison = (value: string) => {
+  let digits = value.replace(/\D/g, '');
+  if (digits.startsWith('00212')) digits = digits.slice(5);
+  else if (digits.startsWith('212')) digits = digits.slice(3);
+  else if (digits.startsWith('0') && digits.length === 10) digits = digits.slice(1);
+  return digits.length > 9 ? digits.slice(-9) : digits;
+};
+
 export const LeadsSection: React.FC = () => {
   const {
     t,
@@ -62,6 +109,7 @@ export const LeadsSection: React.FC = () => {
     employees,
     appointments,
     conversations,
+    addLead,
     updateLead,
     deleteLead,
     addLeadNote,
@@ -91,6 +139,7 @@ export const LeadsSection: React.FC = () => {
   const pageSize = 8;
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
@@ -239,6 +288,121 @@ export const LeadsSection: React.FC = () => {
     pushToast({ type: 'success', title: language === 'ar' ? 'ملف الطباعة جاهز — اختار Save as PDF' : 'Print view ready — choose Save as PDF' });
   };
 
+
+  const handleExportCsv = (targetLeads: Lead[]) => {
+    const rows = targetLeads.map((lead) => ({
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email,
+      source: lead.source,
+      contact_method: lead.contact_method,
+      transaction_type: lead.transaction_type,
+      property_type: lead.property_type,
+      budget: lead.budget,
+      city: lead.city,
+      district: lead.district,
+      status: lead.status,
+      classification: lead.classification,
+      assigned_employee_id: lead.assigned_employee_id,
+      interested_property_id: lead.interested_property_id ?? '',
+      bedrooms: lead.bedrooms,
+      desired_area: lead.desired_area,
+      payment_method: lead.payment_method,
+      delivery_status: lead.delivery_status,
+      next_followup: lead.next_followup ?? '',
+      preferences: lead.preferences,
+    }));
+    const csv = '\uFEFF' + [CSV_COLUMNS.join(','), ...rows.map((row) => CSV_COLUMNS.map((key) => csvEscape(row[key])).join(','))].join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'ibonda-leads.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    pushToast({ type: 'success', title: language === 'ar' ? 'تم تصدير العملاء بصيغة CSV' : language === 'fr' ? 'Export CSV terminé' : 'CSV export completed' });
+  };
+
+  const handleImportCsv = (file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = parseCsv(String(reader.result ?? '').replace(/^\\uFEFF/, ''));
+        if (parsed.length < 2) {
+          pushToast({ type: 'warning', title: language === 'ar' ? 'الملف فارغ أو لا يحتوي على بيانات' : 'The file is empty or has no data rows' });
+          return;
+        }
+        const headers = parsed[0].map((value) => value.trim().toLowerCase());
+        if (!headers.includes('name') || !headers.includes('phone')) {
+          pushToast({ type: 'error', title: language === 'ar' ? 'خاص الملف يحتوي على أعمدة name و phone' : 'CSV must include name and phone columns' });
+          return;
+        }
+        const existingPhones = new Set(leads.map((lead) => normalizePhoneForComparison(lead.phone)).filter(Boolean));
+        const existingEmails = new Set(leads.map((lead) => lead.email.trim().toLowerCase()).filter(Boolean));
+        let imported = 0;
+        let skipped = 0;
+        parsed.slice(1).forEach((values) => {
+          const row: Record<string, string> = {};
+          headers.forEach((header, index) => { row[header] = (values[index] ?? '').trim(); });
+          const name = row.name ?? '';
+          const phone = row.phone ?? '';
+          const normalizedPhone = normalizePhoneForComparison(phone);
+          const email = (row.email ?? '').toLowerCase();
+          if (!name || normalizedPhone.length < 8 || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) { skipped += 1; return; }
+          if (existingPhones.has(normalizedPhone) || (email && existingEmails.has(email))) { skipped += 1; return; }
+          const sourceValues: LeadSource[] = ['facebook_ads', 'instagram_ads', 'google_ads', 'whatsapp', 'website', 'referral', 'walk_in'];
+          const statusValues: LeadStatus[] = ['new', 'visit_scheduled', 'visited', 'no_show', 'follow_up', 'closed_won', 'not_interested', 'closed_lost'];
+          const classificationValues: LeadClassification[] = ['vip', 'hot', 'warm', 'cold'];
+          const transactionValues = ['sale', 'rent', 'sell', 'rent_out'] as const;
+          const propertyValues = ['apartment', 'villa', 'house', 'land', 'commercial', 'office', 'other'] as const;
+          const source = sourceValues.includes(row.source as LeadSource) ? row.source as LeadSource : 'website';
+          const status = statusValues.includes(row.status as LeadStatus) ? row.status as LeadStatus : 'new';
+          const classification = classificationValues.includes(row.classification as LeadClassification) ? row.classification as LeadClassification : 'warm';
+          const transactionType = transactionValues.includes(row.transaction_type as typeof transactionValues[number]) ? row.transaction_type as typeof transactionValues[number] : 'sale';
+          const propertyType = propertyValues.includes(row.property_type as typeof propertyValues[number]) ? row.property_type as typeof propertyValues[number] : 'apartment';
+          const employeeId = employees.some((employee) => employee.id === row.assigned_employee_id) ? row.assigned_employee_id : currentUser.id;
+          const propertyId = properties.some((property) => property.id === row.interested_property_id) ? row.interested_property_id : null;
+          const numberValue = (value: string, fallback = 0) => Number.isFinite(Number(value)) && value !== '' ? Number(value) : fallback;
+          addLead({
+            name, phone, email: row.email ?? '', source,
+            contact_method: row.contact_method === 'phone_call' ? 'phone_call' : 'whatsapp',
+            payment_method: row.payment_method === 'credit' ? 'credit' : 'cash',
+            bedrooms: numberValue(row.bedrooms),
+            delivery_status: row.delivery_status === 'off_plan' ? 'off_plan' : 'ready',
+            desired_area: numberValue(row.desired_area),
+            classification,
+            interested_property_id: propertyId,
+            budget: numberValue(row.budget),
+            property_type: propertyType,
+            transaction_type: transactionType,
+            city: row.city || MOROCCAN_CITIES[0],
+            district: row.district || '',
+            assigned_employee_id: employeeId,
+            next_followup: row.next_followup || null,
+            status,
+            preferences: row.preferences || '',
+          });
+          existingPhones.add(normalizedPhone);
+          if (email) existingEmails.add(email);
+          imported += 1;
+        });
+        pushToast({
+          type: imported > 0 ? 'success' : 'warning',
+          title: language === 'ar' ? `تم استيراد ${imported} عميل وتجاوز ${skipped}` : `Imported ${imported} leads; skipped ${skipped}`,
+          description: language === 'ar' ? 'تم تجاوز البيانات الناقصة أو المكررة أو غير الصالحة.' : 'Rows with missing, duplicate, or invalid data were skipped.',
+        });
+      } catch {
+        pushToast({ type: 'error', title: language === 'ar' ? 'تعذر قراءة ملف CSV' : 'Could not read the CSV file' });
+      } finally {
+        if (importInputRef.current) importInputRef.current.value = '';
+      }
+    };
+    reader.onerror = () => pushToast({ type: 'error', title: language === 'ar' ? 'تعذر فتح الملف' : 'Unable to open file' });
+    reader.readAsText(file, 'UTF-8');
+  };
+
   const handleBulkAssign = (empId: string) => {
     if (!empId) return;
     selectedIds.forEach((id) => updateLead(id, { assigned_employee_id: empId }));
@@ -259,9 +423,32 @@ export const LeadsSection: React.FC = () => {
           <p className="text-xs text-[#64748B] font-medium mt-0.5">{t.leads.subtitle}</p>
         </div>
         <div className="flex items-center gap-2.5">
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".csv,text/csv"
+            className="hidden"
+            onChange={(event) => handleImportCsv(event.target.files?.[0])}
+          />
           <button
             type="button"
-            onClick={() => handleExport(filteredLeads)}
+            onClick={() => importInputRef.current?.click()}
+            className="h-9 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary"
+          >
+            <Upload className="h-3.5 w-3.5" />
+            <span>{language === 'ar' ? 'استيراد CSV' : language === 'fr' ? 'Importer CSV' : 'Import CSV'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleExportCsv(filteredLeads)}
+            className="h-9 px-3 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary"
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span>{language === 'ar' ? 'تصدير CSV' : language === 'fr' ? 'Exporter CSV' : 'Export CSV'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleExport(filteredLeads)
             className="h-9 px-4 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 btn-secondary"
           >
             <Download className="h-3.5 w-3.5" />
@@ -472,10 +659,17 @@ export const LeadsSection: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => handleExport(leads.filter((l) => selectedIds.includes(l.id)))}
+              onClick={() => handleExportCsv(leads.filter((l) => selectedIds.includes(l.id)))}
               className="h-9 px-3 text-xs font-extrabold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-sm"
             >
-              {t.leads.bulk.exportSelected}
+              {language === 'ar' ? 'تصدير المحدد CSV' : 'Export selected CSV'}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleExport(leads.filter((l) => selectedIds.includes(l.id)))}
+              className="h-9 px-3 text-xs font-extrabold bg-white hover:bg-blue-50 text-[#17365D] border border-[#93C5FD] rounded-lg shadow-sm"
+            >
+              {language === 'ar' ? 'طباعة PDF' : 'Export PDF'}
             </button>
             <button
               type="button"
