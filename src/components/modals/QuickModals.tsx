@@ -2046,9 +2046,26 @@ export const AppointmentFormModal: React.FC<{
   const dayKey = getDayKeyFromIsoDate(date);
   const dayConfig = settings.working_days.find((d) => d.day_key === dayKey);
   const quickSlots = dayConfig?.enabled
-    ? generateDayWorkingHours(dayConfig.open, dayConfig.close).filter(
-        (slot) => getSlotAvailability(dayConfig, slot, settings, date).status === 'available'
-      )
+    ? generateDayWorkingHours(dayConfig.open, dayConfig.close).filter((slot) => {
+        if (getSlotAvailability(dayConfig, slot, settings, date).status !== 'available') return false;
+        const slotStart = toMinutes(slot);
+        const slotEnd = slotStart + durationMinutes;
+        const closingTime = toMinutes(dayConfig.close);
+        // Keep the full appointment inside working hours, not just its start time.
+        if (slotEnd > closingTime) return false;
+        // A slot cannot cross a break or an excluded time period.
+        if (dayConfig.break_start && dayConfig.break_end) {
+          const breakStart = toMinutes(dayConfig.break_start);
+          const breakEnd = toMinutes(dayConfig.break_end);
+          if (slotStart < breakEnd && slotEnd > breakStart) return false;
+        }
+        if (dayConfig.excluded_periods?.some((period) => {
+          const periodStart = toMinutes(period.start);
+          const periodEnd = toMinutes(period.end);
+          return periodStart >= 0 && periodEnd > periodStart && slotStart < periodEnd && slotEnd > periodStart;
+        })) return false;
+        return true;
+      })
     : [];
 
   const selectedLead = leads.find((l) => l.id === leadId);
