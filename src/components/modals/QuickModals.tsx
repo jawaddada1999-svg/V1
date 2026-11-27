@@ -265,6 +265,11 @@ export const LeadFormModal: React.FC<{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (editingLead && !isAgencyManager) {
+      pushToast({ type: 'warning', title: language === 'ar' ? 'غير مسموح بتعديل بيانات العميل' : language === 'fr' ? 'Modification réservée au responsable' : 'Only the manager can edit leads' });
+      onClose();
+      return;
+    }
     if (!validate()) {
       pushToast({ type: 'warning', title: t.app.requiredField });
       return;
