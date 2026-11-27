@@ -457,10 +457,19 @@ export const LeadFormModal: React.FC<{
                 type="email"
                 dir="ltr"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+                }}
                 placeholder="name@example.com"
-                className={INPUT_CLASS}
+                className={`${INPUT_CLASS} ${errors.email ? 'border-rose-500 bg-rose-50/40' : ''}`}
               />
+              {errors.email && (
+                <p className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-rose-600">
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div>
