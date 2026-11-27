@@ -72,6 +72,7 @@ export const LeadsSection: React.FC = () => {
     setQuickModal,
     setPreselectedLeadForApt,
     pushToast,
+    currentUser,
   } = useAgency();
 
   const [txTab, setTxTab] = useState<TxTab>('all');
@@ -89,6 +90,7 @@ export const LeadsSection: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 8;
 
+  const isAgencyManager = currentUser.role === 'agency_manager';
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
@@ -434,26 +436,28 @@ export const LeadsSection: React.FC = () => {
 
       {/* Bulk Actions Bar */}
       {selectedIds.length > 0 && (
-        <div className="bg-[#12352B] border border-[#16966A]/40 text-white rounded-2xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div className="bg-[#EAF3FF] border border-[#93C5FD] text-[#17365D] rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
           <div className="text-xs font-medium">
             {t.app.selectedCount}: <span className="font-bold tabular-nums">{selectedIds.length}</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <select
-              defaultValue=""
-              onChange={(e) => {
-                if (e.target.value) handleBulkAssign(e.target.value);
-                e.target.value = '';
-              }}
-              className="h-8 px-2.5 text-xs bg-white/10 border border-white/20 rounded-lg text-white"
-            >
-              <option value="" className="text-slate-900">{t.leads.bulk.assignEmployee}</option>
-              {employees.map((emp) => (
-                <option key={emp.id} value={emp.id} className="text-slate-900">
-                  {localizePersonName(emp.name, language)}
-                </option>
-              ))}
-            </select>
+            {isAgencyManager && (
+              <select
+                defaultValue=""
+                onChange={(e) => {
+                  if (e.target.value) handleBulkAssign(e.target.value);
+                  e.target.value = '';
+                }}
+                className="h-9 px-3 text-xs font-bold bg-white border border-[#60A5FA] rounded-lg text-[#17365D] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/40"
+              >
+                <option value="" className="text-slate-900">{t.leads.bulk.assignEmployee}</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id} className="text-slate-900">
+                    {localizePersonName(emp.name, language)}
+                  </option>
+                ))}
+              </select>
+            )}
 
             <select
               defaultValue=""
@@ -461,7 +465,7 @@ export const LeadsSection: React.FC = () => {
                 if (e.target.value) handleBulkStatus(e.target.value as LeadStatus);
                 e.target.value = '';
               }}
-              className="h-8 px-2.5 text-xs bg-white/10 border border-white/20 rounded-lg text-white"
+              className="h-9 px-3 text-xs font-bold bg-white border border-[#60A5FA] rounded-lg text-[#17365D] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/40"
             >
               <option value="" className="text-slate-900">{t.leads.bulk.changeStatus}</option>
               {(Object.keys(t.leadStatuses) as LeadStatus[]).map((st) => (
@@ -472,14 +476,14 @@ export const LeadsSection: React.FC = () => {
             <button
               type="button"
               onClick={() => handleExport(leads.filter((l) => selectedIds.includes(l.id)))}
-              className="h-8 px-3 text-xs font-bold bg-[#EA580C] hover:bg-[#C2410C] text-white rounded-lg"
+              className="h-9 px-3 text-xs font-extrabold bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-lg shadow-sm"
             >
               {t.leads.bulk.exportSelected}
             </button>
             <button
               type="button"
               onClick={() => setSelectedIds([])}
-              className="h-8 px-2.5 text-xs text-slate-200 hover:text-white"
+              className="h-9 px-3 text-xs font-semibold text-[#1E40AF] bg-white/70 hover:bg-white border border-[#BFDBFE] rounded-lg"
             >
               {t.app.clearSelection}
             </button>
@@ -862,19 +866,23 @@ export const LeadsSection: React.FC = () => {
                 <label className="block text-[11px] font-bold text-zinc-700 mb-1">
                   {t.leads.profile.assignedEmployee}
                 </label>
-                <select
-                  value={activeLead.assigned_employee_id}
-                  onChange={(e) =>
-                    updateLead(activeLead.id, { assigned_employee_id: e.target.value })
-                  }
-                  className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-slate-200 rounded-lg bg-white"
-                >
-                  {employees.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {localizePersonName(emp.name, language)}
-                    </option>
-                  ))}
-                </select>
+                {isAgencyManager ? (
+                  <select
+                    value={activeLead.assigned_employee_id}
+                    onChange={(e) => updateLead(activeLead.id, { assigned_employee_id: e.target.value })}
+                    className="w-full h-9 px-3 text-xs font-semibold text-[#1F2937] border border-slate-200 rounded-lg bg-white"
+                  >
+                    {employees.map((emp) => (
+                      <option key={emp.id} value={emp.id}>
+                        {localizePersonName(emp.name, language)}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div className="w-full h-9 px-3 flex items-center text-xs font-semibold text-[#475569] border border-slate-200 rounded-lg bg-slate-50">
+                    {localizePersonName(employees.find((emp) => emp.id === activeLead.assigned_employee_id)?.name ?? '—', language)}
+                  </div>
+                )}
               </div>
             </div>
 
