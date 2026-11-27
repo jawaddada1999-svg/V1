@@ -252,6 +252,9 @@ export const LeadFormModal: React.FC<{
     if (!phone.trim() || digitsOnly.length < 8) {
       nextErrors.phone = t.leads.form.validationPhone;
     }
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      nextErrors.email = language === 'ar' ? 'البريد الإلكتروني غير صالح' : language === 'fr' ? 'Adresse e-mail invalide' : 'Enter a valid email address';
+    }
     if (!budget || Number(budget) <= 0) {
       nextErrors.budget = t.leads.form.validationBudget;
     }
@@ -269,14 +272,21 @@ export const LeadFormModal: React.FC<{
       return;
     }
 
-    const normalizedPhone = phone.replace(/\D/g, '');
+    const normalizePhone = (value: string) => {
+      let digits = value.replace(/\D/g, '');
+      if (digits.startsWith('00212')) digits = digits.slice(5);
+      else if (digits.startsWith('212')) digits = digits.slice(3);
+      else if (digits.startsWith('0') && digits.length === 10) digits = digits.slice(1);
+      return digits.length > 9 ? digits.slice(-9) : digits;
+    };
+    const normalizedPhone = normalizePhone(phone);
     const normalizedEmail = email.trim().toLowerCase();
     const duplicateLead = leads.find((lead) => {
       if (editingLead && lead.id === editingLead.id) return false;
-      const existingPhone = lead.phone.replace(/\D/g, '');
+      const existingPhone = normalizePhone(lead.phone);
       const existingEmail = lead.email.trim().toLowerCase();
-      return normalizedPhone && existingPhone === normalizedPhone ||
-        normalizedEmail && existingEmail === normalizedEmail;
+      return Boolean(normalizedPhone && existingPhone === normalizedPhone) ||
+        Boolean(normalizedEmail && existingEmail === normalizedEmail);
     });
     if (duplicateLead) {
       pushToast({
