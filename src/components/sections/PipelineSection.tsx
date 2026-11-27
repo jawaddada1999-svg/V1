@@ -528,7 +528,7 @@ export const PipelineSection: React.FC = () => {
       </div>
 
       {/* All Stages Visible Grid with Clients Listed Directly Underneath Each Status */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
+      <div className="w-full overflow-x-auto pb-3 overscroll-x-contain"><div className="grid grid-flow-col auto-cols-[minmax(280px,320px)] gap-4 items-start w-max">
         {PIPELINE_STAGES.map(({ status, key }) => {
           const stageLeads = filteredLeads
             .filter((l) =>
@@ -763,6 +763,7 @@ export const PipelineSection: React.FC = () => {
             </div>
           );
         })}
+      </div>
       </div>
 
       {/* Quick Note Modal */}
