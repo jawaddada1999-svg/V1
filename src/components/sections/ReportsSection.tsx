@@ -416,7 +416,12 @@ export const ReportsSection: React.FC = () => {
 
     const totalSpend = campaignRows.reduce((s, r) => s + r.periodSpend, 0);
     const totalAdLeads = campaignRows.reduce((s, r) => s + r.periodLeads, 0);
+    const totalQualifiedLeads = campaignRows.reduce((s, r) => s + r.periodQualified, 0);
+    const totalAppointments = campaignRows.reduce((s, r) => s + r.periodAppointments, 0);
     const avgCpl = totalAdLeads > 0 ? Math.round(totalSpend / totalAdLeads) : 0;
+    const costPerAppointment = totalAppointments > 0 ? Math.round(totalSpend / totalAppointments) : 0;
+    const qualificationRate = totalAdLeads > 0 ? Math.round((totalQualifiedLeads / totalAdLeads) * 100) : 0;
+    const leadToAppointmentRate = totalAdLeads > 0 ? Math.round((totalAppointments / totalAdLeads) * 100) : 0;
 
     const crmAdLeads = filteredLeads.filter(
       (l) =>
@@ -425,33 +430,65 @@ export const ReportsSection: React.FC = () => {
         l.source === 'google_ads'
     ).length;
 
-    let cplDeltaVsPrev: number | null = null;
+    let previousPeriod: { spend: number; leads: number; qualified: number; appointments: number } | null = null;
     if (bounds.from && bounds.to) {
       const span = Math.max(diffDaysInclusive(bounds.from, bounds.to), 1);
       const prevEnd = addDaysIso(bounds.from, -1);
       const prevStart = addDaysIso(prevEnd, -(span - 1));
-      let prevSpend = 0;
-      let prevLeads = 0;
-      adCampaigns.forEach((c) => {
-        const r = getOverlapRatio(c.start_date, c.end_date, prevStart, prevEnd);
-        if (r > 0) {
-          prevSpend += Math.round(c.spend * r);
-          prevLeads += Math.round(c.leads * r);
-        }
-      });
-      if (prevLeads > 0 && avgCpl > 0) {
-        const prevCpl = prevSpend / prevLeads;
-        cplDeltaVsPrev = Math.round(((avgCpl - prevCpl) / prevCpl) * 100);
-      }
+      previousPeriod = adCampaigns.reduce(
+        (totals, campaign) => {
+          const ratio = getOverlapRatio(campaign.start_date, campaign.end_date, prevStart, prevEnd);
+          if (ratio > 0) {
+            totals.spend += Math.round(campaign.spend * ratio);
+            totals.leads += Math.round(campaign.leads * ratio);
+            totals.qualified += Math.round(campaign.qualified_leads * ratio);
+            totals.appointments += Math.round(campaign.appointments * ratio);
+          }
+          return totals;
+        },
+        { spend: 0, leads: 0, qualified: 0, appointments: 0 }
+      );
     }
+
+    const previousCpl = previousPeriod && previousPeriod.leads > 0
+      ? Math.round(previousPeriod.spend / previousPeriod.leads)
+      : null;
+    const previousCostPerAppointment = previousPeriod && previousPeriod.appointments > 0
+      ? Math.round(previousPeriod.spend / previousPeriod.appointments)
+      : null;
+    const previousQualificationRate = previousPeriod && previousPeriod.leads > 0
+      ? Math.round((previousPeriod.qualified / previousPeriod.leads) * 100)
+      : null;
+    const previousLeadToAppointmentRate = previousPeriod && previousPeriod.leads > 0
+      ? Math.round((previousPeriod.appointments / previousPeriod.leads) * 100)
+      : null;
+    const percentChange = (current: number, previous: number | null) =>
+      previous !== null && previous > 0
+        ? Math.round(((current - previous) / previous) * 100)
+        : null;
 
     return {
       campaignRows,
       totalSpend,
       totalAdLeads,
+      totalQualifiedLeads,
+      totalAppointments,
       avgCpl,
+      costPerAppointment,
+      qualificationRate,
+      leadToAppointmentRate,
       crmAdLeads,
-      cplDeltaVsPrev,
+      previousPeriod,
+      comparisons: {
+        spend: percentChange(totalSpend, previousPeriod?.spend ?? null),
+        leads: percentChange(totalAdLeads, previousPeriod?.leads ?? null),
+        qualified: percentChange(totalQualifiedLeads, previousPeriod?.qualified ?? null),
+        appointments: percentChange(totalAppointments, previousPeriod?.appointments ?? null),
+        cpl: percentChange(avgCpl, previousCpl),
+        costPerAppointment: percentChange(costPerAppointment, previousCostPerAppointment),
+        qualificationRate: previousQualificationRate !== null ? qualificationRate - previousQualificationRate : null,
+        leadToAppointmentRate: previousLeadToAppointmentRate !== null ? leadToAppointmentRate - previousLeadToAppointmentRate : null,
+      },
     };
   }, [adCampaigns, bounds, filteredLeads]);
 
@@ -1663,51 +1700,45 @@ export const ReportsSection: React.FC = () => {
       {/* ================= 6. AD SPEND & COST PER LEAD REPORTS ================= */}
       {activeTab === 'ads' && (
         <div className="space-y-5">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <KpiCard
-              title={t.reports.adsSection.totalSpend}
-              value={formatMAD(adsStats.totalSpend, language)}
-              icon={<DollarSign className="h-4 w-4" />}
-              tone="navy"
-            />
-            <KpiCard
-              title={t.reports.adsSection.adLeads}
-              value={adsStats.totalAdLeads}
-              icon={<Users className="h-4 w-4" />}
-              tone="orange"
-            />
-            <KpiCard
-              title={t.reports.adsSection.cpl}
-              value={formatMAD(adsStats.avgCpl, language)}
-              icon={<Target className="h-4 w-4" />}
-              tone="sky"
-            />
-            <KpiCard
-              title={t.reports.adsSection.crmAdLeads}
-              value={adsStats.crmAdLeads}
-              icon={<Megaphone className="h-4 w-4" />}
-              tone="emerald"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+            <KpiCard title={t.reports.adsSection.totalSpend} value={formatMAD(adsStats.totalSpend, language)} icon={<DollarSign className="h-4 w-4" />} tone="navy" />
+            <KpiCard title={t.reports.adsSection.adLeads} value={adsStats.totalAdLeads} icon={<Users className="h-4 w-4" />} tone="orange" />
+            <KpiCard title={t.reports.adsSection.cpl} value={formatMAD(adsStats.avgCpl, language)} icon={<Target className="h-4 w-4" />} tone="sky" />
+            <KpiCard title={language === 'ar' ? 'العملاء المؤهلون' : language === 'fr' ? 'Prospects qualifiés' : 'Qualified leads'} value={adsStats.totalQualifiedLeads} icon={<UserCheck className="h-4 w-4" />} tone="emerald" />
+            <KpiCard title={language === 'ar' ? 'المواعيد الناتجة عن الإعلانات' : language === 'fr' ? 'Rendez-vous générés' : 'Ad appointments'} value={adsStats.totalAppointments} icon={<CalendarCheck2 className="h-4 w-4" />} tone="navy" />
+            <KpiCard title={language === 'ar' ? 'تكلفة الموعد' : language === 'fr' ? 'Coût par rendez-vous' : 'Cost per appointment'} value={formatMAD(adsStats.costPerAppointment, language)} icon={<Target className="h-4 w-4" />} tone="orange" />
+            <KpiCard title={language === 'ar' ? 'نسبة تأهيل العملاء' : language === 'fr' ? 'Taux de qualification' : 'Lead qualification rate'} value={`${adsStats.qualificationRate}%`} icon={<UserCheck className="h-4 w-4" />} tone="sky" />
+            <KpiCard title={language === 'ar' ? 'نسبة تحويل العملاء إلى مواعيد' : language === 'fr' ? 'Taux prospects → rendez-vous' : 'Lead-to-appointment rate'} value={`${adsStats.leadToAppointmentRate}%`} icon={<CalendarCheck2 className="h-4 w-4" />} tone="emerald" />
+            <KpiCard title={t.reports.adsSection.crmAdLeads} value={adsStats.crmAdLeads} icon={<Megaphone className="h-4 w-4" />} tone="navy" />
           </div>
 
-          {adsStats.cplDeltaVsPrev !== null && (
-            <div className="bg-white border-2 border-zinc-200 rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span className="font-extrabold text-zinc-900">{t.reports.adsSection.vsPreviousLabel}</span>
-              <span
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-lg font-extrabold font-mono-num border ${
-                  adsStats.cplDeltaVsPrev <= 0
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                    : 'bg-rose-50 border-rose-300 text-rose-800'
-                }`}
-              >
-                {adsStats.cplDeltaVsPrev <= 0 ? (
-                  <TrendingDown className="h-3.5 w-3.5" />
-                ) : (
-                  <TrendingUp className="h-3.5 w-3.5" />
-                )}
-                {adsStats.cplDeltaVsPrev > 0 ? '+' : ''}
-                {adsStats.cplDeltaVsPrev}%
-              </span>
+          {adsStats.previousPeriod && (
+            <div className="bg-white border-2 border-zinc-200 rounded-xl p-4 space-y-3">
+              <div className="font-extrabold text-sm text-zinc-900">{t.reports.adsSection.vsPreviousLabel}</div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {([
+                  ['spend', language === 'ar' ? 'المصاريف' : language === 'fr' ? 'Dépenses' : 'Spend', adsStats.comparisons.spend, true],
+                  ['leads', language === 'ar' ? 'العملاء' : language === 'fr' ? 'Prospects' : 'Leads', adsStats.comparisons.leads, false],
+                  ['qualified', language === 'ar' ? 'المؤهلون' : language === 'fr' ? 'Qualifiés' : 'Qualified', adsStats.comparisons.qualified, false],
+                  ['appointments', language === 'ar' ? 'المواعيد' : language === 'fr' ? 'Rendez-vous' : 'Appointments', adsStats.comparisons.appointments, false],
+                  ['cpl', language === 'ar' ? 'تكلفة العميل' : language === 'fr' ? 'Coût par prospect' : 'Cost per lead', adsStats.comparisons.cpl, true],
+                  ['costPerAppointment', language === 'ar' ? 'تكلفة الموعد' : language === 'fr' ? 'Coût par rendez-vous' : 'Cost per appointment', adsStats.comparisons.costPerAppointment, true],
+                  ['qualificationRate', language === 'ar' ? 'نسبة التأهيل' : language === 'fr' ? 'Taux de qualification' : 'Qualification rate', adsStats.comparisons.qualificationRate, false],
+                  ['leadToAppointmentRate', language === 'ar' ? 'تحويل إلى موعد' : language === 'fr' ? 'Conversion en rendez-vous' : 'Lead-to-appointment', adsStats.comparisons.leadToAppointmentRate, false],
+                ] as const).map(([key, label, change, isCost]) => (
+                  <div key={key} className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-3">
+                    <div className="text-[11px] font-bold text-[#64748B]">{label}</div>
+                    <div className={`mt-1 text-sm font-extrabold font-mono-num ${
+                      change === null ? 'text-[#64748B]' : (isCost ? change <= 0 : change >= 0) ? 'text-emerald-700' : 'text-rose-700'
+                    }`}>
+                      {change === null ? '—' : `${change > 0 ? '+' : ''}${change}${key.includes('Rate') || key === 'qualificationRate' || key === 'leadToAppointmentRate' ? ' pp' : '%'}`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-[#64748B]">
+                {language === 'ar' ? 'مقارنة مع الفترة السابقة بنفس عدد الأيام. انخفاض التكلفة وتحسن نسب التحويل يعتبران أفضل.' : language === 'fr' ? 'Comparaison avec la période précédente de même durée. Une baisse des coûts et une hausse des taux sont positives.' : 'Compared with the previous period of equal length. Lower costs and higher conversion rates are better.'}
+              </p>
             </div>
           )}
 
@@ -1748,10 +1779,16 @@ export const ReportsSection: React.FC = () => {
                         {t.ads.table.leads}
                       </th>
                       <th className="py-4 px-4 text-center border-e border-white/15">
+                        {language === 'ar' ? 'مؤهل' : language === 'fr' ? 'Qualifiés' : 'Qualified'}
+                      </th>
+                      <th className="py-4 px-4 text-center border-e border-white/15">
                         {t.ads.table.appointments}
                       </th>
                       <th className="py-4 px-4 text-start border-e border-white/15">
                         {t.ads.table.cpl}
+                      </th>
+                      <th className="py-4 px-4 text-start border-e border-white/15">
+                        {language === 'ar' ? 'تكلفة الموعد' : language === 'fr' ? 'Coût / RDV' : 'Cost / appointment'}
                       </th>
                       <th className="py-4 px-5 text-start">{t.ads.table.status}</th>
                     </tr>
@@ -1777,6 +1814,9 @@ export const ReportsSection: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-4 px-4 text-center font-mono-num border-e border-[#E2E8F0]">
+                          <span className="font-extrabold text-emerald-700">{camp.periodQualified}</span>
+                        </td>
+                        <td className="py-4 px-4 text-center font-mono-num border-e border-[#E2E8F0]">
                           <span className="inline-flex items-center justify-center min-w-[40px] px-2.5 py-0.5 rounded-lg bg-sky-50 border border-sky-200 text-[15px] font-extrabold text-[#0284C7]">
                             {camp.periodAppointments}
                           </span>
@@ -1785,6 +1825,9 @@ export const ReportsSection: React.FC = () => {
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-[#F0F9FF] border border-[#BAE6FD] text-[15px] font-extrabold text-[#0369A1]">
                             {formatMAD(camp.periodCpl, language)}
                           </span>
+                        </td>
+                        <td className="py-4 px-4 font-mono-num whitespace-nowrap">
+                          {formatMAD(camp.periodAppointments > 0 ? Math.round(camp.periodSpend / camp.periodAppointments) : 0, language)}
                         </td>
                         <td className="py-4 px-5 whitespace-nowrap">
                           <StatusLabel
@@ -1862,12 +1905,28 @@ export const ReportsSection: React.FC = () => {
                           {camp.periodLeads}
                         </span>
                       </div>
+                      <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5">
+                        <span className="text-[11px] font-bold text-emerald-900 block">
+                          {language === 'ar' ? 'العملاء المؤهلون' : language === 'fr' ? 'Prospects qualifiés' : 'Qualified leads'}
+                        </span>
+                        <span className="font-extrabold text-base font-mono-num text-emerald-800 mt-0.5 block">
+                          {camp.periodQualified}
+                        </span>
+                      </div>
                       <div className="rounded-xl bg-sky-50 border border-sky-200 p-2.5">
                         <span className="text-[11px] font-bold text-sky-900 block">
                           {t.ads.table.appointments}
                         </span>
                         <span className="font-extrabold text-base font-mono-num text-[#0284C7] mt-0.5 block">
                           {camp.periodAppointments}
+                        </span>
+                      </div>
+                      <div className="rounded-xl bg-indigo-50 border border-indigo-200 p-2.5">
+                        <span className="text-[11px] font-bold text-indigo-900 block">
+                          {language === 'ar' ? 'تكلفة الموعد' : language === 'fr' ? 'Coût par rendez-vous' : 'Cost per appointment'}
+                        </span>
+                        <span className="font-extrabold text-sm font-mono-num text-indigo-800 mt-0.5 block">
+                          {formatMAD(camp.periodAppointments > 0 ? Math.round(camp.periodSpend / camp.periodAppointments) : 0, language)}
                         </span>
                       </div>
                     </div>
