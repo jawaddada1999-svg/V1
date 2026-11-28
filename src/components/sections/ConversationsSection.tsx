@@ -84,9 +84,19 @@ export const ConversationsSection: React.FC = () => {
   );
 
   const activeConversation = useMemo(
-    () => conversations.find((c) => c.id === selectedConversationId) ?? filteredConversations[0] ?? null,
-    [conversations, selectedConversationId, filteredConversations]
+    () =>
+      filteredConversations.find((c) => c.id === selectedConversationId) ??
+      filteredConversations[0] ??
+      null,
+    [selectedConversationId, filteredConversations]
   );
+
+  const clearConversationFilters = () => {
+    setSearch('');
+    setChannelFilter('all');
+    setEmployeeFilter('all');
+    setUnreadOnly(false);
+  };
 
   const relatedLead = useMemo(
     () => leads.find((l) => l.id === activeConversation?.lead_id) ?? null,
@@ -211,6 +221,17 @@ export const ConversationsSection: React.FC = () => {
               />
               <span>{t.conversations.unreadOnly}</span>
             </label>
+            <div className="flex items-center justify-between text-[11px] font-semibold text-[#64748B] pt-0.5">
+              <span>{filteredConversations.length} {language === 'fr' ? 'conversations affichées' : 'محادثات معروضة'}</span>
+              <button
+                type="button"
+                onClick={clearConversationFilters}
+                disabled={search === '' && channelFilter === 'all' && employeeFilter === 'all' && !unreadOnly}
+                className="text-[#16966A] hover:underline disabled:text-slate-400 disabled:no-underline"
+              >
+                {language === 'fr' ? 'Effacer les filtres' : 'مسح الفلاتر'}
+              </button>
+            </div>
           </div>
 
           <div className="divide-y divide-emerald-100 overflow-y-auto flex-1 max-h-[540px] bg-white/70">
