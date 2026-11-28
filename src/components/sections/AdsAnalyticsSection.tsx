@@ -282,6 +282,28 @@ export const AdsAnalyticsSection: React.FC = () => {
         />
       ) : (
         <>
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4">
+              <h3 className="text-sm font-extrabold text-[#1F2937] mb-3">{t.ads.kpis.totalLeads} / {t.ads.kpis.appointments}</h3>
+              <BarComparisonChart
+                data={leadsByCampaignSeries}
+                primaryLabel={t.ads.kpis.totalLeads}
+                secondaryLabel={t.ads.kpis.appointments}
+                primaryColor="#EA580C"
+                secondaryColor="#0284C7"
+                height={210}
+              />
+            </div>
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4">
+              <h3 className="text-sm font-extrabold text-[#1F2937] mb-3">{t.ads.kpis.totalLeads}</h3>
+              <AreaTrendChart
+                data={campaignTrend}
+                primaryLabel={t.ads.kpis.totalLeads}
+                color="#16966A"
+                height={210}
+              />
+            </div>
+          </div>
           {/* Charts Grid */}
                     <div className="rounded-2xl border border-[#E2E8F0] bg-white p-4 text-sm text-slate-600 mb-4">
             Campaign performance is presented in the table below for a clearer, more focused view.
