@@ -90,6 +90,18 @@ export const NotificationsSection: React.FC = () => {
             <span>{t.notifications.unreadOnly}</span>
           </label>
         </div>
+        <div className="flex items-center gap-2 text-xs font-semibold text-[#64748B]">
+          <span>{filtered.length} {language === 'fr' ? 'notifications affichées' : 'إشعارات معروضة'}</span>
+          {(categoryFilter !== 'all' || unreadOnly) && (
+            <button
+              type="button"
+              onClick={() => { setCategoryFilter('all'); setUnreadOnly(false); }}
+              className="px-2.5 py-1 rounded-lg border border-slate-200 text-[#16966A] hover:bg-emerald-50"
+            >
+              {language === 'fr' ? 'Réinitialiser' : 'إعادة ضبط'}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Notification List */}
